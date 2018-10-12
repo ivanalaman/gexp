@@ -7,7 +7,7 @@
 #! DIC
 #! 1 factor
 ddic <- gerexp(mu=0,
-               sig=1,
+               s2=1,
                r=3,
                f=list(f1=c(1, 1, 5)),
                roundd=0)
@@ -28,7 +28,7 @@ plot(tk)
 
 #! 5 factors
 ddic <- gerexp(mu=0,
-               sig=1,
+               s2=1,
                r=2,
                f=list(f1=c(1, 1, 5),
                       f2=c(1,1),
@@ -40,7 +40,7 @@ print(ddic)
 
 #! DIC - Multivariated
 ddic <- gerexp(mu=c(0,2),
-               sig=matrix(c(1,0,0,1),ncol=2),
+               s2=matrix(c(1,0,0,1),ncol=2),
                r=3,
                f=list(f1 = matrix(c(1, 1, 5, 1, 1, 1),ncol=2),
                       f2 = matrix(c(1, 3, 2, 2),ncol=2)),
@@ -49,7 +49,7 @@ print(ddic)
 
 #! DBC
 ddbc <- gerexp(mu=0,
-               sig=1,
+               s2=1,
                f=list(f1=c(5, 1, 1)),
                b=c(2, 1, 1),
                roundd=1,
@@ -69,7 +69,7 @@ plot(tk)
 
 #! DBC - Multivariated
 ddbcm <- gerexp(mu=c(0,2),
-                sig=matrix(c(1,0,0,1),ncol=2),
+                s2=matrix(c(1,0,0,1),ncol=2),
                 f=list(f1= matrix(c(1, 1, 5, 1, 1, 1),ncol=2)),
                 b=matrix(c(2, 1, 1, 2, 1, 1),ncol=2),
                 roundd=1,
@@ -78,10 +78,10 @@ print(ddbcm)
 
 #! DQL
 ddql <- gerexp(mu=30,
-               sig=1,
+               s2=1,
                f=list(f1=c(1, 1, 10)),
-               row=c(1, 1, 1),
-               col=c(1, 1, 1),
+               erow=c(1, 1, 1),
+               ecol=c(1, 1, 1),
                roundd=1,
                type='DQL')
 print(ddql)
@@ -100,7 +100,7 @@ plot(tk)
  
 #! FAT - DIC
 dfatdic <- gerexp(mu=30,
-                  sig=1,
+                  s2=1,
                   f = list(f1=c(1, 1, 3),
                            f2=c(1, 1)),
                   inter=c(3, 1, 1, 1, 1, 5),
@@ -122,7 +122,7 @@ plot(tuk)
  
 #! FAT - DBC
 dfatdbc <- gerexp(mu=30,
-                  sig=1,
+                  s2=1,
                   f=list(f1=c(1, 1, 1), 
                          f2=c(2, 3)),
                   b=c(1, 3),
@@ -146,11 +146,11 @@ plot(tuk)
 
 #! FAT - DQL
 dfatdql <- gerexp(mu=30,
-                  sig=1,
+                  s2=1,
                   f=list(f1=c(1, 1), 
                          f2=c(2, 3)),
-                  row=c(1, 3, 2, 1),
-                  col=c(2, 2, 1, 1),
+                  erow=c(1, 3, 2, 1),
+                  ecol=c(2, 2, 1, 1),
                   inter=c(1, 15, 1, 1),
                   roundd=1,
                   type='FAT')
@@ -171,8 +171,8 @@ plot(tuk)
 
 #! SPLIT PLOT - DIC
 dsplitdic <- gerexp(mu=30,
-                    sig=1,
-                    sigplot=1,
+                    s2=1,
+                    s2sp=1,
                     f=list(f1=c(1, 1), 
                            f2=c(2, 3)),
                     inter=c(1, 15, 1, 1),
@@ -182,7 +182,7 @@ print(dsplitdic)
 
 mod <- lm(Y1 ~ X1*X2 + X1:r, dsplitdic)  #X1:r erro(a) parcela
 anova(mod)
-mod1 <- aov(Y1 ~ X1*X2 + Error(X1:r), dsplitdic)
+mod1 <- aov(Y1 ~ X1*X2 + Error(X1:r), data=dsplitdic)
 summary(mod1)
 
 par(mfrow=c(2,2))
@@ -197,8 +197,8 @@ plot(tuk)
  
 #SPLIT - DBC
 dsplitdbc <- gerexp(mu=30,
-                    sig=1,
-                    sigplot=1,
+                    s2=1,
+                    s2sp=1,
                     f=list(f1=c(1, 1), 
                            f2=c(2, 3),
                            f3=c(1,1,1)),
@@ -228,13 +228,13 @@ plot(tuk)
 
 #SPLIT - DQL
 dsplitdql <- gerexp(mu=30,
-                    sig=1,
-                    sigplot=1,
+                    s2=1,
+                    s2sp=1,
                     f=list(f1=c(1, 1, 2), 
                            f2=c(2, 3, 1)),
                     inter=c(1, 15, 1, 1, 1, 1, 1, 1, 1),
-                    row = c(1,1,1),
-                    col = c(1,1,1),
+                    erow = c(1,1,1),
+                    ecol = c(1,1,1),
                     roundd=1,
                     type='SPLIT')
 print(dsplitdql)

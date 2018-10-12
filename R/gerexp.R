@@ -1,20 +1,20 @@
 gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver mais de uma variável resposta
-                   sig    = 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados
-                   sigplot= 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados no caso de type ser igual a SPLIT
+                   s2     = 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados
+                   s2sp   = 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados no caso de type ser igual a SPLIT
                    r      = 2L,   #é um escalar que se refere ao nº de repetições
                    f      = NULL, #é uma lista em que cada dimensão se refere ao efeito de um fator que pode ser um vetor numérico ou uma matriz (caso multivariado)
                    inter  = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos da interação
                    b      = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos dos blocos
-                   row    = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das linhas
-                   col    = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das colunas
-                   type   = c('DIC','DBC','DQL','FAT','SPLIT'), 
+                   erow    = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das linhas
+                   ecol    = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das colunas
+                   type   = c('DIC','DBC','DQL','FAT','SPLIT'),
                    roundd = 2L,   # é um escalar numérico
                    ...) 
 {
 
   if(is.null(f)) stop("You must specify at least a factor") 
 
-  sig <- as.matrix(sig)
+  s2 <- as.matrix(s2)
 
   aux_factor <- lapply(f,
                        function(x) as.matrix(x))
@@ -36,7 +36,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
          DIC = {        
 
 
-           if(any(!is.null(inter) | !is.null(b) | !is.null(row) | !is.null(col))) stop("Only f must be specified as effect of treatment!")
+           if(any(!is.null(inter) | !is.null(b) | !is.null(erow) | !is.null(ecol))) stop("Only f must be specified as effect of treatment!")
 
            factors$r <- 1:r
 
@@ -63,7 +63,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
            #print(X)
 
            e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                 sigma = sig)
+                                 sigma = s2)
 
            ifelse(length(mu) == 1,
                   betas <- as.matrix(c(mu, unlist(f))),
@@ -106,7 +106,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                             contrasts.arg = eval(parse(text=aux_X2)))             
 
            e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                 sigma = sig)
+                                 sigma = s2)
 
            ifelse(length(mu) == 1,
                   betas <- as.matrix(c(mu, b, unlist(f))),
@@ -142,11 +142,11 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                                                                 contrasts=FALSE)))
 
            e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                 sigma = sig)
+                                 sigma = s2)
 
            ifelse(length(mu) == 1,
-                  betas <- as.matrix(c(mu, row, col, f1)),
-                  betas <- rbind(mu, row, col, f1))  
+                  betas <- as.matrix(c(mu, erow, ecol, f1)),
+                  betas <- rbind(mu, erow, ecol, f1))
 
            yl <- X%*%betas + e
 
@@ -157,7 +157,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
          },
          FAT = {
 
-           if(is.null(b) & is.null(row) & is.null(col)){ #é um DIC
+           if(is.null(b) & is.null(erow) & is.null(ecol)){ #é um DIC
 
              factors$r <- 1:r
 
@@ -183,7 +183,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                                 contrasts.arg = eval(parse(text=aux_X2)))             
 
              e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                   sigma = sig)
+                                   sigma = s2)
 
              ifelse(length(mu) == 1,
                     betas <- as.matrix(c(mu, unlist(f), inter)),
@@ -195,7 +195,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
              Y <- round(yl, roundd) 
 
-           } else if(!is.null(b) & is.null(row) & is.null(col)){#é um DBC
+           } else if(!is.null(b) & is.null(erow) & is.null(ecol)){#é um DBC
 
              factors$Block <- 1:dim(as.matrix(b))[1]
 
@@ -223,7 +223,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                               contrasts.arg = eval(parse(text=aux_X2)))             
 
              e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                   sigma = sig)
+                                   sigma = s2)
 
              ifelse(length(mu) == 1,
                     betas <- as.matrix(c(mu, b, unlist(f), inter)),
@@ -273,11 +273,11 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                               contrasts.arg = eval(parse(text=aux_X2)))             
               
              e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                   sigma = sig)
+                                   sigma = s2)
 
              ifelse(length(mu) == 1,
-                    betas <- as.matrix(c(mu, row, col, unlist(f), inter)),
-                    betas <- rbind(mu, row, col, do.call('rbind',f), inter)) 
+                    betas <- as.matrix(c(mu, erow, ecol, unlist(f), inter)),
+                    betas <- rbind(mu, erow, ecol, do.call('rbind',f), inter))
 
              yl <- X%*%betas + e
 
@@ -289,9 +289,9 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
          },
          SPLIT = {
 
-           sigplot <- as.matrix(sigplot) 
+           s2sp <- as.matrix(s2sp)
 
-           if(is.null(b) & is.null(row) & is.null(col)){ #é um DIC 
+           if(is.null(b) & is.null(erow) & is.null(ecol)){ #é um DIC
 
              factors$r <- factor(1:r)
 
@@ -321,10 +321,10 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                                                     r = contrasts(dados$r, contrasts = FALSE)))
 
              e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                   sigma = sig)
+                                   sigma = s2)
 
              e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
-                                        sigma = sigplot)                        
+                                        sigma = s2sp)
 
              ifelse(length(mu) == 1,
                     betas <- as.matrix(c(mu, unlist(f), inter)),
@@ -336,7 +336,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
              Y <- round(yl, roundd) 
 
-           } else if(!is.null(b) & is.null(row) & is.null(col)){#é um DBC
+           } else if(!is.null(b) & is.null(erow) & is.null(ecol)){#é um DBC
 
              factors$Block <- 1:dim(as.matrix(b))[1]
 
@@ -369,10 +369,10 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                                                     Block = contrasts(dados$Block, contrasts = FALSE)))
 
              e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                   sigma = sig)
+                                   sigma = s2)
 
              e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
-                                        sigma = sigplot)                        
+                                        sigma = s2sp)
 
              ifelse(length(mu) == 1,
                     betas <- as.matrix(c(mu, b, unlist(f), inter)),
@@ -445,14 +445,14 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
                                                   Column = contrasts(dados$Column, contrasts = FALSE))) 
 
            e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                                 sigma = sig)
+                                 sigma = s2)
 
            e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
-                                      sigma = sigplot)                        
+                                      sigma = s2sp)
 
            ifelse(length(mu) == 1,
-                  betas <- as.matrix(c(mu, row, col, unlist(f), inter)),
-                  betas <- rbind(mu, row, col, do.call('rbind',f), inter))  
+                  betas <- as.matrix(c(mu, erow, ecol, unlist(f), inter)),
+                  betas <- rbind(mu, erow, ecol, do.call('rbind',f), inter))
 
            yl <- X%*%betas + Z%*%e_plot + e
 
