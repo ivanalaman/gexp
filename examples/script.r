@@ -33,7 +33,7 @@ ddic <- gerexp(mu=0,
                       f4=c(1,5),
                       f5=c(1,2,3,4,5)),
                roundd=0)
-ddic 
+print(ddic)
 
 ## DIC - multivariado
 ddic <- gerexp(mu=c(0,2),
@@ -42,7 +42,7 @@ ddic <- gerexp(mu=c(0,2),
                f=list(f1 = matrix(c(1, 1, 5, 1, 1, 1),ncol=2),
                       f2 = matrix(c(1, 3, 2, 2),ncol=2)),
                roundd=0)
-ddic
+print(ddic)
 
 # DBC
 ddbc <- gerexp(mu=0,
@@ -51,6 +51,7 @@ ddbc <- gerexp(mu=0,
                b=c(2, 1, 1),
                roundd=1,
                type='DBC')
+print(ddbc)
 
 mod <- lm(Y1 ~ Block + X1, ddbc)
 anova(mod) 
@@ -63,6 +64,15 @@ tk <- TukeyC(mod,
 summary(tk)
 plot(tk)
 
+# DBC - multivariado
+ddbcm <- gerexp(mu=c(0,2),
+                sig=matrix(c(1,0,0,1),ncol=2),
+                f=list(f1= matrix(c(1, 1, 5, 1, 1, 1),ncol=2)),
+                b=matrix(c(2, 1, 1, 1, 1, 1),ncol=2),
+                roundd=1,
+                type='DBC')
+print(ddbcm)
+
 # DQL
 ddql <- gerexp(mu=30,
                sig=1,
@@ -71,6 +81,7 @@ ddql <- gerexp(mu=30,
                col=c(1, 1, 1),
                roundd=1,
                type='DQL')
+print(ddql)
 
 mod <- lm(Y1 ~ Row + Column + X1,
           ddql)
@@ -92,6 +103,7 @@ dfatdic <- gerexp(mu=30,
                   inter=c(3, 1, 1, 1, 1, 5),
                   roundd=1,
                   type='FAT')
+print(dfatdic)
 
 mod <- lm(Y1 ~ X1*X2, dfatdic)
 anova(mod) 
@@ -114,6 +126,7 @@ dfatdbc <- gerexp(mu=30,
                   inter=c(1, 15, 1, 1, 5, 1),
                   roundd=1,
                   type='FAT')
+print(dfatdbc)
 
 mod <- lm(Y1 ~ Block + X1*X2, dfatdbc)
 anova(mod)
@@ -138,6 +151,7 @@ dfatdql <- gerexp(mu=30,
                   inter=c(1, 15, 1, 1),
                   roundd=1,
                   type='FAT')
+print(dfatdql)
 
 mod <- lm(Y1 ~ Row + Column + X1*X2, dfatdql)
 anova(mod)
@@ -161,6 +175,7 @@ dsplitdic <- gerexp(mu=30,
                     inter=c(1, 15, 1, 1),
                     roundd=1,
                     type='SPLIT')
+print(dsplitdic)
 
 mod <- lm(Y1 ~ X1*X2 + X1:r, dsplitdic)#X1:r erro(a) parcela
 anova(mod)
@@ -191,6 +206,7 @@ dsplitdbc <- gerexp(mu=30,
                             1,1,3,3,3,3),
                     roundd=1,
                     type='SPLIT')
+print(dsplitdbc)
 
 mod <- lm(Y1 ~ Block + X1*X2*X3 + X1:Block, dsplitdbc)#X1:Block erro(a) parcela
 anova(mod)
@@ -218,6 +234,7 @@ dsplitdql <- gerexp(mu=30,
                     col = c(1,1,1),
                     roundd=1,
                     type='SPLIT')
+print(dsplitdql)
 
 mod <- lm(Y1 ~ Row + Column + X1*X2 + X1:Row:Column, dsplitdql)#X1:Row:Column erro(a) parcela
 anova(mod)
