@@ -59,7 +59,8 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
            X  <- model.matrix(eval(parse(text=aux_X1)),
                               dados,
-                              contrasts.arg = eval(parse(text=aux_X2)))            
+                              contrasts.arg = eval(parse(text=aux_X2)))
+           #print(X)
 
            e <- mvtnorm::rmvnorm(n = dim(X)[1],  
                                  sigma = sig)
