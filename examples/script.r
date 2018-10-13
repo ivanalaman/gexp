@@ -40,10 +40,13 @@ print(dic2)
 
 #! DIC - Multivariated
 dic3 <- gerexp(mu=c(0, 2),
-               s2=matrix(c(1, 0, 0, 1), ncol=2),
+               s2=matrix(c(1, 0, 0, 1),
+                         ncol=2),
                r=3,
-               f=list(f1 = matrix(c(1, 1, 5, 1, 1, 1), ncol=2),
-                      f2 = matrix(c(1, 3, 2, 2), ncol=2)),
+               f=list(f1=matrix(c(1, 1, 5, 1, 1, 1),
+                                ncol=2),
+                      f2=matrix(c(1, 3, 2, 2),
+                                ncol=2)),
                roundd=0)
 print(dic3)
 
@@ -70,9 +73,12 @@ plot(tk)
 
 #! DBC - Multivariated
 dbc2 <- gerexp(mu=c(0, 2),
-               s2=matrix(c(1, 0, 0, 1),ncol=2),
-               f=list(f1= matrix(c(1, 1, 5, 1, 1, 1), ncol=2)),
-               b=matrix(c(2, 1, 1, 2, 1, 1), ncol=2),
+               s2=matrix(c(1, 0, 0, 1),
+                         ncol=2),
+               f=list(f1= matrix(c(1, 1, 5, 1, 1, 1),
+                                 ncol=2)),
+               b=matrix(c(2, 1, 1, 2, 1, 1),
+                        ncol=2),
                roundd=1,
                type='DBC')
 print(dbc2)
@@ -102,8 +108,8 @@ plot(tk)
 #! FAT - DIC
 fatdic1 <- gerexp(mu=30,
                   s2=1,
-                  f = list(f1=c(1, 1, 3),
-                           f2=c(1, 1)),
+                  f=list(f1=c(1, 1, 3),
+                         f2=c(1, 1)),
                   inter=c(3, 1, 1, 1, 1, 5),
                   roundd=1,
                   type='FAT')
