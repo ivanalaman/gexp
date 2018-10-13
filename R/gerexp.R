@@ -1,14 +1,14 @@
-gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver mais de uma variável resposta
-                   s2     = 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados
-                   s2sp   = 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados no caso de type ser igual a SPLIT
-                   r      = 2L,   #é um escalar que se refere ao nº de repetições
-                   f      = NULL, #é uma lista em que cada dimensão se refere ao efeito de um fator que pode ser um vetor numérico ou uma matriz (caso multivariado)
-                   inter  = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos da interação
-                   b      = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos dos blocos
-                   erow    = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das linhas
-                   ecol    = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das colunas
-                   type   = c('DIC','DBC','DQL','FAT','SPLIT'),
-                   roundd = 2L,   # é um escalar numérico
+gerexp <- function(mu    = NULL, #é um escalar numérico ou um vetor se tiver mais de uma variável resposta
+                   s2    = 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados
+                   s2sp  = 1L,   #é um escalar numérico ou uma matrix de variância-covariância para dados multivariados no caso de type ser igual a SPLIT
+                   r     = 2L,   #é um escalar que se refere ao nº de repetições
+                   f     = NULL, #é uma lista em que cada dimensão se refere ao efeito de um fator que pode ser um vetor numérico ou uma matriz (caso multivariado)
+                   inter = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos da interação
+                   b     = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos dos blocos
+                   erow  = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das linhas
+                   ecol  = NULL, #é um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das colunas
+                   type  = c('DIC','DBC','DQL','FAT','SPLIT'),
+                   rd    = 2L,   # é um escalar numérico
                    ...) 
 {
 
@@ -73,7 +73,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
            colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')
 
-           Y <- round(yl, roundd)
+           Y <- round(yl, rd)
 
          },
          DBC = {
@@ -116,7 +116,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
            colnames(yl) <- paste('Y',1:dim(yl)[2],sep='') 
 
-           Y <- round(yl, roundd)
+           Y <- round(yl, rd)
 
          },
          DQL = {
@@ -152,7 +152,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
            colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')  
 
-           Y <- round(yl, roundd)
+           Y <- round(yl, rd)
 
          },
          FAT = {
@@ -193,7 +193,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
              colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')
 
-             Y <- round(yl, roundd) 
+             Y <- round(yl, rd)
 
            } else if(!is.null(b) & is.null(erow) & is.null(ecol)){#é um DBC
 
@@ -233,7 +233,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
              colnames(yl) <- paste('Y',1:dim(yl)[2],sep='') 
 
-             Y <- round(yl, roundd)
+             Y <- round(yl, rd)
 
            } else { #é um DQL
 
@@ -283,7 +283,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
              colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')
 
-             Y <- round(yl, roundd)  
+             Y <- round(yl, rd)
              
            }
          },
@@ -334,7 +334,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
              colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')
 
-             Y <- round(yl, roundd) 
+             Y <- round(yl, rd)
 
            } else if(!is.null(b) & is.null(erow) & is.null(ecol)){#é um DBC
 
@@ -382,7 +382,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
              colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')
 
-             Y <- round(yl, roundd)  
+             Y <- round(yl, rd)
 
          } else { #é um DQL
 
@@ -458,7 +458,7 @@ gerexp <- function(mu     = NULL, #é um escalar numérico ou um vetor se tiver 
 
            colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')
 
-           Y <- round(yl, roundd)   
+           Y <- round(yl, rd)
 
            }
         }

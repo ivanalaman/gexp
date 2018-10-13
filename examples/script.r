@@ -10,7 +10,7 @@ dic1 <- gerexp(mu=0,
                s2=1,
                r=3,
                f=list(f1=c(1, 1, 5)),
-               roundd=0)
+               rd=0)
 print(dic1)
 
 mod <- lm(Y1 ~ X1,
@@ -35,7 +35,7 @@ dic2 <- gerexp(mu=0,
                       f3=c(2, 2, 1),
                       f4=c(1, 5),
                       f5=c(1, 2, 3, 4, 5)),
-               roundd=0)
+               rd=0)
 print(dic2)
 
 #! DIC - Multivariated
@@ -47,7 +47,7 @@ dic3 <- gerexp(mu=c(0, 2),
                                 ncol=2),
                       f2=matrix(c(1, 3, 2, 2),
                                 ncol=2)),
-               roundd=0)
+               rd=0)
 print(dic3)
 
 #! DBC
@@ -55,7 +55,7 @@ dbc1 <- gerexp(mu=0,
                s2=1,
                f=list(f1=c(5, 1, 1)),
                b=c(2, 1, 1),
-               roundd=1,
+               rd=1,
                type='DBC')
 print(dbc1)
 
@@ -79,7 +79,7 @@ dbc2 <- gerexp(mu=c(0, 2),
                                  ncol=2)),
                b=matrix(c(2, 1, 1, 2, 1, 1),
                         ncol=2),
-               roundd=1,
+               rd=1,
                type='DBC')
 print(dbc2)
 
@@ -89,7 +89,7 @@ dql1 <- gerexp(mu=30,
                f=list(f1=c(1, 1, 10)),
                erow=c(1, 1, 1),
                ecol=c(1, 1, 1),
-               roundd=1,
+               rd=1,
                type='DQL')
 print(dql1)
 
@@ -111,7 +111,7 @@ fatdic1 <- gerexp(mu=30,
                   f=list(f1=c(1, 1, 3),
                          f2=c(1, 1)),
                   inter=c(3, 1, 1, 1, 1, 5),
-                  roundd=1,
+                  rd=1,
                   type='FAT')
 print(fatdic1)
 
@@ -135,7 +135,7 @@ fatdbc1 <- gerexp(mu=30,
                          f2=c(2, 3)),
                   b=c(1, 3),
                   inter=c(1, 15, 1, 1, 5, 1),
-                  roundd=1,
+                  rd=1,
                   type='FAT')
 print(fatdbc1)
 
@@ -159,9 +159,9 @@ fatdql1 <- gerexp(mu=30,
                   f=list(f1=c(1, 1), 
                          f2=c(2, 3)),
                   erow=c(1, 3, 2, 1),
-                   ecol=c(2, 2, 1, 1),
+                  ecol=c(2, 2, 1, 1),
                   inter=c(1, 15, 1, 1),
-                  roundd=1,
+                  rd=1,
                   type='FAT')
 print(fatdql1)
 
@@ -186,7 +186,7 @@ splitdic1 <- gerexp(mu=30,
                     f=list(f1=c(1, 1), 
                            f2=c(2, 3)),
                     inter=c(1, 15, 1, 1),
-                    roundd=1,
+                    rd=1,
                     type='SPLIT')
 print(splitdic1)
 
@@ -198,7 +198,7 @@ mod1 <- aov(Y1 ~ X1*X2 + Error(X1:r),
             data=splitdic1)
 summary(mod1)
 
-par(mfrow=c(2,2))
+par(mfrow=c(2, 2))
 plot(mod)
 
 tuk <- TukeyC(mod,
@@ -220,7 +220,7 @@ splitdbc1 <- gerexp(mu=30,
                             1, 2, 1, 1,
                             1, 1, 1, 1, 1, 1,
                             1, 1, 3, 3, 3, 3),
-                    roundd=1,
+                    rd=1,
                     type='SPLIT')
 print(splitdbc1)
 
@@ -251,7 +251,7 @@ splitdql1 <- gerexp(mu=30,
                     inter=c(1, 15, 1, 1, 1, 1, 1, 1, 1),
                     erow = c(1, 1, 1),
                     ecol = c(1, 1, 1),
-                    roundd=1,
+                    rd=1,
                     type='SPLIT')
 print(splitdql1)
 
