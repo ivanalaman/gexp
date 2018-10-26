@@ -1,19 +1,23 @@
 ---
-title: "Introduction to gerexp"
-author: Ivan Bezerra Allaman </br>
-        José Cláudio Faria
+title: "Indrodução ao pacote gerexp"
+author: Ivan Bezerra Allaman </br>José Cláudio Faria
 date: "`r Sys.Date()`"
 output: 
   html_document:
     pandoc_args: ["-F","pandoc-eqnos"]
+    css: mystyle.css
 bibliography: bibliography.bib
 ---
 
-O pacote gerexp foi elaborado inspirado nas funções pessoais do professor José Cláudio Faria, cujo o objetivo é gerar uma ou **p** variáveis aleatórias de acordo com o tipo de experimento.
+O pacote `gerexp` foi elaborado inspirado nas funções pessoais do professor José Cláudio Faria, cujo o objetivo é gerar uma ou **p** variáveis aleatórias de acordo com o tipo de experimento, cujo os efeitos dos tratamentos são indicados pelo usuário.
 
-Os experimentos conteplados no pacote são: delineamento inteiramente ao acaso (DIC), delineamento em blocos ao acaso (DBC), delineamento em quadrado latino (DQL), esquemas fatoriais para DIC, DBC e DQL e esquema em parcelas subdivididas também considerando os delineamentos DIC, DBC e DQL.
+A maioria dos pacotes como o agricolae por exemplo, possui funções que permitem ao usuário gerar apenas delineamentos, auxiliando deste modo aquele pesquisador que deseja montar um experimento. No entanto, se o usuário tem o interesse em gerar variáveis aleatórias de acordo com o tipo de experimento e ainda, podendo manipular quais tratamentos serão diferentes, então o pacote `gerexp` tem este diferencial.
 
-Os argumentos da função se baseia em um modelo linear com a seguinte forma matricial:
+Os experimentos conteplados no pacote são: delineamento inteiramente ao acaso (DIC), delineamento em blocos ao acaso (DBC), delineamento em quadrado latino (DQL), esquemas fatoriais para DIC, DBC e DQL e esquema em parcelas subdivididas também considerando os delineamentos DIC, DBC e DQL [@Aquino:1992].
+
+No caso dos delineamentos em DBC e DQL, o pacote não simula com repetições *dentro* de blocos, ou seja, o número de blocos é a própria repetição do experimento.
+
+Os argumentos da função se baseia em um modelo linear com a seguinte forma matricial [@Ferreira:2008, @Rencher:2007]:
 
 $$Y = X\beta + E$${#eq:m1}
 
@@ -25,56 +29,1105 @@ X é uma matriz n$\times$m, sendo **m** o número de parâmetros que influenciam
 
 $\beta$ é uma matrix m$\times$p de efeitos dos fatores;
 
-$E$ é uma matrix n$\times$p dos erros;
-
-# Simulando um DIC
-
-Vamos considerar um DIC com um fator e dois níveis com 3 repetições. Então, tem-se o seguinte modelo estatístico:
-
-$$
-y_{ij} = \mu + \tau_{i} + \varepsilon_{ij}
-$${#eq:m2}
-
-em que
-
-$y_{ij}$ é a observação do fator i na repetição j (i=1,2, j=1,2,3);
-
-$\mu$ é a média geral;
-
-$\tau_{i}$ é o efeito do i-ésimo fator;
-
-$\varepsilon_{ij}$ é o erro associado a observação i na repetição j com distribuição normal com média 0 e variância $\sigma^2$.
-
-Suponhamos que a média geral seja 15. Então a observação sob o efeito 0,5 do nível 1 de $\tau$ seria:
-
-$$
-y_{1j} = 15 + 0,5 + \varepsilon = 15,5 + \varepsilon
-$$
-
-Suponhamos um efeito de 0,1 do nível dois de $\tau$. Então teríamos a seguinte observação:
-
-$$
-y_{2j} = 15 + 0,1 + \varepsilon = 15,1 + \varepsilon
-$$
+$E$ é uma matrix n$\times$p dos erros com distribuição normal p-variada com vetor de médias **0** e covariância comum **$\Sigma$**;
  
-Considerando o desvio padrão de $\varepsilon$ igual a 0 temos o seguinte resultado:
+No caso do delineamento em parcelas subdivididas, o pacote trabalha considerando seguinte modelo linear misto [@Naes:2007]:
+
+$$Y = X\beta + Zu + E$${#eq:m2}
+
+em que:
+
+Z é uma matriz n$\times$q, sendo **q** o número de parâmetros da interação que influenciam o erro da parcela (DIC - repetição:$\alpha$, DBC - bloco:$\alpha$, DQL - linha:coluna:$\alpha$);
+
+u é uma matrix q$\times$p dos erros da parcela com distribuição normal p-variada com vetor de médias **0** e convariância comum **$\Sigma_{plot}$**
+
+$E$ é uma matrix n$\times$p dos erros com distribuição normal p-variada com vetor de médias **0** e covariância comum **$\Sigma_{sub-plot}$** da subparcela;
+
+Os demais componentes da equação @eq:m2 são análogos ao da equação @eq:m1.
+ 
+A simbologia adotada foi a seguinte:
+
+<center>
+<table>
+<tr class='head'>
+<th>Fontes de Variação</th>
+<th>Símbolo</th>
+</tr>
+<tr>
+<td>Tratamentos</td>
+<td>$\alpha,\tau$</td>
+</tr>
+<tr>
+<td>Bloco</td>
+<td>$\beta$</td>
+</tr>
+<tr>
+<td>Interação</td>
+<td>$\gamma$</td>
+</tr>
+<tr>
+<td>Bloco linha</td>
+<td>$\eta$</td>
+</tr>
+<tr class='bottom'>
+<td>Bloco coluna</td>
+<td>$\delta$</td>
+</tr>
+</table>
+</center>
+
+O **caso multivariado**, só será abordado no DIC, pois para os demais delineamentos o raciocínio é o mesmo. 
+
+# Simulando um Delineamento Inteiramente ao Acaso (DIC)
+## Caso univariado
+
+Vamos supor que queiramos gerar uma **única** variável aleatória segundo um DIC com um fator e dois níveis sendo 3 repetições. Então, podemos denominar $Y_{ik}$ como sendo a variável aleatória observada na k-ésima unidade experimental (k = 1, 2, 3) que recebeu o i-ésimo nível do fator X1 (i=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$) e cada nível do fator em estudo influenciem em $\alpha_{1} = 1$ e $\alpha_{2} = -2$ a variável resposta respectivamente, teremos a seguinte configuração matricial:
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{11} \\
+Y_{21} \\
+Y_{12} \\
+Y_{22} \\
+Y_{13} \\
+Y_{23}
+\end{bmatrix}
+&=&
+\begin{array}{p{5cm}}
+\begin{matrix}
+\mu & \!\scriptsize{x11}\! & \scriptsize{x12}
+ \end{matrix}\\
+ \left[\begin{array}{c|cc}
+1\hphantom{0} & 1\hphantom{0}  & 0 \\
+1\hphantom{0} & 0\hphantom{0}  & 1 \\
+1\hphantom{0} & 1\hphantom{0}  & 0 \\
+1\hphantom{0} & 0\hphantom{0}  & 1 \\
+1\hphantom{0} & 1\hphantom{0}  & 0 \\
+1\hphantom{0} & 0\hphantom{0}  & 1
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+\mu \\
+\alpha_{1}  \\
+\alpha_{2}  \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{12} \\
+e_{22} \\
+e_{13} \\
+e_{23}
+\end{bmatrix}
+\\
+&=&
+\begin{array}{c}
+\begin{matrix}
+\mu & \!\scriptsize{x11}\! & \scriptsize{x12}
+ \end{matrix}\\
+ \left[\begin{array}{c|cc}
+1\hphantom{0} & 1\hphantom{0}  & 0 \\
+1\hphantom{0} & 0\hphantom{0}  & 1 \\
+1\hphantom{0} & 1\hphantom{0}  & 0 \\
+1\hphantom{0} & 0\hphantom{0}  & 1 \\
+1\hphantom{0} & 1\hphantom{0}  & 0 \\
+1\hphantom{0} & 0\hphantom{0}  & 1
+\end{array}\right]
+\end{array} 
+\cdot
+\begin{bmatrix}
+15 \\
+1  \\
+-2  \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{12} \\
+e_{22} \\
+e_{13} \\
+e_{23}
+\end{bmatrix} 
+\\
+&=&
+\begin{bmatrix}
+16 \\
+13 \\
+16 \\
+13 \\
+16 \\
+13
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{12} \\
+e_{22} \\
+e_{13} \\
+e_{23}
+\end{bmatrix} 
+\end{eqnarray}
+$$ 
+
+Se considerarmos um erro com média 0 e variância 0 então teremos a seguinte variável aleatória simulada:
+
+$$
+\begin{bmatrix}
+Y_{11} \\
+Y_{21} \\
+Y_{12} \\
+Y_{22} \\
+Y_{13} \\
+Y_{23}
+\end{bmatrix}
+=
+\begin{bmatrix}
+16 \\
+13 \\
+16 \\
+13 \\
+16 \\
+13
+\end{bmatrix} 
+$$
+
+Utilizando o pacote `gerexp` temos:
 
 ```{r}
-gerexp(mu = 15,
-       sig = 0,
-       r = 3,
-       f = list(tau = c(0.5,0.1)))
+dic <- gerexp(mu    = 15,
+              sigma = 0,
+              r     = 3,
+              ef    = list(alpha = c(1,-2)))
+summary(dic)
 ```
 
-O argumento `mu` se refere ao parâmetro $\mu$, o argumento `sig` é o desvio padrão do erro (\varepsilon), `r` é o número de repetições do experimento, `f` é uma lista com os efeitos de tratamentos. O argumento `f` por ser uma lista, permite simularmos um experimento com quantos fatores nos quisermos.
+## Caso multivariado
 
-Suponhamos agora que estejamos interessados em simularmos um experimento com duas variáveis aleatórias independentes, digamos Y1 e Y2. Seja $\tau_1$ e $\tau_2$ os efeitos de tratamentos das variáveis Y1 e Y2 respectivamente cada um com dois níveis ($\tau_{i1} = 0,5$ e $0,1$; $\tau_{i2} = 2$ e $4$). Ainda, consideremos $\mu_1 = 15$ e $\mu_2 = 30$ para Y1 e Y2 respectivamente, então temos o seguinte resultado.
+Vamos supor agora que queiramos gerar **duas** variáveis aleatórias considerando o mesmo número de fatores e o mesmo número de repetições do caso anterior. Então, podemos denominar $Y_{ikl}$ como sendo a l-ésima variável aleatória (l=1,2) observada na k-ésima unidade experimental (k=1,2,3) que recebeu o i-ésimo nível do fator X1 (i=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu_1 = 15$ e $\mu_2 = 6$) e cada nível do fator em estudo influenciem em $\alpha_{11} = 1$ e $\alpha_{21}=-2$ a variável 1 e, $\alpha_{12}=2$ e $\alpha_{22}=3$ a variável 2, teremos a seguinte configuração matricial:
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{111} & Y_{112} \\
+Y_{211} & Y_{212} \\
+Y_{121} & Y_{122} \\
+Y_{221} & Y_{222} \\
+Y_{131} & Y_{132} \\
+Y_{231} & Y_{232}
+\end{bmatrix}
+&=&
+\begin{array}{c}
+\begin{matrix}
+\mu & \!\scriptsize{x11}\! & \scriptsize{x12}
+ \end{matrix}\\
+ \left[\begin{array}{c|cc}
+1\hphantom{0}  & 1\hphantom{0} & 0 \\
+1\hphantom{0}  & 0\hphantom{0} & 1 \\
+1\hphantom{0}  & 1\hphantom{0} & 0 \\
+1\hphantom{0}  & 0\hphantom{0} & 1 \\
+1\hphantom{0}  & 1\hphantom{0} & 0 \\
+1\hphantom{0}  & 0\hphantom{0} & 1
+\end{array}\right]
+\end{array}  
+\cdot
+\begin{bmatrix}
+\mu_1       & \mu_2 \\
+\alpha_{11} & \alpha_{12} \\
+\alpha_{21} & \alpha_{22} \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} & e_{112} \\
+e_{211} & e_{212} \\
+e_{121} & e_{122} \\
+e_{221} & e_{222} \\
+e_{131} & e_{132} \\
+e_{231} & e_{232}
+\end{bmatrix}
+\\
+&=&
+\begin{array}{c}
+\begin{matrix}
+\mu & \!\scriptsize{x11}\! & \scriptsize{x12}
+ \end{matrix}\\
+ \left[\begin{array}{c|cc}
+1\hphantom{0}  & 1\hphantom{0}  & 0 \\
+1\hphantom{0}  & 0\hphantom{0}  & 1 \\
+1\hphantom{0}  & 1\hphantom{0}  & 0 \\
+1\hphantom{0}  & 0\hphantom{0}  & 1 \\
+1\hphantom{0}  & 1\hphantom{0}  & 0 \\
+1\hphantom{0}  & 0\hphantom{0}  & 1
+\end{array}\right]
+\end{array}   
+\cdot
+\begin{bmatrix}
+15 & 6 \\
+1  & 2 \\
+-2 & 3 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} & e_{112} \\
+e_{211} & e_{212} \\
+e_{121} & e_{122} \\
+e_{221} & e_{222} \\
+e_{131} & e_{132} \\
+e_{231} & e_{232}
+\end{bmatrix} 
+\\
+&=&
+\begin{bmatrix}
+16 & 8 \\
+13 & 9 \\
+16 & 8 \\
+13 & 9 \\
+16 & 8 \\
+13 & 9
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} & e_{112} \\
+e_{211} & e_{212} \\
+e_{121} & e_{122} \\
+e_{221} & e_{222} \\
+e_{131} & e_{132} \\
+e_{231} & e_{232}
+\end{bmatrix}  
+\end{eqnarray}
+$$
+
+Se considerarmos um erro com médias 0 e uma matrix de variância-covariância 0 então teremos as seguintes variáveis aleatória simulada: 
+
+$$
+\begin{bmatrix}
+Y_{111} & Y_{112} \\
+Y_{211} & Y_{212} \\
+Y_{121} & Y_{122} \\
+Y_{221} & Y_{222} \\
+Y_{131} & Y_{132} \\
+Y_{231} & Y_{232}
+\end{bmatrix}
+=
+\begin{bmatrix}
+16 & 8 \\
+13 & 9 \\
+16 & 8 \\
+13 & 9 \\
+16 & 8 \\
+13 & 9
+\end{bmatrix} 
+$$
+
+Utilizando o pacote gerexp temos:
 
 ```{r}
-gerexp(mu = c(15,30),
-       sig = matrix(c(0,0,0,0),ncol=2),
-       r = 3,
-       f = list(tau = matrix(c(0.5, 0.1, 2, 4),ncol=2))) 
+dic_mul <- gerexp(mu    = c(15,6),   
+                  sigma = matrix(c(0,0,
+                                   0,0),ncol=2),
+                  r     = 3L,
+                  ef    = list(alpha = matrix(c(1,-2,
+                                                2, 3),ncol=2)))
+summary(dic_mul)
 ```
 
+# Simulando um Delineamento em Blocos ao Acaso (DBC) 
+
+Supondo que queiramos gerar uma **única** variável aleatória segundo um DBC com um fator e dois níveis sendo um bloco com três níveis. Então, podemos denominar $Y_{ij}$ como sendo a variável aleatória observada no j-ésima bloco (j = 1, 2, 3) que recebeu o i-ésimo nível do fator X1 (i = 1, 2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$) e cada nível do fator em estudo influenciem em $\alpha_{1} = 1$ e $\alpha_{2} = -2$ a variáve resposta respectivamente, e cada bloco influenciem em $\beta_{1}=2, \beta_{2}=4$ e $\beta_{3}=6$ respectivamente, teremos a seguinte configuração matricial: 
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{11} \\
+Y_{21} \\
+Y_{12} \\
+Y_{22} \\
+Y_{13} \\
+Y_{23}
+\end{bmatrix}
+&=&
+\begin{array}{c}
+\begin{matrix}
+\mu & \!\scriptsize{x11}\!&\scriptsize{x12}\hphantom{0}&\scriptsize{b1}&\scriptsize{b2}&\scriptsize{b3}
+ \end{matrix}\\
+ \left[\begin{array}{c|cc|ccc} 
+1 & 1\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
+1 & 0\hphantom{0}& 1\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
+1 & 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\\
+1 & 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\\
+1 & 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\\
+1 & 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\\
+\end{array}\right]
+\end{array}    
+\cdot
+\begin{bmatrix}
+\mu \\
+\alpha_1 \\
+\alpha_2 \\
+\beta_1  \\
+\beta_2  \\
+\beta_3  \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{12} \\
+e_{22} \\
+e_{13} \\
+e_{23}
+\end{bmatrix}
+\\
+&=&
+\begin{array}{c}
+\begin{matrix}
+\mu & \!\scriptsize{x11}\!&\scriptsize{x12}\hphantom{0}&\scriptsize{b1}&\scriptsize{b2}&\scriptsize{b3}
+ \end{matrix}\\
+ \left[\begin{array}{c|cc|ccc} 
+1 & 1\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
+1 & 0\hphantom{0}& 1\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
+1 & 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\\
+1 & 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\\
+1 & 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\\
+1 & 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\\
+\end{array}\right]
+\end{array}     
+\cdot
+\begin{bmatrix}
+15 \\
+1  \\
+-2  \\
+2  \\
+4  \\
+6
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{12} \\
+e_{22} \\
+e_{13} \\
+e_{23}
+\end{bmatrix} 
+\\
+&=&
+\begin{bmatrix}
+18 \\
+15 \\
+20 \\
+17 \\
+22 \\
+19
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{12} \\
+e_{22} \\
+e_{13} \\
+e_{23}
+\end{bmatrix} 
+\end{eqnarray}
+$$ 
+ 
+Supondo um erro com média 0 e variância 0, temos:
+
+$$
+\begin{bmatrix}
+Y_{11} \\
+Y_{21} \\
+Y_{12} \\
+Y_{22} \\
+Y_{13} \\
+Y_{23}
+\end{bmatrix}
+=
+\begin{bmatrix}
+18 \\
+15 \\
+20 \\
+17 \\
+22 \\
+19
+\end{bmatrix}
+$$
+
+Com o pacote `gerexp` tem-se:
+
+```{r}
+dbc <- gerexp(mu    = 15,   
+              sigma = 0,
+              ef    = list(alpha = c(1,-2)),
+              eb    = c(2,4,6),
+              type  = 'DBC')
+summary(dbc)
+```
+
+# Simulando um Delineamento em Quadrado Latino (DQL)  
+
+Supondo que queiramos gerar uma **única** variável aleatória segundo um DQL com um fator e três níveis, sendo um fator de blocagem no sentido linha com três níveis e outro fator de blocagem no sentido coluna com três níveis. Então, podemos denominar $Y_{rci}$ como sendo a variável aleatória observada na c-ésima coluna (c = 1, 2, 3) e r-ésima linha (r = 1, 2, 3) que recebeu o i-ésimo nível do fator X1 (i = 1, 2, 3). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$) e cada nível do fator em estudo influenciem em $\alpha_{1}=1, \alpha_{2}=-2$ e $\alpha_{3}=3$ a variável resposta respectivamente, cada linha influenciem em $\eta_{1}=2, \eta_{2}=3$ e $\eta_{3}=4$ respectivamente e, cada coluna incluenciem em $\delta_{1}=6, \delta_{2}=7$ e $\delta_{3}=8$ respectivamente teremos a seguinte configuração matricial: 
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{111} \\
+Y_{122} \\
+Y_{133} \\
+Y_{212} \\
+Y_{223} \\
+Y_{231} \\
+Y_{313} \\
+Y_{321} \\
+Y_{332} 
+\end{bmatrix}
+&=&
+\begin{array}{c}
+\begin{matrix}
+\mu & \!\scriptsize{r1}\!&\scriptsize{r2}&\scriptsize{r3}&\scriptsize{c1}&\scriptsize{c2}&\scriptsize{c3}&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x13}
+ \end{matrix}\\
+ \left[\begin{array}{c|ccc|ccc|ccc}  
+1&1&0&0\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
+1&1&0&0\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
+1&1&0&0\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
+1&0&1&0\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
+1&0&1&0\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
+1&0&1&0\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
+1&0&0&1\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
+1&0&0&1\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
+1&0&0&1\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+\mu \\
+\eta_1 \\
+\eta_2 \\
+\eta_3  \\
+\delta_1  \\
+\delta_2  \\
+\delta_3 \\
+\alpha_1 \\
+\alpha_2 \\
+\alpha_3 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{122} \\
+e_{133} \\
+e_{212} \\
+e_{223} \\
+e_{231} \\
+e_{313} \\
+e_{321} \\
+e_{332}
+\end{bmatrix}
+\\
+&=&
+\begin{array}{c}
+\begin{matrix}
+\mu & \!\scriptsize{r1}\!&\scriptsize{r2}&\scriptsize{r3}&\scriptsize{c1}&\scriptsize{c2}&\scriptsize{c3}&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x13}
+ \end{matrix}\\
+ \left[\begin{array}{c|ccc|ccc|ccc}  
+1&1&0&0\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
+1&1&0&0\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
+1&1&0&0\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
+1&0&1&0\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
+1&0&1&0\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
+1&0&1&0\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
+1&0&0&1\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
+1&0&0&1\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
+1&0&0&1\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
+\end{array}\right]
+\end{array} 
+\cdot
+\begin{bmatrix}
+15 \\
+2 \\
+3 \\
+4  \\
+6  \\
+7  \\
+8 \\
+1 \\
+-2 \\
+3 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{122} \\
+e_{133} \\
+e_{212} \\
+e_{223} \\
+e_{231} \\
+e_{313} \\
+e_{321} \\
+e_{332}
+\end{bmatrix}
+\\
+&=&
+\begin{bmatrix}
+24 \\
+22 \\
+28 \\
+22  \\
+28  \\
+27  \\
+28 \\
+27 \\
+25 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{122} \\
+e_{133} \\
+e_{212} \\
+e_{223} \\
+e_{231} \\
+e_{313} \\
+e_{321} \\
+e_{332}
+\end{bmatrix}
+\end{eqnarray}
+$$ 
+
+Considerando que o erro tem média 0 e variância 0 tem-se:
+
+$$
+\begin{bmatrix}
+Y_{111} \\
+Y_{122} \\
+Y_{133} \\
+Y_{212} \\
+Y_{223} \\
+Y_{231} \\
+Y_{313} \\
+Y_{321} \\
+Y_{332} 
+\end{bmatrix}
+=
+\begin{bmatrix}
+24 \\
+22 \\
+28 \\
+22  \\
+28  \\
+27  \\
+28 \\
+27 \\
+25 \\
+\end{bmatrix} 
+$$
+
+Utilizando a função `gerexp` tem-se:
+
+```{r}
+dql <- gerexp(mu    = 15,
+              sigma = 0,
+              ef    = list(alpha = c(1,-2,3)),
+              erow  = c(2,3,4),
+              ecol  = c(6,7,8),
+              nrand = 0,
+              type  = 'DQL')
+summary(dql)
+```
+
+# Ensaios Fatoriais
+## DIC
+
+Considerando que queiramos gerar uma **única** variável aleatória segundo um DIC em um esquema fatorial do tipo 2 x 3 (dois níveis do fator X1 e três níveis do fator X2) com 2 repetições. Então, podemos denominar $Y_{ijk}$ como sendo a variável aleatória observada na k-ésima unidade experimental (k = 1, 2) que recebeu o i-ésimo nível do fator X1 (i=1,2) e j-ésimo nível do fator X2 (j=1,2,3). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$), e cada nível do fator X1 influenciem em $\alpha_{1}=1$ e $\alpha_{2}=-2$, cada nível do fator X2 influenciam em $\tau_{1}=1, \tau_{2}=-1$ e $\tau_{3}=1$ e que o efeito da interação seja de $\gamma_{11}=3, \gamma_{21}=1, \gamma_{12}=1, \gamma_{22}=-5, \gamma_{13}=1$ e $\gamma_{23}=1$ respectivamente, teremos a seguinte configuração matricial:
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{111} \\
+Y_{211} \\
+Y_{121} \\
+Y_{221} \\
+Y_{131} \\
+Y_{231} \\
+Y_{112} \\
+Y_{212} \\
+Y_{122} \\
+Y_{222} \\
+Y_{132} \\
+Y_{232} 
+\end{bmatrix}
+&=&
+\begin{array}{c}
+\begin{matrix} 
+\hspace{0.2cm}\mu&\scriptsize{x11}&\scriptsize{x12}\hspace{0.1cm}&\scriptsize{x21}&\scriptsize{x22}&\scriptsize{x23}&\scriptsize{x11x21}&\scriptsize{x12x21}&\scriptsize{x11x22}&\scriptsize{x12x22}&\scriptsize{x11x23}&\scriptsize{x12x23}\hspace{0.6cm}
+\end{matrix}\\
+\left[\begin{array}{c|cc|ccc|cccccc} 
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{000}&1\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&1\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&1\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 1\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&1\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{000}&1\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&1\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&1\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 1\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&1\hphantom{000}\\  
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+\mu \\
+\alpha_1\\
+\alpha_2\\
+\tau_1\\
+\tau_2\\
+\tau_3\\
+\gamma_{11}\\
+\gamma_{21}\\
+\gamma_{12}\\
+\gamma_{22}\\
+\gamma_{13}\\
+\gamma_{23}
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{121} \\
+e_{221} \\
+e_{131} \\
+e_{231} \\
+e_{112} \\
+e_{212} \\
+e_{122} \\
+e_{222} \\
+e_{132} \\
+e_{232}  
+\end{bmatrix}
+\\
+&=& 
+\begin{array}{c}
+\begin{matrix} 
+\hspace{0.2cm}\mu&\scriptsize{x11}&\scriptsize{x12}\hspace{0.1cm}&\scriptsize{x21}&\scriptsize{x22}&\scriptsize{x23}&\scriptsize{x11x21}&\scriptsize{x12x21}&\scriptsize{x11x22}&\scriptsize{x12x22}&\scriptsize{x11x23}&\scriptsize{x12x23}\hspace{0.6cm}
+\end{matrix}\\
+\left[\begin{array}{c|cc|ccc|cccccc} 
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{000}&1\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&1\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&1\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 1\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&1\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{000}&1\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&1\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&1\hphantom{0000}& 0\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 1\hphantom{0000}&0\hphantom{000}\\  
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{000}&0\hphantom{0000}&0\hphantom{0000}&0\hphantom{0000}& 0\hphantom{0000}&1\hphantom{000}\\  
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+15 \\
+1\\
+-2\\
+1\\
+-1\\
+1\\
+3\\
+1\\
+1\\
+-5\\
+1\\
+1
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{121} \\
+e_{221} \\
+e_{131} \\
+e_{231} \\
+e_{112} \\
+e_{212} \\
+e_{122} \\
+e_{222} \\
+e_{132} \\
+e_{232}  
+\end{bmatrix}
+\\
+&=&
+\begin{bmatrix}
+20 \\
+15\\
+16\\
+7\\
+18\\
+15\\
+20\\
+15\\
+16\\
+7\\
+18\\
+15
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{121} \\
+e_{221} \\
+e_{131} \\
+e_{231} \\
+e_{112} \\
+e_{212} \\
+e_{122} \\
+e_{222} \\
+e_{132} \\
+e_{232}  
+\end{bmatrix}
+\end{eqnarray}
+$$
+
+Considerando que o erro tem média 0 e variância 0 tem-se:
+
+$$
+\begin{bmatrix}
+Y_{111} \\
+Y_{211} \\
+Y_{121} \\
+Y_{221} \\
+Y_{131} \\
+Y_{231} \\
+Y_{112} \\
+Y_{212} \\
+Y_{122} \\
+Y_{222} \\
+Y_{132} \\
+Y_{232} 
+\end{bmatrix}
+=
+\begin{bmatrix}
+20 \\
+15\\
+16\\
+7\\
+18\\
+15\\
+20\\
+15\\
+16\\
+7\\
+18\\
+15
+\end{bmatrix}
+$$
+
+Utilizando a função gerexp tem-se:
+
+```{r}
+fatdic <- gerexp(mu     = 15,
+                 sigma  = 0,
+                 ef     = list(alpha = c(1,-2),
+                                tau = c(1,-1,1)),
+                 einter = c(3,1,1,-5,1,1),
+                 type   = 'FAT') 
+summary(fatdic)
+```
+
+# Ensaios em Parcelas Sub-divididas
+## DIC
+
+Supondo que queiramos gerar uma variável aleatória segundo um DIC em parcelas subdivididas com dois níveis do fator X1 na parcela e dois níveis do fator X2 na subparcela com 3 repetições. Então, podemos denominar $Y_{ijk}$ como sendo a variável aleatória observada na subparcela na k-ésima unidade experimental (k = 1, 2 e 3) que recebeu o i-ésimo nível do fator X1 (i=1,2) e j-ésimo nível do fator X2 (j=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$), e cada nível do fator X1 influenciem em $\alpha_{1}=1$ e $\alpha_{2}=-2$, cada nível do fator X2 influenciam em $\tau_{1}=1$ e $\tau_{2}=-1$ e que o efeito da interação seja de $\gamma_{11}=3, \gamma_{21}=1, \gamma_{12}=1$ e $\gamma_{22}=-5$ respectivamente, teremos a seguinte configuração matricial conforme a equação @eq:m2.
+ 
+
+Portanto, tem-se a seguinte configuração matricial:
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{111} \\
+Y_{211} \\
+Y_{121} \\
+Y_{221} \\
+Y_{112} \\
+Y_{212} \\
+Y_{122} \\
+Y_{222} \\
+Y_{113} \\
+Y_{213} \\
+Y_{123} \\
+Y_{223} 
+\end{bmatrix}
+&=&
+\begin{array}{c}
+\begin{matrix} 
+\mu&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x21}&\scriptsize{x22}&\scriptsize{x11x21}&\scriptsize{x12x21}&\scriptsize{x11x22}&\scriptsize{x12x22}
+\end{matrix}\\
+\left[\begin{array}{c|cc|cc|cccc}                                                  
+ 1\hphantom{0}& 1\hphantom{0} & 0\hphantom{0} & 1\hphantom{0} & 0\hphantom{00} & 1\hphantom{000} & 0\hphantom{000} & 0\hphantom{000} & 0\hphantom{00}\\               
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+\mu \\
+\alpha_1\\
+\alpha_2\\
+\tau_1\\
+\tau_2\\
+\gamma_{11}\\
+\gamma_{21}\\
+\gamma_{12}\\
+\gamma_{22}
+\end{bmatrix}
++
+\begin{array}{c}
+\begin{matrix} 
+\scriptsize{x11r1}&\scriptsize{x12r1}\hspace{0.1cm}&\scriptsize{x11r2}&\scriptsize{x12r2}&\scriptsize{x11r3}&\scriptsize{x12r3}\hspace{0.6cm}
+\end{matrix}\\
+\left[\begin{array}{cccccc}                                   
+ 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
+\end{array}\right]
+\end{array} 
+\cdot
+ \begin{bmatrix}
+u_{11} \\
+u_{21} \\
+u_{12} \\
+u_{22} \\
+u_{13} \\
+u_{23} 
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{121} \\
+e_{221} \\
+e_{112} \\
+e_{212} \\
+e_{122} \\
+e_{222} \\
+e_{113} \\
+e_{213} \\
+e_{123} \\
+e_{223}  
+\end{bmatrix}
+\\
+&=&
+\begin{array}{c}
+\begin{matrix} 
+\mu&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x21}&\scriptsize{x22}&\scriptsize{x11x21}&\scriptsize{x12x21}&\scriptsize{x11x22}&\scriptsize{x12x22}
+\end{matrix}\\
+\left[\begin{array}{c|cc|cc|cccc}                                                  
+ 1\hphantom{0}& 1\hphantom{0} & 0\hphantom{0} & 1\hphantom{0} & 0\hphantom{00} & 1\hphantom{000} & 0\hphantom{000} & 0\hphantom{000} & 0\hphantom{00}\\               
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+ 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+15 \\
+1\\
+-2\\
+1\\
+-1\\
+3\\
+1\\
+1\\
+-5
+\end{bmatrix}
++
+\begin{array}{c}
+\begin{matrix} 
+\scriptsize{x11r1}&\scriptsize{x12r1}\hspace{0.1cm}&\scriptsize{x11r2}&\scriptsize{x12r2}&\scriptsize{x11r3}&\scriptsize{x12r3}\hspace{0.6cm}
+\end{matrix}\\
+\left[\begin{array}{cccccc}                                   
+ 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
+\end{array}\right]
+\end{array} 
+\cdot
+ \begin{bmatrix}
+u_{11} \\
+u_{21} \\
+u_{12} \\
+u_{22} \\
+u_{13} \\
+u_{23} 
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{121} \\
+e_{221} \\
+e_{112} \\
+e_{212} \\
+e_{122} \\
+e_{222} \\
+e_{113} \\
+e_{213} \\
+e_{123} \\
+e_{223}  
+\end{bmatrix}
+\\
+&=&
+\begin{bmatrix}
+20 \\
+15 \\
+16 \\
+7  \\
+20 \\
+15 \\
+16 \\
+7 \\
+20 \\
+15 \\
+16 \\
+7  
+\end{bmatrix} 
++
+\begin{array}{c}
+\begin{matrix} 
+\scriptsize{x11r1}&\scriptsize{x12r1}\hspace{0.1cm}&\scriptsize{x11r2}&\scriptsize{x12r2}&\scriptsize{x11r3}&\scriptsize{x12r3}\hspace{0.6cm}
+\end{matrix}\\
+\left[\begin{array}{cccccc}                                   
+ 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+ 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
+\end{array}\right]
+\end{array} 
+\cdot
+ \begin{bmatrix}
+u_{11} \\
+u_{21} \\
+u_{12} \\
+u_{22} \\
+u_{13} \\
+u_{23} 
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{121} \\
+e_{221} \\
+e_{112} \\
+e_{212} \\
+e_{122} \\
+e_{222} \\
+e_{113} \\
+e_{213} \\
+e_{123} \\
+e_{223}  
+\end{bmatrix} 
+\end{eqnarray}
+$$
+
+Considerando que o erro da parcela e subparcela tem média 0 e variância 0 tem-se:
+
+$$
+\begin{bmatrix}
+Y_{111} \\
+Y_{211} \\
+Y_{121} \\
+Y_{221} \\
+Y_{112} \\
+Y_{212} \\
+Y_{122} \\
+Y_{222} \\
+Y_{113} \\
+Y_{213} \\
+Y_{123} \\
+Y_{223} 
+\end{bmatrix} 
+=
+\begin{bmatrix}
+20 \\
+15 \\
+16 \\
+7  \\
+20 \\
+15 \\
+16 \\
+7 \\
+20 \\
+15 \\
+16 \\
+7  
+\end{bmatrix}  
+$$
+
+Utilizando o pacote `gerexp` tem-se:
+
+```{r}
+splitdic <- gerexp(mu   = 15,
+                 sigma  = 0,
+                 sigmap = 0,
+                 r      = 3,
+                 ef     = list(alpha = c(1,-2),
+                                tau  = c(1,-1)),
+                 einter = c(3,1,1,-5),
+                 type   = 'SPLIT') 
+summary(splitdic)
+```
+ 
 # References

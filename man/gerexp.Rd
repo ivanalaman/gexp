@@ -1,8 +1,134 @@
-#########       CARREGANDO AS FUNÇÕES       ###########
-sourceDirectory('../R')
+\name{gerexp}
+\alias{gerexp}
+\alias{gerexp.default}
+\alias{gerexp.crd}
+\alias{gerexp.rcbd}
+\alias{gerexp.lsd}
+\alias{gerexp.fe}
+\alias{gerexp.spe}
 
-######### TESTANDO AS FUNÇÕES NÃO GRÁFICAS ############
+\docType{package}
 
+\title{Generator of Experiments}
+
+\description{O pacote gerexp foi elaborado com o intuito principal de gerar variáveis aleatórias de acordo com a metodologia experimental e o tipo de efeito de cada tratamento. É possível também planejar experimentos com o auxílio das funções gráficas.
+}
+
+\usage{
+gerexp(x, ...)
+
+\method{gerexp}{default}(
+       mu = NULL,
+       sigma  = 1L,  
+       sigmap = 1L,  
+       r      = 2L,  
+       ef     = NULL,
+       einter = NULL,
+       eb     = NULL,
+       erow   = NULL,
+       ecol   = NULL,
+       type   = c('CRD','RCBD','LSD','FE','SPE'),
+       nrand  = 1,   
+       rd     = 2L,
+       randomized = FALSE, 
+       , ...)
+
+\method{gerexp}{crd}(
+       mu,
+       sigma,
+       r,
+       ef,
+       rd,
+       randomized)
+
+\method{gerexp}{rcbd}(
+       mu,
+       sigma,
+       ef,
+       eb,
+       rd,
+       randomized)
+                                                
+\method{gerexp}{lsd}(
+       mu, 
+       sigma, 
+       ef,  
+       erow, 
+       ecol, 
+       nrand,    
+       rd,   
+       randomized)
+
+\method{gerexp}{fe}(
+       mu,
+       sigma, 
+       r,   
+       ef, 
+       einter, 
+       eb, 
+       erow, 
+       ecol, 
+       nrand,    
+       rd,   
+       randomized)
+
+\method{gerexp}{spe}(
+       mu,
+       sigma,
+       sigmap,
+       r,   
+       ef, 
+       einter, 
+       eb, 
+       erow, 
+       ecol, 
+       nrand,    
+       rd,   
+       randomized)
+}
+
+\arguments{
+  \item{mu}{É um escalar numérico ou um vetor se tiver mais de uma variável resposta que representa a média geral.}
+  \item{sigma}{É um escalar numérico ou uma matrix de variância-covariância para dados multivariados do erro experimental cujo a média é zero.}
+  \item{sigmap}{É um escalar numérico ou uma matrix de variância-covariância para dados multivariados do erro da parcela principal no caso de type ser igual a SPE. A média também é zero.}
+  \item{r}{É um escalar que se refere ao nº de repetições.}
+  \item{ef}{É uma lista em que cada dimensão se refere ao efeito de um fator que pode ser um vetor numérico ou uma matriz (caso multivariado).}
+  \item{einter}{É um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos da interação.}
+  \item{eb}{É um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos dos blocos.}
+  \item{erow}{É um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das linhas no caso de type ser igual a LSD.}
+  \item{ecol}{É um vetor numérico ou uma matriz (caso multivariado) que se refere aos efeitos das colunas no caso de type ser igual a LSD.}
+  \item{type}{É um vetor de strings que contém o tipo de delineamento a ser utilizado. CRD é o default.}
+  \item{nrand}{É um escalar numérico utilizado especificamente no LSD para embaralhar os tratamentos nas linhas e colunas.}
+  \item{rd}{É um escalar numérico para arredondamentos.}
+  \item{randomized}{É um argumento lógico quando o objetivo é planejar experimentos para que ocorra a casualização dos tratamentos nas unidades experimentais. FALSE é o default.}
+  \item{\dots}{Further arguments (required by generic).}
+}
+\value{
+  The method \code{gerexp} returns a list of class \code{gerexp} with the slots:
+
+  \item{X}{É a matriz de incidência do delineamento.}
+  \item{Z}{É a matriz de incidência do erro da parcela principal no caso de type ser igual a SPLIT.}
+  \item{Y}{É um vetor com os valores da variável aleatória ou uma matriz no caso de mais de uma variável aleatória.}
+  \item{dfm}{É um data.frame com todas as informações do experimento como tratamentos, repetições e a variável aleatória.}
+}
+
+\references{
+
+  Ferreira, Daniel Furtado. 2008. \emph{Estatística Multivariada}. 1 ed. Lavras: Ed. UFLA. 
+
+  Aquino, Luiz Henrique. \emph{Técnica Experimental com Animais I}. Apostila da disciplina ``Técnica Experimental com Animais'' da Universidade Federal de Lavras, 1992.
+
+  Rencher, Alvin C. and Schaalje, Bruce G. 2007. \emph{Linear Models in Statistics, second edition}. Hoboken: John Wiley \& Sons.
+
+  Naes, T.; Aastveit, A.H.; Sahni, N.S. 2007. "Analysis of split-plot designs: An Overview and Comparison of Methods". \emph{Qual. Reliab. Engng. Int.} 23, 801-820. 
+
+}
+
+\seealso{
+  \code{\link{plot.gerexp.crd}}
+}
+
+\examples{
 #! CRD
 #! 1 factor
 crd1 <- gerexp(mu=0,
@@ -271,9 +397,5 @@ tuk <- TukeyC(mod,
               fl1=1)
 
 summary(tuk)
-plot(tuk) 
-
-##########   TESTANDO AS FUNÇÕES GRÁFICAS  #############
-
-
-
+plot(tuk)
+}
