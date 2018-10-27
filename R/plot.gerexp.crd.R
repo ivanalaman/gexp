@@ -63,15 +63,15 @@ plot.gerexp.crd <- function(x,
     auxin1 <- gsub('[\\s\\S]*?\\.','',auxin,perl=TRUE)
     auxin2 <- toupper(auxin1)
 
-    switch(aux2,
+    switch(auxin2,
            PNG = {
-             myimage <- readPNG(auxin)
+             myimage <- png::readPNG(auxin)
            },
            JPEG = {
-             myimage <- readJPEG(auxin)
+             myimage <- jpeg::readJPEG(auxin)
            },
            JPG = {
-             myimage <- readJPEG(auxin)
+             myimage <- jpeg::readJPEG(auxin)
            }) 
 
     plot(1,

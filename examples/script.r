@@ -274,6 +274,20 @@ summary(tuk)
 plot(tuk) 
 
 ##########   TESTANDO AS FUNÇÕES GRÁFICAS  #############
+##! CRD - Only one factor
+# Static
+plot(crd1)
 
+#- Dynamic
+#+ Obs: Clique apenas uma vez com o botão esquerdo do mouse sobre a unidade experimental. Após terminar, clique com o botão esquerdo do mouse para encerrar!!
+crd1p <- update(crd1, 
+                r = 3,
+                ef = list(f1 = c(1,1)))
+plot(crd1p,
+     dynamic = TRUE)
 
-
+#+ With real levels
+plot(crd1p,
+     newlevels = c('Tilápia','Pacu'),
+     dynamic = TRUE)
+ 
