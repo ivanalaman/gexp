@@ -1,15 +1,15 @@
-plot.gerexp.crd <- function(x,
-                            newlevels = NULL,
-                            colgrid = 'red',
-                            coltext = 'blue',
-                            ltygrid = 'dotted',
-                            lwdgrid = par('lwd'),
-                            xleftimg = par()$usr[1],
+plot.gexp.crd <- function(x,
+                            main       = NULL,
+                            sub        = NULL,
+                            colgrid    = 'red',
+                            coltext    = 'blue',
+                            ltygrid    = 'dotted',
+                            lwdgrid    = par('lwd'),
+                            xleftimg   = par()$usr[1],
                             ybottomimg = par()$usr[3],
-                            xrightimg = par()$usr[2],
-                            ytopimg = par()$usr[4],
-                            angleimg = 0,
-                            dynamic = FALSE,
+                            xrightimg  = par()$usr[2],
+                            ytopimg    = par()$usr[4],
+                            dynamic    = FALSE,
                             ...)
 {
 
@@ -17,11 +17,32 @@ plot.gerexp.crd <- function(x,
   aux1 <- aux$dfm[,-dim(aux$dfm)[2]]
   aux2 <- aux1[,-dim(aux1)[2]]
 
-  if(!is.null(newlevels)){  
-    levels(aux2) <- newlevels
+  if(length(attr(aux$X,'contrasts')) != 1){
+  stop('Graphic option only for one factor!')
   }
 
-  factors <- aux2
+  if(is.null(main)){
+    main = 'Completely Random Design'
+  }
+
+  if(is.null(sub)){
+  
+    factors <- names(attr(x$X,'contrasts'))
+    levelss <- paste(levels(x$dfm[[factors]]),
+                     collapse=',')
+    repp <- eval(getCall(x)$r)
+
+    sub <- paste('Factors:',
+                 factors,
+                 '\n',
+                 paste('Levels:',
+                       levelss,
+                       sep=''),
+                 '\n',
+                 paste('Replication:',
+                       repp,
+                       sep=''))
+  }
 
   aux_rowsquare <- eval(getCall(x)$ef)
   aux_rowsquare1 <- lapply(aux_rowsquare,length)
@@ -45,6 +66,8 @@ plot.gerexp.crd <- function(x,
          axes = FALSE,
          xlab = '',
          ylab = '',
+         main = main,
+         sub  = sub, 
          ...)
     box()
     grid(nx=columsquare,
@@ -55,7 +78,7 @@ plot.gerexp.crd <- function(x,
 
     text(x = rep(posxcentro,rep(length(posycentro),length(posxcentro))),
          y = rep(posycentro,length(posxcentro)),
-         factors,
+         aux2,
          col = coltext)
   } else {
 
@@ -79,6 +102,8 @@ plot.gerexp.crd <- function(x,
          xlab = '',
          ylab = '',
          axes = FALSE,
+         main = main,
+         sub  = sub,
          ...)
 
     rasterImage(myimage, 
@@ -86,9 +111,12 @@ plot.gerexp.crd <- function(x,
                 ybottom = ybottomimg, 
                 xright = xrightimg, 
                 ytop = ytopimg) 
+
+    tcltk::tkmessageBox(message='Click with the left button on experimental unit and end with the right button!')
+
     text(x = locator(),
          y = NULL,
-         factors,
+         aux2,
          col = coltext)
   }
 }

@@ -1,4 +1,4 @@
-summary.gerexp <- function(x,
+summary.gexp <- function(x,
                          digits=3L,
                          ...){
 

@@ -1,4 +1,4 @@
-print.gerexp <- function(x,
+print.gexp <- function(x,
                          digits=3L,
                          ...){
   cat("Design Matrix \n")
