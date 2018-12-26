@@ -1,17 +1,15 @@
-gexp.crd <- function(mu         = mu,
-                     sigma      = sigma,
-                     r          = r,
-                     ef         = ef,
-                     contrasts  = contrasts,
-                     rd         = rd,
-                     newfactors = newfactors,
-                     randomized = randomized)
+gexp.crd <- function(mu           = mu,
+                     error        = error,
+                     r            = r,
+                     labelfactors = labelfactors,
+                     ef           = ef,
+                     contrasts    = contrasts,
+                     rd           = rd,
+                     randomized   = randomized)
 {
   if(is.null(ef)) stop("You must specify at least a factor") 
 
-  sigma <- as.matrix(sigma)
-
-  if(is.null(newfactors)){
+  if(is.null(labelfactors)){
     aux_factor <- lapply(ef,
                          function(x) as.matrix(x))
 
@@ -28,10 +26,10 @@ gexp.crd <- function(mu         = mu,
 
     names(factors) <- names(aux_factor)
   } else {
-    if(!is.list(newfactors)){
+    if(!is.list(labelfactors)){
       stop('This argument must be a list. See examples!')
     }
-    factors <- newfactors
+    factors <- labelfactors
   }
 
   factors$r <- 1:r
@@ -55,8 +53,17 @@ gexp.crd <- function(mu         = mu,
                      contrasts.arg=contrasts)
   Z <- NULL
 
-  e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                        sigma = sigma)
+  if(is.null(error)){
+
+    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
+                          sigma = as.matrix(1))
+
+  } else {
+    if(!is.matrix(error)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
+
+    e <- error
+
+  }
 
   if(length(mu)!=0 & length(mu) == 1){
     betas <- as.matrix(c(mu, unlist(ef))) 

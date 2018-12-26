@@ -3,13 +3,12 @@ R.utils::sourceDirectory('../R')
 library(debug)
 mtrace.off()
 mtrace('plot.gerexp.crd')
-mtrace(gexp.rcbd)
+mtrace(gexp.spe)
 ######### TESTANDO AS FUNÇÕES NÃO GRÁFICAS ############
 
 #! CRD
 #! 1 factor
 crd1 <- gexp(mu = 10,
-             sigma = 2,
              r = 3,
              ef = list(f1 = c(1, -1)),
              rd = 2)
@@ -32,7 +31,6 @@ plot(tk)
 
 #! 5 factors
 crd2 <- gexp(mu = 0,
-             sigma = 1,
              r = 2,
              ef = list(f1 = c(1, 1, 5),
                        f2 = c(1, 1),
@@ -43,15 +41,17 @@ crd2 <- gexp(mu = 0,
 print(crd2)
 
 #! CRD - Multivariated
+#+ In this case it is necessary to inform the error!. The default is univariate case.
+
+errornorm <- mvtnorm::rmvnorm(n = 9,
+                              sigma=matrix(c(1, 0, 0, 1),
+                                  ncol = 2))
 crd3 <- gexp(mu = c(0, 2),
-             sigma = matrix(c(1, 0, 0, 1),
-                            ncol = 2),
+             error = errornorm,
              r = 3,
              ef = list(f1 = matrix(c(1, 1, 5, 1, 1, 1),
-                                   ncol = 2),
-                       f2 = matrix(c(1, 3, 2, 2),
                                    ncol = 2)),
-             rd = 0)
+             rd = 4)
 print(crd3)
 
 #! CRD - With other contrasts
@@ -61,13 +61,13 @@ contrcrd4 <- contr.poly(length(niveis))
 
 #+ Linear
 crd4 <- gexp(mu = NULL,
-             sigma = 0,
              r = 4,
              ef = list(f1 = c(2,10,0,0)),
-             newfactors = list(Dose = ordered(niveis)),
+             labelfactors = list(Dose = ordered(niveis)),
              contrasts = list(f1 = contrcrd4))
 crd44 <- crd4$dfm
 crd44$dose <- as.numeric(as.character(crd44$Dose))
+summary(crd44)
 
 plot(Y1 ~ dose,crd44)
 
@@ -87,13 +87,13 @@ X <- cbind(rep(1,4),x)
 theta <- coef(regcrd) # parâmetros estimados por meio da ortogonalidade a título de inferência!
 Z <- cbind(rep(1,4),contrcrd4)
 betas <- solve(X)%*%Z%*%theta#obtendo os betas para equação de predição
+betas
 
 #+ Quadrático
 crd5 <- gexp(mu = NULL,
-             sigma = 0,
              r = 4,
              ef = list(f1 = c(2,1,5,0)),
-             newfactors = list(Dose=ordered(c(0,10,20,30))),
+             labelfactors = list(Dose=ordered(c(0,10,20,30))),
              contrasts = list(f1 = contrcrd4))
 crd55 <- crd5$dfm
 crd55$dose <- as.numeric(as.character(crd55$Dose))
@@ -110,10 +110,9 @@ fitted(regcrd2)
 
 #+ Cúbico
 crd6 <- gexp(mu = NULL,
-             sigma = 0,
              r = 4,
              ef = list(f1 = c(2,1,1,10)),
-             newfactors = list(Dose=ordered(c(0,10,20,30))),
+             labelfactors = list(Dose=ordered(c(0,10,20,30))),
              contrasts = list(f1 = contrcrd4))
 
 crd66 <- crd6$dfm
@@ -136,10 +135,9 @@ contrcrd7 <- matrix(c(niveis,
                       niveis^3),
                     ncol=3) 
 crd7 <- gexp(mu = NULL,
-             sigma = 0,
              r = 4,
              ef = list(f1 = c(2,10,0,0)),
-             newfactors = list(Dose = ordered(c(0,10,20,30))),
+             labelfactors = list(Dose = ordered(c(0,10,20,30))),
              contrasts = list(f1 = contrcrd7))
 
 crd77 <- crd7$dfm
@@ -155,9 +153,23 @@ regcrd4 <- lm(Y1 ~ dose + I(dose^2) + I(dose^3),
 summary(regcrd4)
 fitted(regcrd4)
 
+#! CRD - With other errors
+#+ Binomial error
+errorbinom <- as.matrix(rbinom(n=15, size=5, prob=0.1))
+
+crd8 <- gexp(mu = 20,
+             error = errorbinom,
+             r = 5,
+             ef = list(f1 = c(1,4,1)))
+summary(crd8)
+
+mod8 <- aov(Y1 ~ X1, data = crd8$dfm)
+par(mfrow=c(2,2))
+plot(mod8)
+shapiro.test(mod8$res)
+
 #! RCBD
 rcbd1 <- gexp(mu = 0,
-              sigma = 0,
               ef = list(f1 = c(5, 1, 1)),
               eb = c(2, 1),
               rd = 1,
@@ -178,7 +190,6 @@ plot(tk)
 
 #! RCBD without replication
 rcbd2 <- gexp(mu = 0,
-              sigma = 1,
               r = 1,
               ef = list(f1 = c(5, 1, 1)),
               eb = c(2, 1),
@@ -199,9 +210,11 @@ summary(tk)
 plot(tk)
 
 #! RCBD - Multivariated
+rcbd_errornorm <- mvtnorm::rmvnorm(n = 18,
+                                   sigma = matrix(c(1, 0, 0, 1),
+                                                  ncol = 2)) 
 rcbd3 <- gexp(mu = c(0, 2),
-              sigma = matrix(c(1, 0, 0, 1),
-                             ncol = 2),
+              error = rcbd_errornorm,
               ef = list(f1 = matrix(c(1, 1, 5, 1, 1, 1),
                                     ncol = 2)),
               eb = matrix(c(2, 1, 1, 2, 1, 1),
@@ -214,11 +227,11 @@ print(rcbd3)
 #+ Orthogonal polynomios 
 contrrcbd4 <- contr.poly(4) 
 
-rcbd4 <- gexp(sigma = 1,
-              ef = list(f1 = c(1,2,0,0)),
+rcbd4 <- gexp(ef = list(f1 = c(1,3,0,0)),
               eb = c(1,2,3),
               r = 1,
-              newfactors = list(Dose = ordered(c(0,2,4,6))),
+              labelfactors = list(Dose = ordered(c(0,2,4,6))),
+              labelblocks = list(bloco = c('B1','B2','B3')),
               contrasts = list(f1 = contrrcbd4,
                                bloco = diag(3)),
               type = 'RCBD')
@@ -230,7 +243,7 @@ plot(Y1 ~ dose,rcbd44)
 medias  <- with(rcbd44,tapply(Y1,Dose,mean))
 plot(medias ~ names(medias))
 
-regrcbd4 <- lm(Y1 ~ Block + Dose,
+regrcbd4 <- lm(Y1 ~ bloco + Dose,
                rcbd44)
 summary(regrcbd4)
 fitted(regrcbd4)
@@ -241,7 +254,6 @@ fitted(regrcbd4m)
 
 #! LSD 
 lsd1 <- gexp(mu = 30,
-             sigma = 1,
              ef = list(f1 = c(1, 1, 10)),
              erow = c(1, 1, 1),
              ecol = c(1, 1, 1),
@@ -263,7 +275,6 @@ plot(tk)
 
 #! FE - CRD
 fecrd1 <- gexp(mu = 30,
-               sigma = 1,
                ef = list(f1 = c(1, 1, 3),
                          f2 = c(1, 1)),
                einter = c(3, 1, 1, 1, 1, 5),
@@ -286,7 +297,6 @@ plot(tuk)
 
 #! FE - CRD: Tree factors
 fecrd2 <- gexp(mu = 30,
-               sigma = 1,
                ef = list(f1 = c(1, 1, 3),
                          f2 = c(1, 1),
                          f3 = c(2, 1, 1, 1)),
@@ -297,7 +307,6 @@ print(fecrd2)
 
 #! FE - RCBD
 fercbd1 <- gexp(mu = 30,
-                sigma = 1,
                 ef = list(f1 = c(1, 1, 1), 
                           f2 = c(2, 3)),
                 eb = c(1, 3),
@@ -322,7 +331,6 @@ plot(tuk)
 
 #! FE - LSD
 felsd1 <- gexp(mu = 30,
-               sigma = 1,
                ef = list(f1 = c(1, 1), 
                          f2 = c(2, 3)),
                erow = c(1, 3, 2, 1),
@@ -348,8 +356,6 @@ plot(tuk)
 
 #! SPLIT PLOT - CRD: two levels
 splitcrd1 <- gexp(mu = 30,
-                  sigma = 1,
-                  sigmap = 1,
                   ef = list(f1 = c(1, 1), 
                             f2 = c(2, 3)),
                   einter = c(1, 15, 1, 1),
@@ -362,7 +368,7 @@ mod <- lm(Y1 ~ X1*X2 + X1:r,
 anova(mod)
 
 mod1 <- suppressWarnings(aov(Y1 ~ X1*X2 + Error(X1:r),
-                             data=splitcrd1$dfm))
+            data=splitcrd1$dfm))
 summary(mod1)
 
 par(mfrow=c(2, 2))
@@ -377,8 +383,6 @@ plot(tuk)
 
 #! SPLIT PLOT - CRD: tree levels
 splitcrd2 <- gexp(mu = 30,
-                  sigma = 1,
-                  sigmap = 1,
                   ef = list(f1 = c(1, 1), 
                             f2 = c(2, 3),
                             f3 = c(1,1,1)),
@@ -389,8 +393,6 @@ print(splitcrd2)
 
 #SPLIT - RCBD
 splitrcbd1 <- gexp(mu = 30,
-                   sigma = 1,
-                   sigmap = 1,
                    ef = list(f1 = c(1, 1), 
                              f2 = c(2, 3),
                              f3 = c(1, 1, 1)),
@@ -423,8 +425,6 @@ plot(tuk)
 
 #! SPLIT - LSD
 splitlsd1 <- gexp(mu = 30,
-                  sigma = 1,
-                  sigmap = 1,
                   ef = list(f1 = c(1, 1, 2), 
                             f2 = c(2, 3, 1)),
                   einter = c(1, 15, 1, 1, 1, 1, 1, 1, 1),
@@ -438,8 +438,8 @@ mod <- lm(Y1 ~ Row + Column + X1*X2 + X1:Row:Column,
           data=splitlsd1$dfm)  #X1:Row:Column erro(a) parcela
 anova(mod)
 
-mod1 <- aov(Y1 ~ Row + Column + X1*X2 + Error(X1:Row:Column),
-            data=splitlsd1$dfm)
+mod1 <- suppressWarnings(aov(Y1 ~ Row + Column + X1*X2 + Error(X1:Row:Column),
+                             data=splitlsd1$dfm))
 summary(mod1)
 
 par(mfrow=c(2, 2))
@@ -454,8 +454,6 @@ plot(tuk)
 
 #! SPLIT - LSD: tree factors 
 splitlsd2 <- gexp(mu = 30,
-                  sigma = 1,
-                  sigmap = 1,
                   ef = list(f1 = c(1, 1, 2), 
                             f2 = c(2, 3, 1),
                             f3 = c(1,1)),
@@ -468,25 +466,27 @@ summary(splitlsd2)
 
 ########## COM FATORES FORNECIDOS PELOS USUÁRIOS #######
 crdf1 <- update(crd1,
-                newfactors = list('Species' = c('Oreochromis','Piaractus')))
+                labelfactors = list('Species' = c('Oreochromis','Piaractus')))
 print(crdf1)
 
 crdf2 <- update(crd1,
                 r = 2,
                 ef = list(f1 = c(1,1,1)),
-                newfactors = list('Breed' = c('Dexter','Guernsey','Jersey')))
+                labelfactors = list('Breed' = c('Dexter','Guernsey','Jersey')))
 print(crdf2)
 
 rcbdf1 <- update(rcbd1,
-                 newfactors = list('Variety' = c('A','B','C')))
+                 labelfactors = list('Variety' = c('A','B','C')))
 print(rcbdf1)
 
 lsdf1 <- update(lsd1,
-                newfactors = list('Horse' = c('English','QM','ML')))
+                labelfactors = list('Horse' = c('English','QM','ML')),
+                labellsdrows = list('Linha'=1:3),
+                labellsdcols = list('Coluna'=1:3)) 
 print(lsdf1)
 
 fecrdf1 <- update(fecrd1,
-                  newfactors = list('Ration'=c('0','10','20'),
+                  labelfactors = list('Ration'=c('0','10','20'),
                                     'Chicken'=c('Cob','Ross')))
 print(fecrdf1)
 
@@ -496,18 +496,20 @@ fercbdf1 <- update(fercbd1,
 print(fercbdf1)
 
 felsdf1 <- update(felsd1,
-                  newfactors = list('Ration' = c('0','10'),
+                  labelfactors = list('Ration' = c('0','10'),
                                     'Chicken' = c('Cob','Ross'))) 
 print(felsdf1)
 
 splitcrdf1 <- update(splitcrd1,
-                     newfactors = list('Forage'=c('A','B'),
+                     labelfactors = list('Forage'=c('A','B'),
                                        'Period' = c('I1','I2')))
 print(splitcrdf1)
 
 splitlsdf1 <- update(splitlsd1,
-                     newfactors = list('Ration'=c('0','10','20'),
-                                       'Chicken'=c('Cob','Ross','Caneludo'))) 
+                     labelfactors = list('Ration'=c('0','10','20'),
+                                       'Chicken'=c('Cob','Ross','Caneludo')),
+                     labellsdrows = list('Linha'=1:3),
+                     labellsdcols = list('Coluna'=1:3))
 print(splitlsdf1)
 
 ##########   TESTANDO AS FUNÇÕES GRÁFICAS  #############

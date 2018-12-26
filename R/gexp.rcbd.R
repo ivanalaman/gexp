@@ -1,18 +1,17 @@
-gexp.rcbd <- function(mu         = mu,
-                      sigma      = sigma,
-                      r          = r,
-                      ef         = ef,
-                      eb         = eb,
-                      contrasts  = contrasts,
-                      rd         = rd,
-                      newfactors = newfactors,
-                      randomized = randomized)  
+gexp.rcbd <- function(mu           = mu,
+                      error        = error,
+                      r            = r,
+                      labelfactors = labelfactors,
+                      labelblocks  = labelblocks,
+                      ef           = ef,
+                      eb           = eb,
+                      contrasts    = contrasts,
+                      rd           = rd,
+                      randomized   = randomized)  
 {
   if(is.null(ef)) stop("You must specify at least a factor") 
 
-  sigma <- as.matrix(sigma)
-
-  if(is.null(newfactors)){ 
+  if(is.null(labelfactors)){ 
     aux_factor <- lapply(ef,
                          function(x) as.matrix(x))
 
@@ -29,33 +28,39 @@ gexp.rcbd <- function(mu         = mu,
 
     names(factors) <- names(aux_factor)
   } else {
-    if(!is.list(newfactors)){
+    if(!is.list(labelfactors)){
       stop('This argument must be a list. See examples!')
     }
-    factors <- newfactors 
+    factors <- labelfactors 
   }
 
   factors$r <- 1:r
-  factors$Block <- 1:dim(as.matrix(eb))[1]
+
+  ifelse(is.null(labelblocks),
+         factors$Block <- 1:dim(as.matrix(eb))[1],
+         factors[[names(labelblocks)]] <- unlist(labelblocks))
 
   dados <- expand.grid(factors,
                        KEEP.OUT.ATTRS = FALSE)
 
-  dados$Block <- factor(dados$Block)
+  aux_lf <- names(dados) 
 
-  aux_labelFactor <- names(dados)
-  labelFactor <- aux_labelFactor[aux_labelFactor!='r'&aux_labelFactor!='Block'] 
-  aux_X1 <- paste('~ Block +',
-                  paste(labelFactor,
+  dados[[aux_lf[length(aux_lf)]]] <- factor(dados[[aux_lf[length(aux_lf)]]])
+
+  lf <- aux_lf[-c((length(aux_lf)-1):length(aux_lf))] 
+  aux_X1 <- paste('~ ',
+                  aux_lf[length(aux_lf)],
+                  '+',
+                  paste(lf,
                         collapse='+')) 
 
   if(is.null(contrasts)){
-    contrasts <- lapply(factors[aux_labelFactor!='r'],function(x)diag(length(x)))
+    contrasts <- lapply(factors[aux_lf!='r'],function(x)diag(length(x)))
   } else{
     if((length(ef)+1) != length(contrasts))stop('You must be include all the contrasts!')
   }
 
-  names(contrasts) <- names(dados)[aux_labelFactor!='r']
+  names(contrasts) <- names(dados)[aux_lf!='r']
 
   X  <- model.matrix(eval(parse(text=aux_X1)),
                      dados,
@@ -63,8 +68,14 @@ gexp.rcbd <- function(mu         = mu,
 
   Z <- NULL
 
-  e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                        sigma = sigma)
+  if(is.null(error)){
+    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
+                          sigma = as.matrix(1))
+  } else {
+    if(!is.matrix(error)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
+
+    e <- error
+  }
 
   if(length(mu)!=0 & length(mu) == 1){
     betas <- as.matrix(c(mu, eb, unlist(ef))) 

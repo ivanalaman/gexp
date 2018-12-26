@@ -1,23 +1,23 @@
-gexp.spe <- function(mu         = mu,
-                     sigma      = sigma,
-                     sigmap     = sigmap,
-                     r          = r, 
-                     newfactors = newfactors,  
-                     ef         = ef, 
-                     einter     = einter, 
-                     eb         = eb, 
-                     erow       = erow, 
-                     ecol       = ecol, 
-                     contrasts  = contrasts,
-                     nrand      = nrand,    
-                     rd         = rd,   
-                     randomized = randomized)  
+gexp.spe <- function(mu           = mu,
+                     error        = error,
+                     errorp       = errorp,
+                     r            = r, 
+                     labelfactors = labelfactors,  
+                     labelblocks  = labelblocks,
+                     labellsdrows = labellsdrows,
+                     labellsdcols = labellsdcols,
+                     ef           = ef, 
+                     einter       = einter, 
+                     eb           = eb, 
+                     erow         = erow, 
+                     ecol         = ecol, 
+                     contrasts    = contrasts,
+                     nrand        = nrand,    
+                     rd           = rd,   
+                     randomized   = randomized)  
 {
   if(is.null(ef)) stop("You must specify at least a factor") 
-
-  sigma <- as.matrix(sigma)
-
-  if(is.null(newfactors)){   
+  if(is.null(labelfactors)){   
     aux_factor <- lapply(ef,
                          function(x) as.matrix(x))
 
@@ -34,13 +34,11 @@ gexp.spe <- function(mu         = mu,
 
     names(factors) <- names(aux_factor)
   } else {
-    if(!is.list(newfactors)){
+    if(!is.list(labelfactors)){
       stop('This argument must be a list. See examples!')
     }
-    factors <- newfactors   
+    factors <- labelfactors   
   }
-
-  sigmap <- as.matrix(sigmap)
 
   if(is.null(eb) & is.null(erow) & is.null(ecol)){ #é um DIC
 
@@ -52,20 +50,6 @@ gexp.spe <- function(mu         = mu,
     aux_X1 <- paste('~',
                     paste(names(dados)[-length(names(dados))],
                           collapse='*')) 
-
-    #     aux_X2 <- paste('list(',
-    #                     paste(names(factors)[-length(names(dados))],
-    #                           paste('= contrasts(dados$',
-    #                                 names(factors)[-length(names(dados))],
-    #                                 sep=''),
-    #                           ',',
-    #                           'contrasts = FALSE)',
-    #                           collapse=','),
-    #                     ')')
-    # 
-    #     X  <- model.matrix(eval(parse(text=aux_X1)),
-    #                        dados,
-    #                        contrasts.arg = eval(parse(text=aux_X2)))            
 
     if(is.null(contrasts)){
       contrasts <- lapply(factors[1:length(ef)],function(x)diag(length(x)))
@@ -100,21 +84,23 @@ gexp.spe <- function(mu         = mu,
                      dados,
                      contrasts.arg = eval(parse(text=aux_Z2)))             
 
-    #     Z <- model.matrix(~ 0 + X1:r, 
-    #                       dados, 
-    #                       contrasts.arg = list(X1 = contrasts(dados$X1, contrasts = FALSE),
-    #                                            r = contrasts(dados$r, contrasts = FALSE)))
+    if(is.null(error)){
+      e <- mvtnorm::rmvnorm(n = dim(X)[1],  
+                            sigma = as.matrix(1))
+    } else {
+      if(!is.matrix(error)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
-    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = sigma)
+      e <- error
+    }   
 
-    e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
-                               sigma = sigmap)
+    if(is.null(errorp)){
+      e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
+                            sigma = as.matrix(1))
+    } else {
+      if(!is.matrix(errorp)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
-    #     ifelse(length(mu) == 1,
-    #            betas <- as.matrix(c(mu, unlist(ef), einter)),
-    #            betas <- rbind(mu, do.call('rbind',ef), einter))
-    # 
+      e_plot <- errorp
+    }   
 
     #+ Help to interaction effects!
     auxl <- lapply(ef,length)
@@ -148,63 +134,76 @@ gexp.spe <- function(mu         = mu,
   } else if(!is.null(eb) & is.null(erow) & is.null(ecol)){#é um DBC
 
     factors$r <- 1:r  
-    factors$Block <- 1:dim(as.matrix(eb))[1]
+
+    ifelse(is.null(labelblocks),
+           factors$Block <- 1:dim(as.matrix(eb))[1],
+           factors[[names(labelblocks)]] <- unlist(labelblocks))
 
     dados <- expand.grid(factors,
                          KEEP.OUT.ATTRS = FALSE)
 
-    dados$Block <- factor(dados$Block)
+    aux_lf <- names(dados) 
 
-    aux_labelFactor <- names(dados)
-    labelFactor <- aux_labelFactor[aux_labelFactor!='r'&aux_labelFactor!='Block']  
+    dados[[aux_lf[length(aux_lf)]]] <- factor(dados[[aux_lf[length(aux_lf)]]])
 
-    aux_X1 <- paste('~ Block +',
-                    paste(labelFactor,
+    lf <- aux_lf[-c((length(aux_lf)-1):length(aux_lf))] 
+    aux_X1 <- paste('~ ',
+                    aux_lf[length(aux_lf)],
+                    '+',
+                    paste(lf,
                           collapse='*')) 
 
-    #     aux_X2 <- paste('list(',
-    #                     paste(aux_labelFactor[aux_labelFactor!='r'],
-    #                           paste('= contrasts(dados$',
-    #                                 aux_labelFactor[aux_labelFactor!='r'], 
-    #                                 sep=''),
-    #                           ',',
-    #                           'contrasts = FALSE)',
-    #                           collapse=','),
-    #                     ')')
-    # 
-    #     X = model.matrix(eval(parse(text=aux_X1)),
-    #                      dados,
-    #                      contrasts.arg = eval(parse(text=aux_X2)))             
-
     if(is.null(contrasts)){
-      contrasts <- lapply(factors[aux_labelFactor!='r'],function(x)diag(length(x)))
+      contrasts <- lapply(factors[aux_lf!='r'],function(x)diag(length(x)))
     } else{
       if((length(ef)+length(eb)) != length(contrasts))stop('You must be include all the contrasts!')
     }
 
-    names(contrasts) <- names(dados)[aux_labelFactor!='r']
+    names(contrasts) <- names(dados)[aux_lf!='r']
 
     X  <- model.matrix(eval(parse(text=aux_X1)),
                        dados,
                        contrasts.arg=contrasts) 
 
+    aux_Z1 <-  paste('~ 0 + ',
+                     paste(lf[1],
+                           aux_lf[length(aux_lf)],
+                           sep=':'))
 
-    Z <- model.matrix(~ 0 + X1:Block, 
+    aux_Z2 <- paste('list(',
+                    paste(c(lf[1],
+                            aux_lf[length(aux_lf)]),
+                          paste('= contrasts(dados$',
+                                c(lf[1],
+                                  aux_lf[length(aux_lf)]),
+                                sep=''),
+                          ',',
+                          'contrasts = FALSE)',
+                          collapse=','),
+                    ')')
+
+    Z <- model.matrix(eval(parse(text=aux_Z1)), 
                       dados, 
-                      contrasts.arg = list(X1 = contrasts(dados$X1, contrasts = FALSE),
-                                           Block = contrasts(dados$Block, contrasts = FALSE)))
+                      contrasts.arg = eval(parse(text=aux_Z2)))
 
-    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = sigma)
+    if(is.null(error)){
+      e <- mvtnorm::rmvnorm(n = dim(X)[1],  
+                            sigma = as.matrix(1))
+    } else {
+      if(!is.matrix(error)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
-    e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
-                               sigma = sigmap)
+      e <- error
+    }   
 
-    #     ifelse(length(mu) == 1,
-    #            betas <- as.matrix(c(mu, eb, unlist(ef), einter)),
-    #            betas <- rbind(mu, eb, do.call('rbind',ef), einter))
-    # 
-    
+    if(is.null(errorp)){
+      e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
+                                 sigma = as.matrix(1))
+    } else {
+      if(!is.matrix(errorp)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
+
+      e_plot <- errorp
+    }   
+
     #+ Help to interaction effects!
     auxl <- lapply(ef,length)
     niv <- unlist(auxl)
@@ -254,40 +253,46 @@ gexp.spe <- function(mu         = mu,
                         levelss = aux_trats4,
                         nrand = nrand)
 
-    #aux_trats6 <- mgsub(LETTERS[1:n],aux_trats4,aux_trats5)
     aux_trats7 <- as.matrix(c(aux_trats5))
     aux_trats8 <- apply(aux_trats7, 1, function(x)unlist(strsplit(x,' ')))
     aux_trats9 <- as.matrix(c(aux_trats8))
     aux_trats10 <- strsplit(as.character(aux_trats9[,1]),'[.]')
     trats <- do.call('rbind',aux_trats10)
+    colnames(trats) <- names(factors)
 
     aux_column <- rep(1:n, rep(nsubplot,n))
-    roww <- rep(1:n, rep(length(aux_column),n))
-    column <- rep(aux_column,n)
 
-    dados  <- data.frame(Row    = factor(roww),
-                         Column = factor(column),
-                         trats = trats)
-    names(dados) <- c('Row','Column',names(factors))
+    ifelse(is.null(labellsdrows),
+           levelsrows <- factor(rep(1:n, rep(length(aux_column),n))),
+           levelsrows <- factor(rep(unlist(labellsdrows),rep(length(aux_column),n))))
 
-    aux_X1 <- paste('~ Row + Column +',
+    ifelse(is.null(labellsdcols),
+           levelscols <- factor(rep(rep(1:n, rep(nsubplot,n)),n)),
+           levelscols <- factor(rep(rep(unlist(labellsdcols),rep(nsubplot,n)),n))) 
+     
+    dados  <- data.frame(Row    = levelsrows,
+                         Column = levelscols,
+                         trats)
+
+    if(!is.null(labellsdrows)){
+      names(dados) <- gsub('Row',
+                           names(labellsdrows),
+                           names(dados))
+    }
+
+    if(!is.null(labellsdcols)){
+      names(dados) <- gsub('Column',
+                           names(labellsdcols),
+                           names(dados))
+    }
+
+    aux_X1 <- paste('~ ',
+                    paste(names(dados)[1:2],
+                          collapse = '+'),
+                    '+',
                     paste(names(dados)[-c(1:2)],
                           collapse='*')) 
 
-    #     aux_X2 <- paste('list(',
-    #                     paste(names(dados),
-    #                           paste('= contrasts(dados$',
-    #                                 names(dados),
-    #                                 sep=''),
-    #                           ',',
-    #                           'contrasts = FALSE)',
-    #                           collapse=','),
-    #                     ')')
-    # 
-    #     X = model.matrix(eval(parse(text=aux_X1)),
-    #                      dados,
-    #                      contrasts.arg = eval(parse(text=aux_X2)))             
-    # 
     aufactors <- lapply(dados,levels)  
 
     if(is.null(contrasts)){
@@ -307,10 +312,12 @@ gexp.spe <- function(mu         = mu,
 
     aux_Z1 <- paste('~ 0 + ',
                     parceprincipal,
-                    ':Row:Column',
+                    ':',
+                    paste(names(dados)[1:2],
+                          collapse=':'),
                     sep='')
 
-    auxfactor <- c(parceprincipal,'Row','Column')
+    auxfactor <- c(parceprincipal,names(dados)[1:2])
     aux_Z2 <-  paste('list(',
                      paste(auxfactor,
                            paste('= contrasts(dados$',
@@ -324,13 +331,24 @@ gexp.spe <- function(mu         = mu,
     Z = model.matrix(eval(parse(text=aux_Z1)),
                      dados,
                      contrasts.arg = eval(parse(text=aux_Z2)))             
+    if(is.null(error)){
+      e <- mvtnorm::rmvnorm(n = dim(X)[1],  
+                            sigma = as.matrix(1))
+    } else {
+      if(!is.matrix(error)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
-    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = sigma)
+      e <- error
+    }   
 
-    e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
-                               sigma = sigmap)
-    
+    if(is.null(errorp)){
+      e_plot <- mvtnorm::rmvnorm(n = dim(Z)[2],  
+                                 sigma = as.matrix(1))
+    } else {
+      if(!is.matrix(errorp)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
+
+      e_plot <- errorp
+    }   
+
     #+ Help to interaction effects!
     auxl <- lapply(ef,length)
     niv <- unlist(auxl)
@@ -344,13 +362,7 @@ gexp.spe <- function(mu         = mu,
       tcltk::tkmessageBox(message=paste('The number of effects this argument is ',resl2),
                           icon = 'error')
     }
-    #End
-    
-    #     ifelse(length(mu) == 1,
-    #            betas <- as.matrix(c(mu, erow, ecol, unlist(ef), einter)),
-    #            betas <- rbind(mu, erow, ecol, do.call('rbind',ef), einter))
-    # 
-
+   
     if(length(mu)!=0 & length(mu) == 1){
       betas <- as.matrix(c(mu, erow, ecol, unlist(ef), einter)) 
     } else if(length(mu)!=0 & length(mu) > 1){
