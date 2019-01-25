@@ -1,15 +1,15 @@
-gexp.lsd <- function(mu           = mu, 
-                     error        = error,
-                     labelfactors = labelfactors,
-                     labellsdrows = labellsdrows,
-                     labellsdcols = labellsdcols,
-                     ef           = ef,  
-                     erow         = erow, 
-                     ecol         = ecol, 
-                     nrand        = nrand,    
-                     contrasts    = contrasts,
-                     rd           = rd, 
-                     randomized   = randomized)
+gexp.lsd <- function(mu        = mu, 
+                     err       = err,
+                     factorsl  = factorsl,
+                     rowsl     = rowsl,
+                     colsl     = colsl,
+                     ef        = ef,  
+                     erow      = erow, 
+                     ecol      = ecol, 
+                     nrand     = nrand,    
+                     contrasts = contrasts,
+                     round     = round, 
+                     random    = random)
 {
 
   if(length(ef) != 1){
@@ -19,23 +19,23 @@ gexp.lsd <- function(mu           = mu,
   f1 <- ef[[1]]
   n <- length(f1)
 
-  if(is.null(labelfactors)){
-    levelss <- paste('x',1:n,sep='')
+  if(is.null(factorsl)){
+    levelss <- paste('x', 1:n, sep='')
   } else {
-    if(length(labelfactors)!=1){
+    if(length(factorsl)!=1){
       stop('Use only one factor!')
     }
 
-    levelss <- unlist(labelfactors)
+    levelss <- unlist(factorsl)
   }
 
-  ifelse(is.null(labellsdrows),
-    levelsrows <- factor(rep(1:n,rep(n,n))),
-    levelsrows <- factor(rep(unlist(labellsdrows),rep(n,n))))
+  ifelse(is.null(rowsl),
+    levelsrows <- factor(rep(1:n, rep(n, n))),
+    levelsrows <- factor(rep(unlist(rowsl), rep(n, n))))
 
-  ifelse(is.null(labellsdcols),
-         levelscols <- factor(rep(1:n,n)),
-         levelscols <- factor(rep(unlist(labellsdcols),n)))
+  ifelse(is.null(colsl),
+         levelscols <- factor(rep(1:n, n)),
+         levelscols <- factor(rep(unlist(colsl), n)))
 
   aux_dados  <- latin(n,
                       levelss = levelss,
@@ -45,32 +45,32 @@ gexp.lsd <- function(mu           = mu,
                      Column = levelscols,
                      X1     = c(aux_dados))
 
-  if(!is.null(labellsdrows)){
+  if(!is.null(rowsl)){
     names(dados) <- gsub('Row',
-                         names(labellsdrows),
+                         names(rowsl),
                          names(dados))
   }
   
-  if(!is.null(labellsdcols)){
+  if(!is.null(colsl)){
     names(dados) <- gsub('Column',
-                         names(labellsdcols),
+                         names(colsl),
                          names(dados))
   }
    
-  if(!is.null(labelfactors)){
+  if(!is.null(factorsl)){
     names(dados) <- gsub('X1',
-                         names(labelfactors),
+                         names(factorsl),
                          names(dados))
   }
   
-  factors <- lapply(dados,levels)
+  factors <- lapply(dados, levels)
 
   aux_X1 <- paste('~ ',
                   paste(names(dados),
                         collapse='+'))
 
   if(is.null(contrasts)){
-    contrasts <- lapply(factors,function(x)diag(length(x)))
+    contrasts <- lapply(factors, function(x)diag(length(x)))
   } else{
     if((length(ef)+length(erow)+length(ecol)) != length(contrasts))stop('You must be include all the contrasts!')
   }
@@ -83,13 +83,13 @@ gexp.lsd <- function(mu           = mu,
 
   Z <- NULL
   
-  if(is.null(error)){
+  if(is.null(err)){
     e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = as.matrix(1))
+                          sigma = diag(length(mu)))
   } else {
-    if(!is.matrix(error)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
+    if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
-    e <- error
+    e <- err
   } 
  
   if(length(mu)!=0 & length(mu) == 1){
@@ -97,18 +97,18 @@ gexp.lsd <- function(mu           = mu,
   } else if(length(mu)!=0 & length(mu) > 1){
     betas <- rbind(mu, erow, ecol, f1) 
   } else {
-    betas <- as.matrix(c(erow,ecol,f1))
+    betas <- as.matrix(c(erow, ecol, f1))
   }
 
   yl <- X%*%betas + e
 
-  colnames(yl) <- paste('Y',1:dim(yl)[2],sep='')  
+  colnames(yl) <- paste('Y', 1:dim(yl)[2], sep='')  
 
-  Y <- round(yl, rd)
+  Y <- round(yl, round)
 
-  dados <- cbind(dados,Y)
+  dados <- cbind(dados, Y)
 
-  if(randomized){
+  if(random){
 
     dados <- dados[sample(dim(dados)[1]),]
 

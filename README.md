@@ -24,5 +24,3 @@ Or, you can install using devtools package as:
 > library(devtools)
 
 > install_github('ivanalaman/gexp')
-
-

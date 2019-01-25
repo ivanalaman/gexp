@@ -1,6 +1,6 @@
 print.gexp <- function(x,
-                         digits=3L,
-                         ...){
+                       digits=3L,
+                       ...){
   cat("Design Matrix \n")
 
   print(x$X,

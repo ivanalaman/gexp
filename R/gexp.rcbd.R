@@ -1,44 +1,44 @@
-gexp.rcbd <- function(mu           = mu,
-                      error        = error,
-                      r            = r,
-                      labelfactors = labelfactors,
-                      labelblocks  = labelblocks,
-                      ef           = ef,
-                      eb           = eb,
-                      contrasts    = contrasts,
-                      rd           = rd,
-                      randomized   = randomized)  
+gexp.rcbd <- function(mu        = mu,
+                      err       = err,
+                      r         = r,
+                      factorsl  = factorsl,
+                      blocksl   = blocksl,
+                      ef        = ef,
+                      eb        = eb,
+                      contrasts = contrasts,
+                      round     = round,
+                      random    = random)  
 {
   if(is.null(ef)) stop("You must specify at least a factor") 
 
-  if(is.null(labelfactors)){ 
+  if(is.null(factorsl)){ 
     aux_factor <- lapply(ef,
                          function(x) as.matrix(x))
 
-    names(aux_factor) <- paste('X',1:length(ef),sep='')
+    names(aux_factor) <- paste('X', 1:length(ef), sep='')
 
     aux_factor1 <- as.list(tolower(names(aux_factor)))
     aux_factor2 <- lapply(aux_factor,
                           function(x) 1:dim(x)[1])
 
-    factors <- mapply(function(x,y) paste(x,y,sep=''),
+    factors <- mapply(function(x, y) paste(x, y, sep=''),
                       aux_factor1,
                       aux_factor2,
                       SIMPLIFY = FALSE)
 
     names(factors) <- names(aux_factor)
   } else {
-    if(!is.list(labelfactors)){
+    if(!is.list(factorsl)){
       stop('This argument must be a list. See examples!')
     }
-    factors <- labelfactors 
+    factors <- factorsl 
   }
 
   factors$r <- 1:r
 
-  ifelse(is.null(labelblocks),
+  ifelse(is.null(blocksl),
          factors$Block <- 1:dim(as.matrix(eb))[1],
-         factors[[names(labelblocks)]] <- unlist(labelblocks))
+         factors[[names(blocksl)]] <- unlist(blocksl))
 
   dados <- expand.grid(factors,
                        KEEP.OUT.ATTRS = FALSE)
@@ -55,7 +55,7 @@ gexp.rcbd <- function(mu           = mu,
                         collapse='+')) 
 
   if(is.null(contrasts)){
-    contrasts <- lapply(factors[aux_lf!='r'],function(x)diag(length(x)))
+    contrasts <- lapply(factors[aux_lf!='r'], function(x)diag(length(x)))
   } else{
     if((length(ef)+1) != length(contrasts))stop('You must be include all the contrasts!')
   }
@@ -68,32 +68,32 @@ gexp.rcbd <- function(mu           = mu,
 
   Z <- NULL
 
-  if(is.null(error)){
+  if(is.null(err)){
     e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = as.matrix(1))
+                          sigma = diag(length(mu)))
   } else {
-    if(!is.matrix(error)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
+    if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
-    e <- error
+    e <- err
   }
 
   if(length(mu)!=0 & length(mu) == 1){
     betas <- as.matrix(c(mu, eb, unlist(ef))) 
   } else if(length(mu)!=0 & length(mu) > 1){
-    betas <- rbind(mu, eb, do.call('rbind',ef)) 
+    betas <- rbind(mu, eb, do.call('rbind', ef)) 
   } else {
-    betas <- as.matrix(c(eb,unlist(ef)))
+    betas <- as.matrix(c(eb, unlist(ef)))
   }
 
   yl <- X%*%betas + e
 
-  colnames(yl) <- paste('Y',1:dim(yl)[2],sep='') 
+  colnames(yl) <- paste('Y', 1:dim(yl)[2], sep='') 
 
-  Y <- round(yl, rd)
+  Y <- round(yl, round)
 
-  dados <- cbind(dados,Y)
+  dados <- cbind(dados, Y)
 
-  if(randomized){
+  if(random){
 
     dados <- dados[sample(dim(dados)[1]),]
 

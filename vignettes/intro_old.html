@@ -140,7 +140,7 @@ $(document).ready(function () {
 <p>Y é uma matriz n<span class="math inline">\(\times\)</span>p, sendo <strong>n</strong> observações de <strong>p</strong> variáveis aleatórias;</p>
 <p>X é uma matriz n<span class="math inline">\(\times\)</span>m, sendo <strong>m</strong> o número de parâmetros que influenciam a variável resposta (<span class="math inline">\(\mu, \alpha's, \beta's, etc.\)</span>);</p>
 <p><span class="math inline">\(\beta\)</span> é uma matrix m<span class="math inline">\(\times\)</span>p de efeitos dos fatores;</p>
-<p><span class="math inline">\(E\)</span> é uma matrix n<span class="math inline">\(\times\)</span>p dos erros com distribuição normal p-variada com vetor de médias <strong>0</strong> e covariância comum <strong><span class="math inline">\(\Sigma\)</span></strong>;</p>
+<p><span class="math inline">\(E\)</span> é uma matrix n<span class="math inline">\(\times\)</span>p dos erros com distribuição normal p-variada com vetor de médias <strong>0</strong> e covariância comum <strong><span class="math inline">\(\error\)</span></strong>;</p>
 <p>No caso do delineamento em parcelas subdivididas, o pacote trabalha considerando seguinte modelo linear misto <span class="citation">(Naes, Aastveit, and Sahni 2007)</span>:</p>
 <p><span id="eq:m2" style="display: inline-block; position: relative; width: 100%"><span class="math display">\[Y = X\beta + Zu + E\]</span><span style="position: absolute; right: 0em; top: 50%; line-height:0; text-align: right">(2)</span></span></p>
 <p>em que:</p>
@@ -319,7 +319,7 @@ Y_{23}
 \]</span></p>
 <p>Utilizando o pacote <code>gerexp</code> temos:</p>
 <pre class="r"><code>dic &lt;- gerexp(mu    = 15,
-              sigma = 0,
+              error = 0,
               r     = 3,
               ef    = list(alpha = c(1,-2)))
 summary(dic)</code></pre>
@@ -447,7 +447,7 @@ Y_{231} &amp; Y_{232}
 \]</span></p>
 <p>Utilizando o pacote gerexp temos:</p>
 <pre class="r"><code>dic_mul &lt;- gerexp(mu    = c(15,6),   
-                  sigma = matrix(c(0,0,
+                  error = matrix(c(0,0,
                                    0,0),ncol=2),
                   r     = 3L,
                   ef    = list(alpha = matrix(c(1,-2,
@@ -584,7 +584,7 @@ Y_{23}
 \]</span></p>
 <p>Com o pacote <code>gerexp</code> tem-se:</p>
 <pre class="r"><code>dbc &lt;- gerexp(mu    = 15,   
-              sigma = 0,
+              error = 0,
               ef    = list(alpha = c(1,-2)),
               eb    = c(2,4,6),
               type  = 'DBC')
@@ -754,7 +754,7 @@ Y_{332}
 \]</span></p>
 <p>Utilizando a função <code>gerexp</code> tem-se:</p>
 <pre class="r"><code>dql &lt;- gerexp(mu    = 15,
-              sigma = 0,
+              error = 0,
               ef    = list(alpha = c(1,-2,3)),
               erow  = c(2,3,4),
               ecol  = c(6,7,8),
@@ -962,10 +962,10 @@ Y_{232}
 \]</span></p>
 <p>Utilizando a função gerexp tem-se:</p>
 <pre class="r"><code>fatdic &lt;- gerexp(mu     = 15,
-                 sigma  = 0,
+                 error  = 0,
                  ef     = list(alpha = c(1,-2),
                                 tau = c(1,-1,1)),
-                 einter = c(3,1,1,-5,1,1),
+                 eint = c(3,1,1,-5,1,1),
                  type   = 'FAT') 
 summary(fatdic)</code></pre>
 <pre><code>## Database 
@@ -1255,12 +1255,12 @@ Y_{223}
 \]</span></p>
 <p>Utilizando o pacote <code>gerexp</code> tem-se:</p>
 <pre class="r"><code>splitdic &lt;- gerexp(mu   = 15,
-                 sigma  = 0,
-                 sigmap = 0,
+                 error  = 0,
+                 errorp = 0,
                  r      = 3,
                  ef     = list(alpha = c(1,-2),
                                 tau  = c(1,-1)),
-                 einter = c(3,1,1,-5),
+                 eint = c(3,1,1,-5),
                  type   = 'SPLIT') 
 summary(splitdic)</code></pre>
 <pre><code>## Database 

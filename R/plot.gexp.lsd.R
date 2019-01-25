@@ -1,29 +1,29 @@
 plot.gexp.lsd <- function(x,
-                            main       = NULL,
-                            sub        = NULL,
-                            colgrid    = 'red',
-                            coltext    = 'blue',
-                            ltygrid    = 'dotted',
-                            lwdgrid    = par('lwd'),
-                            xleftimg   = par()$usr[1],
-                            ybottomimg = par()$usr[3],
-                            xrightimg  = par()$usr[2],
-                            ytopimg    = par()$usr[4],
-                            dynamic    = FALSE,
-                            ...)
+                          main       = NULL,
+                          sub        = NULL,
+                          colgrid    = 'red',
+                          coltext    = 'blue',
+                          ltygrid    = 'dotted',
+                          lwdgrid    = par('lwd'),
+                          xleftimg   = par()$usr[1],
+                          ybottomimg = par()$usr[3],
+                          xrightimg  = par()$usr[2],
+                          ytopimg    = par()$usr[4],
+                          dynamic    = FALSE,
+                          ...)
 {
 
-  aux <- update(x,randomized=TRUE) 
-  aux1 <- aux$dfm[,-dim(aux$dfm)[2]]
+  aux <- update(x, random=TRUE) 
+  aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
   labelrow <- names(aux1)[1] 
   labelcol <- names(aux1)[2]
 
   aux11 <- aux1[order(aux1[[labelrow]],
-                      aux1[[labelcol]]),]
+                      aux1[[labelcol]]), ]
 
-  factors <- aux11[,3]
+  factors <- aux11[, 3]
 
-  if(length(attr(aux$X,'contrasts')[-c(1:2)]) != 1){
+  if(length(attr(aux$X, 'contrasts')[-c(1:2)]) != 1){
     stop('Graphic option only for one factor!')
   }
 
@@ -59,14 +59,14 @@ plot.gexp.lsd <- function(x,
 
   aux_posxcentro <- 1/rowsquare
   aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)
-  posxcentro <- posycentro <- seq(aux_posxcentro,aux_posxcentro1,by=2/rowsquare)
+  posxcentro <- posycentro <- seq(aux_posxcentro, aux_posxcentro1, by=2/rowsquare)
 
   if(!dynamic){ 
-    par(xaxs='i',yaxs='i')
+    par(xaxs='i', yaxs='i')
     plot(1,
          type = 'n',
-         xlim = c(0,2),
-         ylim = c(0,2),
+         xlim = c(0, 2),
+         ylim = c(0, 2),
          axes = FALSE,
          xlab = '',
          ylab = '',
@@ -80,23 +80,23 @@ plot.gexp.lsd <- function(x,
          lty = ltygrid,
          lwd = lwdgrid)
 
-    text(x = rep(posycentro,length(posxcentro)),
-         y = rep(posxcentro,rep(length(posycentro),length(posxcentro))), 
+    text(x = rep(posycentro, length(posxcentro)),
+         y = rep(posxcentro, rep(length(posycentro), length(posxcentro))), 
          factors,
          col = coltext)
 
     arrows(-0.05,
-           seq(0,2,by=2/rowsquare),
+           seq(0, 2, by=2/rowsquare),
            -0.05,
-           seq(2/rowsquare,2,by=2/rowsquare),
+           seq(2/rowsquare, 2, by=2/rowsquare),
            angle=90,
            xpd=TRUE,
            code=3,
            length=0.06) 
 
-    arrows(seq(0,2,by=2/rowsquare),
+    arrows(seq(0, 2, by=2/rowsquare),
            2.05,
-           seq(2/rowsquare,2,by=2/rowsquare),
+           seq(2/rowsquare, 2, by=2/rowsquare),
            2.05,
            angle=90,
            xpd=TRUE,
@@ -105,21 +105,21 @@ plot.gexp.lsd <- function(x,
 
     text(-0.08,
          posxcentro,
-         paste(labelrow,1:rowsquare),
+         paste(labelrow, 1:rowsquare),
          col=colgrid,
          xpd=TRUE,
          srt=90)
     
     text(posxcentro,
          2.08,
-         paste(labelcol,1:columsquare),
+         paste(labelcol, 1:columsquare),
          col=colgrid,
          xpd=TRUE)
 
 
   } else {
     auxin <- tcltk::tk_choose.files()
-    auxin1 <- gsub('[\\s\\S]*?\\.','',auxin,perl=TRUE)
+    auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
     auxin2 <- toupper(auxin1)
 
     switch(auxin2,
@@ -152,14 +152,14 @@ plot.gexp.lsd <- function(x,
 
     text(x = locator(),
          y = NULL,
-         paste(labelrow,1:rowsquare), 
+         paste(labelrow, 1:rowsquare), 
          col = coltext)
 
     tcltk::tkmessageBox(message='Click with the left button on column block and end with the right button!') 
 
     text(x = locator(),
          y = NULL,
-         paste(labelcol,1:columsquare), 
+         paste(labelcol, 1:columsquare), 
          col = coltext) 
    
     tcltk::tkmessageBox(message='Now, click with the left button on experimental unit and end with the right button!') 

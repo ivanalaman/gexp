@@ -1,27 +1,27 @@
 plot.gexp.rcbd <- function(x,
-                             main       = NULL,
-                             sub        = NULL,
-                             colgrid    = 'red',
-                             coltext    = 'blue',
-                             ltygrid    = 'dotted',
-                             lwdgrid    = par('lwd'),
-                             xleftimg   = par()$usr[1],
-                             ybottomimg = par()$usr[3],
-                             xrightimg  = par()$usr[2],
-                             ytopimg    = par()$usr[4],
-                             dynamic    = FALSE,
-                             ...)
+                           main       = NULL,
+                           sub        = NULL,
+                           colgrid    = 'red',
+                           coltext    = 'blue',
+                           ltygrid    = 'dotted',
+                           lwdgrid    = par('lwd'),
+                           xleftimg   = par()$usr[1],
+                           ybottomimg = par()$usr[3],
+                           xrightimg  = par()$usr[2],
+                           ytopimg    = par()$usr[4],
+                           dynamic    = FALSE,
+                           ...)
 {
 
-  aux <- update(x,randomized=TRUE) 
-  aux1 <- aux$dfm[,-dim(aux$dfm)[2]]
+  aux <- update(x, random=TRUE) 
+  aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
   labelblock <- names(aux1)[3] 
 
-  aux11 <- aux1[order(aux1[[labelblock]]),]
+  aux11 <- aux1[order(aux1[[labelblock]]), ]
 
-  factors <- aux11[,1]
+  factors <- aux11[, 1]
 
-  if(length(attr(aux$X,'contrasts')[-1]) != 1){
+  if(length(attr(aux$X, 'contrasts')[-1]) != 1){
     stop('Graphic option only for one factor!')
   }
 
@@ -33,7 +33,7 @@ plot.gexp.rcbd <- function(x,
 
   if(is.null(sub)){
 
-    aux_factors <- names(attr(x$X,'contrasts'))
+    aux_factors <- names(attr(x$X, 'contrasts'))
     Lfactors <- aux_factors[aux_factors!='Block']
     levelss <- paste(levels(x$dfm[[Lfactors]]),
                      collapse=',')
@@ -58,24 +58,24 @@ plot.gexp.rcbd <- function(x,
   }
 
   aux_colsquare <- eval(getCall(x)$ef)
-  aux_colsquare1 <- lapply(aux_colsquare,length)
-  columsquare <- do.call('prod',aux_colsquare1)*repp
+  aux_colsquare1 <- lapply(aux_colsquare, length)
+  columsquare <- do.call('prod', aux_colsquare1)*repp
   rowsquare <- length(eval(getCall(x)$eb))
 
   aux_posxcentro <- 1/rowsquare
   aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)
-  posxcentro <- seq(aux_posxcentro,aux_posxcentro1,by=2/rowsquare)
+  posxcentro <- seq(aux_posxcentro, aux_posxcentro1, by=2/rowsquare)
 
   aux_posycentro <- 1/columsquare
   aux_posycentro1 <- aux_posycentro + ((columsquare - 1)*2/columsquare)
-  posycentro <- seq(aux_posycentro,aux_posycentro1,by=2/columsquare)
+  posycentro <- seq(aux_posycentro, aux_posycentro1, by=2/columsquare)
 
   if(!dynamic){ 
-    par(xaxs='i',yaxs='i')
+    par(xaxs='i', yaxs='i')
     plot(1,
          type = 'n',
-         xlim = c(0,2),
-         ylim = c(0,2),
+         xlim = c(0, 2),
+         ylim = c(0, 2),
          axes = FALSE,
          xlab = '',
          ylab = '',
@@ -89,15 +89,15 @@ plot.gexp.rcbd <- function(x,
          lty = ltygrid,
          lwd = lwdgrid)
 
-    text(x = rep(posycentro,length(posxcentro)),
-         y = rep(posxcentro,rep(length(posycentro),length(posxcentro))), 
+    text(x = rep(posycentro, length(posxcentro)),
+         y = rep(posxcentro, rep(length(posycentro), length(posxcentro))), 
          factors,
          col = coltext)
 
     arrows(-0.05,
-           seq(0,2,by=2/rowsquare),
+           seq(0, 2, by=2/rowsquare),
            -0.05,
-           seq(2/rowsquare,2,by=2/rowsquare),
+           seq(2/rowsquare, 2, by=2/rowsquare),
            angle=90,
            xpd=TRUE,
            code=3,
@@ -105,14 +105,14 @@ plot.gexp.rcbd <- function(x,
 
     text(-0.08,
          posxcentro,
-         paste(labelblock,1:rowsquare),
+         paste(labelblock, 1:rowsquare),
          col=colgrid,
          xpd=TRUE,
          srt=90)
 
   } else {
     auxin <- tcltk::tk_choose.files()
-    auxin1 <- gsub('[\\s\\S]*?\\.','',auxin,perl=TRUE)
+    auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
     auxin2 <- toupper(auxin1)
 
     switch(auxin2,
@@ -145,7 +145,7 @@ plot.gexp.rcbd <- function(x,
      
     text(x = locator(),
          y = NULL,
-         paste(labelblock,1:rowsquare), 
+         paste(labelblock, 1:rowsquare), 
          col = coltext) 
 
     tcltk::tkmessageBox(message='Now, click with the left button on experimental unit and end with the right button!')
