@@ -1,6 +1,6 @@
 ---
-title: "Indrodução ao pacote gerexp"
-author: Ivan Bezerra Allaman </br>José Cláudio Faria
+title: "Indrodução ao pacote gexp"
+author: Ivan Bezerra Allaman </br> José Cláudio Faria
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -9,9 +9,9 @@ output:
 bibliography: bibliography.bib
 ---
 
-O pacote `gerexp` foi elaborado inspirado nas funções pessoais do professor José Cláudio Faria, cujo o objetivo é gerar uma ou **p** variáveis aleatórias de acordo com o tipo de experimento, cujo os efeitos dos tratamentos são indicados pelo usuário.
+O pacote `gexp` foi elaborado inspirado nas funções pessoais do professor José Cláudio Faria, cujo o objetivo é gerar uma ou **p** variáveis aleatórias de acordo com o tipo de experimento, cujo os efeitos dos tratamentos são indicados pelo usuário.
 
-A maioria dos pacotes como o agricolae por exemplo, possui funções que permitem ao usuário gerar apenas delineamentos, auxiliando deste modo aquele pesquisador que deseja montar um experimento. No entanto, se o usuário tem o interesse em gerar variáveis aleatórias de acordo com o tipo de experimento e ainda, podendo manipular quais tratamentos serão diferentes, então o pacote `gerexp` tem este diferencial.
+A maioria dos pacotes como o agricolae por exemplo, possui funções que permitem ao usuário gerar apenas delineamentos, auxiliando deste modo aquele pesquisador que deseja montar um experimento. No entanto, se o usuário tem o interesse em gerar variáveis aleatórias de acordo com o tipo de experimento e ainda, podendo manipular quais tratamentos serão diferentes, então o pacote `gexp` tem este diferencial.
 
 Os experimentos conteplados no pacote são: delineamento inteiramente ao acaso (DIC), delineamento em blocos ao acaso (DBC), delineamento em quadrado latino (DQL), esquemas fatoriais para DIC, DBC e DQL e esquema em parcelas subdivididas também considerando os delineamentos DIC, DBC e DQL [@Aquino:1992].
 
@@ -196,13 +196,13 @@ Y_{23}
 \end{bmatrix} 
 $$
 
-Utilizando o pacote `gerexp` temos:
+Utilizando o pacote `gexp` temos:
 
 ```{r}
-dic <- gerexp(mu    = 15,
-              sigma = 0,
-              r     = 3,
-              ef    = list(alpha = c(1,-2)))
+dic <- gexp(mu   =15,
+            sigma=0,
+            r    =3,
+            ef   =list(alpha=c(1, -2)))
 summary(dic)
 ```
 
@@ -323,16 +323,16 @@ Y_{231} & Y_{232}
 \end{bmatrix} 
 $$
 
-Utilizando o pacote gerexp temos:
+Utilizando o pacote gexp temos:
 
 ```{r}
-dic_mul <- gerexp(mu    = c(15,6),   
-                  sigma = matrix(c(0,0,
-                                   0,0),ncol=2),
-                  r     = 3L,
-                  ef    = list(alpha = matrix(c(1,-2,
-                                                2, 3),ncol=2)))
-summary(dic_mul)
+dic_mv <- gexp(mu   =c(15, 6),
+               sigma=matrix(c(0, 0,
+                              0, 0), ncol=2),
+               r    =3L,
+               ef   =list(alpha=matrix(c(1, -2,
+                                         2,  3), ncol=2)))
+summary(dic_mv)
 ```
 
 # Simulando um Delineamento em Blocos ao Acaso (DBC) 
@@ -458,15 +458,15 @@ Y_{23}
 \end{bmatrix}
 $$
 
-Com o pacote `gerexp` tem-se:
+Com o pacote `gexp` tem-se:
 
 ```{r}
-dbc <- gerexp(mu    = 15,   
-              sigma = 0,
-              ef    = list(alpha = c(1,-2)),
-              eb    = c(2,4,6),
-              type  = 'DBC')
-summary(dbc)
+rcbd <- gexp(mu   =15,
+             sigma=0,
+             ef   =list(alpha=c(1, -2)),
+             eb   =c(2, 4, 6),
+             type ='RCBD')
+summary(rcbd)
 ```
 
 # Simulando um Delineamento em Quadrado Latino (DQL)  
@@ -627,17 +627,17 @@ Y_{332}
 \end{bmatrix} 
 $$
 
-Utilizando a função `gerexp` tem-se:
+Utilizando a função `gexp` tem-se:
 
 ```{r}
-dql <- gerexp(mu    = 15,
-              sigma = 0,
-              ef    = list(alpha = c(1,-2,3)),
-              erow  = c(2,3,4),
-              ecol  = c(6,7,8),
-              nrand = 0,
-              type  = 'DQL')
-summary(dql)
+lsd <- gexp(mu   =15,
+            sigma=0,
+            ef   =list(alpha=c(1, -2, 3)),
+            erow =c(2, 3, 4),
+            ecol =c(6, 7, 8),
+            nrand=0,
+            type ='LSD')
+summary(lsd)
 ```
 
 # Ensaios Fatoriais
@@ -830,16 +830,16 @@ Y_{232}
 \end{bmatrix}
 $$
 
-Utilizando a função gerexp tem-se:
+Utilizando a função gexp tem-se:
 
 ```{r}
-fatdic <- gerexp(mu     = 15,
-                 sigma  = 0,
-                 ef     = list(alpha = c(1,-2),
-                                tau = c(1,-1,1)),
-                 einter = c(3,1,1,-5,1,1),
-                 type   = 'FAT') 
-summary(fatdic)
+fat_dic <- gexp(mu    =15,
+                sigma =0,
+                ef    =list(alpha=c(1, -2),
+                            tau=c(1, -1, 1)),
+                eint=c(3, 1, 1, -5, 1, 1),
+                type  ='FE')
+summary(fat_dic)
 ```
 
 # Ensaios em Parcelas Sub-divididas
@@ -1116,18 +1116,18 @@ Y_{223}
 \end{bmatrix}  
 $$
 
-Utilizando o pacote `gerexp` tem-se:
+Utilizando o pacote `gexp` tem-se:
 
 ```{r}
-splitdic <- gerexp(mu   = 15,
-                 sigma  = 0,
-                 sigmap = 0,
-                 r      = 3,
-                 ef     = list(alpha = c(1,-2),
-                                tau  = c(1,-1)),
-                 einter = c(3,1,1,-5),
-                 type   = 'SPLIT') 
-summary(splitdic)
+split_dic <- gexp(mu    =15,
+                  sigma =0,
+                  sigmap=0,
+                  r     =3,
+                  ef    =list(alpha=c(1, -2),
+                              tau =c(1, -1)),
+                  eint=c(3, 1, 1, -5),
+                  type  ='SPE')
+summary(split_dic)
 ```
  
 # References

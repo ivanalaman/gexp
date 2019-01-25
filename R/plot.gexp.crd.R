@@ -1,23 +1,23 @@
 plot.gexp.crd <- function(x,
-                            main       = NULL,
-                            sub        = NULL,
-                            colgrid    = 'red',
-                            coltext    = 'blue',
-                            ltygrid    = 'dotted',
-                            lwdgrid    = par('lwd'),
-                            xleftimg   = par()$usr[1],
-                            ybottomimg = par()$usr[3],
-                            xrightimg  = par()$usr[2],
-                            ytopimg    = par()$usr[4],
-                            dynamic    = FALSE,
-                            ...)
+                          main       = NULL,
+                          sub        = NULL,
+                          colgrid    = 'red',
+                          coltext    = 'blue',
+                          ltygrid    = 'dotted',
+                          lwdgrid    = par('lwd'),
+                          xleftimg   = par()$usr[1],
+                          ybottomimg = par()$usr[3],
+                          xrightimg  = par()$usr[2],
+                          ytopimg    = par()$usr[4],
+                          dynamic    = FALSE,
+                          ...)
 {
 
-  aux <- update(x,randomized=TRUE) 
-  aux1 <- aux$dfm[,-dim(aux$dfm)[2]]
-  aux2 <- aux1[,-dim(aux1)[2]]
+  aux <- update(x, random=TRUE) 
+  aux1 <- aux$dfm[ , -dim(aux$dfm)[2]]
+  aux2 <- aux1[ , -dim(aux1)[2]]
 
-  if(length(attr(aux$X,'contrasts')) != 1){
+  if(length(attr(aux$X, 'contrasts')) != 1){
   stop('Graphic option only for one factor!')
   }
 
@@ -27,7 +27,7 @@ plot.gexp.crd <- function(x,
 
   if(is.null(sub)){
   
-    factors <- names(attr(x$X,'contrasts'))
+    factors <- names(attr(x$X, 'contrasts'))
     levelss <- paste(levels(x$dfm[[factors]]),
                      collapse=',')
     repp <- eval(getCall(x)$r)
@@ -45,24 +45,24 @@ plot.gexp.crd <- function(x,
   }
 
   aux_rowsquare <- eval(getCall(x)$ef)
-  aux_rowsquare1 <- lapply(aux_rowsquare,length)
-  rowsquare <- do.call('prod',aux_rowsquare1)
+  aux_rowsquare1 <- lapply(aux_rowsquare, length)
+  rowsquare <- do.call('prod', aux_rowsquare1)
   columsquare <- eval(getCall(x)$r)
 
   aux_posxcentro <- 1/columsquare
   aux_posxcentro1 <- aux_posxcentro + ((columsquare - 1)*2/columsquare)
-  posxcentro <- seq(aux_posxcentro,aux_posxcentro1,by=2/columsquare)
+  posxcentro <- seq(aux_posxcentro, aux_posxcentro1, by=2/columsquare)
 
   aux_posycentro <- 1/rowsquare
   aux_posycentro1 <- aux_posycentro + ((rowsquare - 1)*2/rowsquare)
-  posycentro <- seq(aux_posycentro,aux_posycentro1,by=2/rowsquare)
+  posycentro <- seq(aux_posycentro, aux_posycentro1, by=2/rowsquare)
 
   if(!dynamic){ 
-    par(xaxs='i',yaxs='i')
+    par(xaxs='i', yaxs='i')
     plot(1,
          type = 'n',
-         xlim = c(0,2),
-         ylim = c(0,2),
+         xlim = c(0, 2),
+         ylim = c(0, 2),
          axes = FALSE,
          xlab = '',
          ylab = '',
@@ -76,14 +76,14 @@ plot.gexp.crd <- function(x,
          lty = ltygrid,
          lwd = lwdgrid)
 
-    text(x = rep(posxcentro,rep(length(posycentro),length(posxcentro))),
-         y = rep(posycentro,length(posxcentro)),
+    text(x = rep(posxcentro, rep(length(posycentro), length(posxcentro))),
+         y = rep(posycentro, length(posxcentro)),
          aux2,
          col = coltext)
   } else {
 
     auxin <- tcltk::tk_choose.files()
-    auxin1 <- gsub('[\\s\\S]*?\\.','',auxin,perl=TRUE)
+    auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
     auxin2 <- toupper(auxin1)
 
     switch(auxin2,
