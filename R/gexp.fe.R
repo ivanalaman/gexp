@@ -61,8 +61,10 @@ gexp.fe <- function(mu        = mu,
                        contrasts.arg=contrasts) 
 
     if(is.null(err)){
+
       e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                            sigma = diag(length(mu)))
+                            sigma = diag(ncol(as.matrix(ef[[1]]))))   
+
     } else {
       if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
@@ -84,13 +86,34 @@ gexp.fe <- function(mu        = mu,
     }
 
     if(length(mu)!=0 & length(mu) == 1){
+
       betas <- as.matrix(c(mu, unlist(ef), eint)) 
+
     } else if(length(mu)!=0 & length(mu) > 1){
+
       betas <- rbind(mu, do.call('rbind', ef), eint) 
+
+    } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+
+      aux_betas <- lapply(ef[-1],
+                          function(x)x[-1])
+      aux_betas1 <- c(ef[1],aux_betas)
+      aux_betas2 <- lapply(aux_betas1,as.matrix)
+      aux_betas3 <- do.call('rbind',aux_betas2)
+      betas <- as.matrix(c(aux_betas3,eint)) 
+
     } else {
-      betas <- as.matrix(unlist(ef), eint)
+
+      aux_betas <- lapply(ef,as.matrix)
+      aux_betas2 <- do.call('rbind',aux_betas)
+      betas <- as.matrix(c(aux_betas2,eint))
+
     }
 
+    #     } else {
+    #       betas <- as.matrix(unlist(ef), eint)
+    #     }
+    # 
     yl <- X%*%betas + e
 
     colnames(yl) <- paste('Y', 1:dim(yl)[2], sep='')
@@ -132,12 +155,16 @@ gexp.fe <- function(mu        = mu,
                        contrasts.arg=contrasts) 
 
     if(is.null(err)){
+
       e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                            sigma = diag(length(mu)))
+                            sigma = diag(ncol(as.matrix(ef[[1]])))) 
+
+
     } else {
       if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
       e <- err
+
     }
 
     #+ Help to interaction effects!
@@ -154,14 +181,37 @@ gexp.fe <- function(mu        = mu,
                           icon = 'err')
     }
     #End
-    
+
     if(length(mu)!=0 & length(mu) == 1){
+
       betas <- as.matrix(c(mu, eb, unlist(ef), eint)) 
+
     } else if(length(mu)!=0 & length(mu) > 1){
+
       betas <- rbind(mu, eb, do.call('rbind', ef), eint) 
+
+    } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+
+      aux_betas <- lapply(ef[-1],
+                          function(x)x[-1])
+      aux_betas1 <- c(ef[1],aux_betas)
+      aux_betas2 <- lapply(aux_betas1,as.matrix)
+      aux_betas3 <- do.call('rbind',aux_betas2)
+      betas <- as.matrix(c(eb,aux_betas3,eint))
+
     } else {
-      betas <- as.matrix(c(eb, unlist(ef), eint))
+
+      aux_betas <- lapply(ef,as.matrix)
+      aux_betas2 <- do.call('rbind',aux_betas)
+      betas <- as.matrix(c(eb,aux_betas2,eint))
+
     }
+
+    #     } else {
+    # 
+    #       betas <- as.matrix(c(eb, unlist(ef), eint))
+    # 
+    #     }
 
     yl <- X%*%betas + e
 
@@ -230,12 +280,15 @@ gexp.fe <- function(mu        = mu,
                        contrasts.arg=contrasts) 
 
     if(is.null(err)){
+
       e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                            sigma = diag(length(mu)))
+                            sigma = diag(ncol(as.matrix(ef[[1]]))))   
+
     } else {
       if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
       e <- err
+
     } 
 
     #+ Help to interaction effects!
@@ -252,15 +305,38 @@ gexp.fe <- function(mu        = mu,
                           icon = 'err')
     }
     #End
-     
+
     if(length(mu)!=0 & length(mu) == 1){
+
       betas <- as.matrix(c(mu, erow, ecol, unlist(ef), eint)) 
+
     } else if(length(mu)!=0 & length(mu) > 1){
+
       betas <- rbind(mu, erow, ecol, do.call('rbind', ef), eint) 
+
+    } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+
+      aux_betas <- lapply(ef[-1],
+                          function(x)x[-1])
+      aux_betas1 <- c(ef[1],aux_betas)
+      aux_betas2 <- lapply(aux_betas1,as.matrix)
+      aux_betas3 <- do.call('rbind',aux_betas2)
+      betas <- as.matrix(c(erow,ecol,aux_betas3,eint))
+
     } else {
-      betas <- as.matrix(c(erow, ecol, unlist(ef), eint))
+
+      aux_betas <- lapply(ef,as.matrix)
+      aux_betas2 <- do.call('rbind',aux_betas)
+      betas <- as.matrix(c(erow,ecol,aux_betas2,eint))
+
     }
 
+    #     } else {
+    # 
+    #       betas <- as.matrix(c(erow, ecol, unlist(ef), eint))
+    # 
+    #     }
+    # 
     yl <- X%*%betas + e
 
     colnames(yl) <- paste('Y', 1:dim(yl)[2], sep='')

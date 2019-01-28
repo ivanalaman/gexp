@@ -3,7 +3,8 @@ R.utils::sourceDirectory('../R')
 library(debug)
 mtrace.off()
 mtrace('plot.gerexp.crd')
-mtrace(gexp.spe)
+mtrace(gexp.crd)
+mtrace(gexp.rcbd)
 ######### TESTANDO AS FUNÇÕES NÃO GRÁFICAS ############
 
 #! CRD
@@ -47,9 +48,6 @@ head(crd2$dfm)
 tail(crd2$dfm)
 
 #! CRD - Multivariated
-# In this case it is necessary to inform the error!
-# The default is univariate case.
-
 crd3 <- gexp(mu=c(5, 2),
 #             err=mvtnorm::rmvnorm(n=9,
 #                                  sigma=matrix(c(1, 0,
@@ -76,6 +74,8 @@ crd4 <- gexp(mu=NULL,
              ef=list(f1=c(2, 10, 0, 0)),
              factorsl=list(Dose=ordered(level)),
              contrasts=list(f1=cont_crd4))
+
+
 
 crd44 <- crd4$dfm
 crd44$dose <- as.numeric(as.character(crd44$Dose))
@@ -193,6 +193,52 @@ reg_crd4 <- lm(Y1 ~ dose + I(dose^2) + I(dose^3),
 summary(reg_crd4)
 fitted(reg_crd4)
 
+# Linear e quadrático
+# No caso de dois ou mais fatores, basta informar o valor de beta0 apenas para o primeiro fator.
+crd8 <- gexp(mu=NULL,
+             r=4,
+             ef=list(f1=c(2, 10, 0, 0),#linear
+                     f2=c(0,3,4,0)),#quadrático
+             factorsl=list(Fosfo=ordered(level),
+                           Nitro=ordered(1:4)),
+             contrasts=list(f1=cont_crd4,f2=cont_crd4))
+
+with(crd8$dfm,
+     plot(Y1 ~ Fosfo)) 
+with(crd8$dfm,
+     plot(Y1 ~ Nitro))
+
+# Multivariated!
+crd9 <- gexp(mu=NULL,
+             r=4,               #L #Q
+             ef=list(f1=matrix(c(2, 1, 
+                                 10,1, 
+                                 0, 5,
+                                 0, 0),
+                               ncol = 2,
+                               byrow=TRUE)),
+             factorsl=list(Dose=ordered(level)),
+             contrasts=list(f1=cont_crd4))
+
+with(crd9$dfm,
+     plot(Y1 ~ Dose))
+with(crd9$dfm,
+     plot(Y2 ~ Dose))
+
+#! Contrastes polinomiais e de tratamentos juntos
+error <- matrix(rep(0,24),ncol=1)
+cont_qualit  <- diag(3) 
+crd10 <- gexp(mu=NULL,
+              err = error,
+              r=2,               
+              ef=list(f1=c(2, 1, 0, 0),#quantitative linear
+                      f2=c(0,1,0)),#qualitative
+              factorsl=list(Dose=ordered(level),
+                            Variety=letters[1:3]),
+              contrasts=list(f1=cont_crd4,
+                             f2=cont_qualit))
+summary(crd10)
+
 #! CRD - with other errors
 # Binomial error
 e_binom <- as.matrix(rbinom(n=15,
@@ -219,7 +265,7 @@ rcbd1 <- gexp(mu=0,
               eb=c(2, 1),
               round=1,
               type='RCBD')
-
+summary(rcbd1)
 str(rcbd1)
 
 mod <- lm(Y1 ~ Block + X1,
@@ -279,7 +325,7 @@ summary(rcbd3)
 
 #! RCBD - With other contrasts
 # Orthogonal polynomios
-cont_rcbd4 <- contr.poly(4)  s
+cont_rcbd4 <- contr.poly(4)  
 
 rcbd4 <- gexp(ef=list(f1=c(1, 3, 0, 0)),
               eb=c(1, 2, 3),

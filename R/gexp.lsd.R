@@ -84,8 +84,10 @@ gexp.lsd <- function(mu        = mu,
   Z <- NULL
   
   if(is.null(err)){
-    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = diag(length(mu)))
+
+   e <- mvtnorm::rmvnorm(n = dim(X)[1],  
+                          sigma = diag(ncol(as.matrix(ef[[1]]))))  
+
   } else {
     if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
 
@@ -93,12 +95,33 @@ gexp.lsd <- function(mu        = mu,
   } 
  
   if(length(mu)!=0 & length(mu) == 1){
+
     betas <- as.matrix(c(mu, erow, ecol, f1)) 
+
   } else if(length(mu)!=0 & length(mu) > 1){
+
     betas <- rbind(mu, erow, ecol, f1) 
+
+ } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+
+    aux_betas <- lapply(ef[-1],
+                        function(x)x[-1])
+    aux_betas1 <- c(ef[1],aux_betas)
+    aux_betas2 <- lapply(aux_betas1,as.matrix)
+    aux_betas3 <- do.call('rbind',aux_betas2)
+    betas <- as.matrix(c(erow,ecol,aux_betas3))
+
   } else {
-    betas <- as.matrix(c(erow, ecol, f1))
+
+    aux_betas <- lapply(ef,as.matrix)
+    aux_betas2 <- do.call('rbind',aux_betas)
+    betas <- as.matrix(c(erow,ecol,aux_betas2))
+    
   }
+   
+    #   } else {
+    #     betas <- as.matrix(c(erow, ecol, f1))
+    #   }
 
   yl <- X%*%betas + e
 
