@@ -57,10 +57,10 @@ plot.gexp.rcbd <- function(x,
 
   }
 
-  aux_colsquare <- eval(getCall(x)$ef)
+  aux_colsquare <- eval(getCall(x)$fe)
   aux_colsquare1 <- lapply(aux_colsquare, length)
   columsquare <- do.call('prod', aux_colsquare1)*repp
-  rowsquare <- length(eval(getCall(x)$eb))
+  rowsquare <- length(eval(getCall(x)$blke))
 
   aux_posxcentro <- 1/rowsquare
   aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)

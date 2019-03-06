@@ -1,26 +1,26 @@
 gexp.fe <- function(mu        = mu,
                     err       = err, 
                     r         = r,   
-                    factorsl  = factorsl, 
-                    blocksl   = blocksl,
-                    rowsl     = rowsl,
-                    colsl     = colsl,
-                    ef        = ef, 
-                    eint      = eint, 
-                    eb        = eb, 
-                    erow      = erow, 
-                    ecol      = ecol, 
+                    fl        = fl,
+                    blkl      = blkl,
+                    rowl      = rowl,
+                    coll      = coll,
+                    fe        = fe,
+                    inte      = inte,
+                    blke      = blke,
+                    rowe      = rowe,
+                    cole      = cole,
                     nrand     = nrand,    
                     contrasts = contrasts,
                     round     = round,
                     random    = random) 
 {
-  if(is.null(ef)) stop("You must specify at least a factor") 
-  if(is.null(factorsl)){  
-    aux_factor <- lapply(ef,
+  if(is.null(fe)) stop("You must specify at least a factor")
+  if(is.null(fl)){
+    aux_factor <- lapply(fe,
                          function(x) as.matrix(x))
 
-    names(aux_factor) <- paste('X', 1:length(ef), sep='')
+    names(aux_factor) <- paste('X', 1:length(fe), sep='')
 
     aux_factor1 <- as.list(tolower(names(aux_factor)))
     aux_factor2 <- lapply(aux_factor,
@@ -33,13 +33,13 @@ gexp.fe <- function(mu        = mu,
 
     names(factors) <- names(aux_factor)
   } else {
-    if(!is.list(factorsl)){
+    if(!is.list(fl)){
       stop('This argument must be a list. See examples!')
     }
-    factors <- factorsl  
+    factors <- fl
   }
 
-  if(is.null(eb) & is.null(erow) & is.null(ecol)){ #é um DIC
+  if(is.null(blke) & is.null(rowe) & is.null(cole)){ #é um DIC
 
     factors$r <- 1:r
 
@@ -51,10 +51,10 @@ gexp.fe <- function(mu        = mu,
                           collapse='*')) 
 
     if(is.null(contrasts)){
-      contrasts <- lapply(factors[1:length(ef)], function(x)diag(length(x)))
+      contrasts <- lapply(factors[1:length(fe)], function(x)diag(length(x)))
     }
 
-    names(contrasts) <- names(dados)[1:length(ef)]
+    names(contrasts) <- names(dados)[1:length(fe)]
 
     X  <- model.matrix(eval(parse(text=aux_X1)),
                        dados,
@@ -63,7 +63,7 @@ gexp.fe <- function(mu        = mu,
     if(is.null(err)){
 
       e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                            sigma = diag(ncol(as.matrix(ef[[1]]))))   
+                            sigma = diag(ncol(as.matrix(fe[[1]]))))
 
     } else {
       if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
@@ -72,7 +72,7 @@ gexp.fe <- function(mu        = mu,
     }   
 
     #+ Help to interaction effects!
-    auxl <- lapply(ef, length)
+    auxl <- lapply(fe, length)
     niv <- unlist(auxl)
     n <- length(niv)
     resl <- list()
@@ -80,38 +80,38 @@ gexp.fe <- function(mu        = mu,
     resl1 <- lapply(resl, function(x)apply(x, 2, prod))
     resl2 <- sum(unlist(resl1))
 
-    if(length(eint)!=resl2){
+    if(length(inte)!=resl2){
       tcltk::tkmessageBox(message=paste('The number of effects this argument is ', resl2),
-                          icon = 'err')
+                          icon = 'error')
     }
 
     if(length(mu)!=0 & length(mu) == 1){
 
-      betas <- as.matrix(c(mu, unlist(ef), eint)) 
+      betas <- as.matrix(c(mu, unlist(fe), inte))
 
     } else if(length(mu)!=0 & length(mu) > 1){
 
-      betas <- rbind(mu, do.call('rbind', ef), eint) 
+      betas <- rbind(mu, do.call('rbind', fe), inte)
 
-    } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+    } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
 
-      aux_betas <- lapply(ef[-1],
+      aux_betas <- lapply(fe[-1],
                           function(x)x[-1])
-      aux_betas1 <- c(ef[1],aux_betas)
-      aux_betas2 <- lapply(aux_betas1,as.matrix)
-      aux_betas3 <- do.call('rbind',aux_betas2)
-      betas <- as.matrix(c(aux_betas3,eint)) 
+      aux_betas1 <- c(fe[1], aux_betas)
+      aux_betas2 <- lapply(aux_betas1, as.matrix)
+      aux_betas3 <- do.call('rbind', aux_betas2)
+      betas <- as.matrix(c(aux_betas3, inte))
 
     } else {
 
-      aux_betas <- lapply(ef,as.matrix)
-      aux_betas2 <- do.call('rbind',aux_betas)
-      betas <- as.matrix(c(aux_betas2,eint))
+      aux_betas <- lapply(fe, as.matrix)
+      aux_betas2 <- do.call('rbind', aux_betas)
+      betas <- as.matrix(c(aux_betas2, inte))
 
     }
 
     #     } else {
-    #       betas <- as.matrix(unlist(ef), eint)
+    #       betas <- as.matrix(unlist(fe), inte)
     #     }
     # 
     yl <- X%*%betas + e
@@ -120,13 +120,13 @@ gexp.fe <- function(mu        = mu,
 
     Y <- round(yl, round)
 
-  } else if(!is.null(eb) & is.null(erow) & is.null(ecol)){#é um DBC
+  } else if(!is.null(blke) & is.null(rowe) & is.null(cole)){#é um DBC
 
     factors$r <- 1:r 
 
-    ifelse(is.null(blocksl), 
-           factors$Block <- 1:dim(as.matrix(eb))[1],
-           factors[[names(blocksl)]] <- unlist(blocksl))
+    ifelse(is.null(blkl),
+           factors$Block <- 1:dim(as.matrix(blke))[1],
+           factors[[names(blkl)]] <- unlist(blkl))
 
     dados <- expand.grid(factors,
                          KEEP.OUT.ATTRS = FALSE)
@@ -145,7 +145,7 @@ gexp.fe <- function(mu        = mu,
     if(is.null(contrasts)){
       contrasts <- lapply(factors[aux_lf!='r'], function(x)diag(length(x)))
     } else{
-      if((length(ef)+length(eb)) != length(contrasts))stop('You must be include all the contrasts!')
+      if((length(fe)+length(blke)) != length(contrasts))stop('You must be include all the contrasts!')
     }
 
     names(contrasts) <- names(dados)[aux_lf!='r']
@@ -157,7 +157,7 @@ gexp.fe <- function(mu        = mu,
     if(is.null(err)){
 
       e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                            sigma = diag(ncol(as.matrix(ef[[1]])))) 
+                            sigma = diag(ncol(as.matrix(fe[[1]]))))
 
 
     } else {
@@ -168,7 +168,7 @@ gexp.fe <- function(mu        = mu,
     }
 
     #+ Help to interaction effects!
-    auxl <- lapply(ef, length)
+    auxl <- lapply(fe, length)
     niv <- unlist(auxl)
     n <- length(niv)
     resl <- list()
@@ -176,40 +176,40 @@ gexp.fe <- function(mu        = mu,
     resl1 <- lapply(resl, function(x)apply(x, 2, prod))
     resl2 <- sum(unlist(resl1))
 
-    if(length(eint)!=resl2){
+    if(length(inte)!=resl2){
       tcltk::tkmessageBox(message=paste('The number of effects this argument is ', resl2),
-                          icon = 'err')
+                          icon = 'error')
     }
     #End
 
     if(length(mu)!=0 & length(mu) == 1){
 
-      betas <- as.matrix(c(mu, eb, unlist(ef), eint)) 
+      betas <- as.matrix(c(mu, blke, unlist(fe), inte))
 
     } else if(length(mu)!=0 & length(mu) > 1){
 
-      betas <- rbind(mu, eb, do.call('rbind', ef), eint) 
+      betas <- rbind(mu, blke, do.call('rbind', fe), inte)
 
-    } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+    } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
 
-      aux_betas <- lapply(ef[-1],
+      aux_betas <- lapply(fe[-1],
                           function(x)x[-1])
-      aux_betas1 <- c(ef[1],aux_betas)
-      aux_betas2 <- lapply(aux_betas1,as.matrix)
-      aux_betas3 <- do.call('rbind',aux_betas2)
-      betas <- as.matrix(c(eb,aux_betas3,eint))
+      aux_betas1 <- c(fe[1], aux_betas)
+      aux_betas2 <- lapply(aux_betas1, as.matrix)
+      aux_betas3 <- do.call('rbind', aux_betas2)
+      betas <- as.matrix(c(blke, aux_betas3, inte))
 
     } else {
 
-      aux_betas <- lapply(ef,as.matrix)
-      aux_betas2 <- do.call('rbind',aux_betas)
-      betas <- as.matrix(c(eb,aux_betas2,eint))
+      aux_betas <- lapply(fe, as.matrix)
+      aux_betas2 <- do.call('rbind', aux_betas)
+      betas <- as.matrix(c(blke, aux_betas2, inte))
 
     }
 
     #     } else {
     # 
-    #       betas <- as.matrix(c(eb, unlist(ef), eint))
+    #       betas <- as.matrix(c(blke, unlist(fe), inte))
     # 
     #     }
 
@@ -226,13 +226,13 @@ gexp.fe <- function(mu        = mu,
 
     n <- length(aux_trats2)
 
-    ifelse(is.null(rowsl),
+    ifelse(is.null(rowl),
            levelsrows <- factor(rep(1:n, rep(n, n))),
-           levelsrows <- unlist(rowsl))
+           levelsrows <- unlist(rowl))
 
-    ifelse(is.null(colsl),
+    ifelse(is.null(coll),
            levelscols <- factor(rep(1:n, n)),
-           levelscols <- unlist(colsl))
+           levelscols <- unlist(coll))
 
     aux_trats3 <- latin(n, 
                         levelss = aux_trats2, 
@@ -246,15 +246,15 @@ gexp.fe <- function(mu        = mu,
                          Column = levelscols,
                          trats)
 
-    if(!is.null(rowsl)){
+    if(!is.null(rowl)){
       names(dados) <- gsub('Row',
-                           names(rowsl),
+                           names(rowl),
                            names(dados))
     }
 
-    if(!is.null(colsl)){
+    if(!is.null(coll)){
       names(dados) <- gsub('Column',
-                           names(colsl),
+                           names(coll),
                            names(dados))
     }
 
@@ -270,7 +270,7 @@ gexp.fe <- function(mu        = mu,
     if(is.null(contrasts)){
       contrasts <- lapply(aufactors, function(x)diag(length(x)))
     } else{
-      if((length(ef)+length(erow)+length(ecol)) != length(contrasts))stop('You must be include all the contrasts!')
+      if((length(fe)+length(rowe)+length(cole)) != length(contrasts))stop('You must be include all the contrasts!')
     }
 
     names(contrasts) <- names(dados)
@@ -282,7 +282,7 @@ gexp.fe <- function(mu        = mu,
     if(is.null(err)){
 
       e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                            sigma = diag(ncol(as.matrix(ef[[1]]))))   
+                            sigma = diag(ncol(as.matrix(fe[[1]]))))
 
     } else {
       if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
@@ -292,7 +292,7 @@ gexp.fe <- function(mu        = mu,
     } 
 
     #+ Help to interaction effects!
-    auxl <- lapply(ef, length)
+    auxl <- lapply(fe, length)
     niv <- unlist(auxl)
     n <- length(niv)
     resl <- list()
@@ -300,40 +300,40 @@ gexp.fe <- function(mu        = mu,
     resl1 <- lapply(resl, function(x)apply(x, 2, prod))
     resl2 <- sum(unlist(resl1))
 
-    if(length(eint)!=resl2){
+    if(length(inte)!=resl2){
       tcltk::tkmessageBox(message=paste('The number of effects this argument is ', resl2),
-                          icon = 'err')
+                          icon = 'error')
     }
     #End
 
     if(length(mu)!=0 & length(mu) == 1){
 
-      betas <- as.matrix(c(mu, erow, ecol, unlist(ef), eint)) 
+      betas <- as.matrix(c(mu, rowe, cole, unlist(fe), inte))
 
     } else if(length(mu)!=0 & length(mu) > 1){
 
-      betas <- rbind(mu, erow, ecol, do.call('rbind', ef), eint) 
+      betas <- rbind(mu, rowe, cole, do.call('rbind', fe), inte)
 
-    } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+    } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
 
-      aux_betas <- lapply(ef[-1],
+      aux_betas <- lapply(fe[-1],
                           function(x)x[-1])
-      aux_betas1 <- c(ef[1],aux_betas)
-      aux_betas2 <- lapply(aux_betas1,as.matrix)
-      aux_betas3 <- do.call('rbind',aux_betas2)
-      betas <- as.matrix(c(erow,ecol,aux_betas3,eint))
+      aux_betas1 <- c(fe[1], aux_betas)
+      aux_betas2 <- lapply(aux_betas1, as.matrix)
+      aux_betas3 <- do.call('rbind', aux_betas2)
+      betas <- as.matrix(c(rowe, cole, aux_betas3, inte))
 
     } else {
 
-      aux_betas <- lapply(ef,as.matrix)
-      aux_betas2 <- do.call('rbind',aux_betas)
-      betas <- as.matrix(c(erow,ecol,aux_betas2,eint))
+      aux_betas <- lapply(fe, as.matrix)
+      aux_betas2 <- do.call('rbind', aux_betas)
+      betas <- as.matrix(c(rowe, cole, aux_betas2, inte))
 
     }
 
     #     } else {
     # 
-    #       betas <- as.matrix(c(erow, ecol, unlist(ef), eint))
+    #       betas <- as.matrix(c(rowe, cole, unlist(fe), inte))
     # 
     #     }
     # 
@@ -346,6 +346,14 @@ gexp.fe <- function(mu        = mu,
   }
 
   Z <- NULL
+
+  # J.C.Faria
+  if(is.null(mu)){
+    dados <- lapply(dados, 
+                    function(x) if(is.ordered(factor(x))) as.numeric(as.character(x)) else x)
+
+    dados <- as.data.frame(dados)                
+  }                  
 
   dados <- cbind(dados, Y)
 

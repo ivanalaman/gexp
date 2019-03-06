@@ -55,7 +55,7 @@ plot.gexp.lsd <- function(x,
 
   }
 
-  rowsquare <- columsquare <- length(eval(getCall(x)$erow))
+  rowsquare <- columsquare <- length(eval(getCall(x)$rowe))
 
   aux_posxcentro <- 1/rowsquare
   aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)

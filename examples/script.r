@@ -1,17 +1,18 @@
 #########       CARREGANDO AS FUNÇÕES       ###########
-R.utils::sourceDirectory('../R')
-library(debug)
-mtrace.off()
-mtrace('plot.gerexp.crd')
-mtrace(gexp.crd)
-mtrace(gexp.rcbd)
+#R.utils::sourceDirectory('./')
+#R.utils::sourceDirectory('../R')
+#library(debug)
+#mtrace.off()
+#mtrace('plot.gerexp.crd')
+#mtrace(gexp.crd)
+#mtrace(gexp.rcbd)
 ######### TESTANDO AS FUNÇÕES NÃO GRÁFICAS ############
 
 #! CRD
 #! 1 factor
 crd_1 <- gexp(mu=10,
               r=3,
-              ef=list(f1=c(1, -1)),
+              fe=list(f1=c(1, -1)),
               round=2)
 
 summary(crd_1)
@@ -35,7 +36,7 @@ summary(tk)
 #! 5 factors
 crd2 <- gexp(mu=0,
              r=2,
-             ef=list(f1=c(1, 1, 5),
+             fe=list(f1=c(1, 1, 5),
                      f2=c(1, 1),
                      f3=c(2, 2, 1),
                      f4=c(1, 5),
@@ -54,7 +55,7 @@ crd3 <- gexp(mu=c(5, 2),
 #                                                 0, 1),
 #                                               ncol=2)),
              r=3,
-             ef=list(f1=matrix(c(1, 1,
+             fe=list(f1=matrix(c(1, 1,
                                  5, 1,
                                  1, 1),
                                ncol=2,
@@ -71,28 +72,21 @@ cont_crd4 <- contr.poly(length(level))
 # Linear
 crd4 <- gexp(mu=NULL,
              r=4,
-             ef=list(f1=c(2, 10, 0, 0)),
-             factorsl=list(Dose=ordered(level)),
+                       # B0 B1 B2 B3  Linear only
+             fe=list(f1=c(2, 5, 0, 0)),
+             fl=list(Dose=ordered(level)),
              contrasts=list(f1=cont_crd4))
 
+str(crd4)
+summary(crd4)
 
-
-crd44 <- crd4$dfm
-crd44$dose <- as.numeric(as.character(crd44$Dose))
-summary(crd44)
-
-plot(Y1 ~ dose,
-     crd44)
-
-md <- with(crd44,
+md <- with(crd4$dfm,
            tapply(Y1,
-                  dose,
+                  Dose,
                   mean))
 
-plot(md ~ names(md))
-
-reg_crd <- lm(Y1 ~ Dose,
-             crd44)
+reg_crd <- lm(Y1 ~ ordered(Dose),
+              crd4$dfm)
 
 summary(reg_crd)
 fitted(reg_crd)
@@ -100,37 +94,40 @@ fitted(reg_crd)
 x <- matrix(c(level,
               level^2,
               level^3),
-              ncol=3)  
+              ncol=3)
 
 X <- cbind(rep(1, 4),
            x)
 
 theta <- coef(reg_crd)
+coef(reg_crd)
 
 Z <- cbind(rep(1, 4), cont_crd4)
 
-(betas <- solve(X)%*%Z%*%theta)
+betas <- solve(X)%*%Z%*%theta
 
 # Quadratic
 crd5 <- gexp(mu=NULL,
              r=4,
-             ef=list(f1=c(2, 1, 5, 0)),
-             factorsl=list(Dose=ordered(c(0, 10, 20, 30))),
+                       # B0 B1 B2 B3  quadratic
+             fe=list(f1=c(2, 0, 5, 0)),
+             fl=list(Dose=ordered(c(0, 10, 20, 30))),
              contrasts=list(f1=cont_crd4))
 
 crd55 <- crd5$dfm
-crd55$dose <- as.numeric(as.character(crd55$Dose))
+#crd55$dose <- as.numeric(as.character(crd55$Dose))
 
-plot(Y1 ~ dose, crd55)
+plot(Y1 ~ Dose,
+     crd55)
 
 medias  <- with(crd55,
                 tapply(Y1,
-                       Dose,
+                       ordered(Dose),
                        mean))
 
 plot(medias ~ names(medias))
 
-reg_crd2 <- lm(Y1 ~ Dose,
+reg_crd2 <- lm(Y1 ~ ordered(Dose),
               crd55)
 
 summary(reg_crd2)
@@ -139,14 +136,15 @@ fitted(reg_crd2)
 # Cubic
 crd6 <- gexp(mu=NULL,
              r=4,
-             ef=list(f1=c(2, 1, 1, 10)),
-             factorsl=list(Dose=ordered(c(0, 10, 20, 30))),
+                       # B0 B1 B2 B3  cubic
+             fe=list(f1=c(2, 0, 0, 5)),
+             fl=list(Dose=ordered(c(0, 10, 20, 30))),
              contrasts=list(f1=cont_crd4))
 
 crd66 <- crd6$dfm
-crd66$dose <- as.numeric(as.character(crd66$Dose))
+#crd66$dose <- as.numeric(as.character(crd66$Dose))
 
-plot(Y1 ~ dose,
+plot(Y1 ~ Dose,
      crd66)
 
 medias  <- with(crd66,
@@ -156,7 +154,7 @@ medias  <- with(crd66,
 
 plot(medias ~ names(medias))
 
-reg_crd3 <- lm(Y1 ~ Dose,
+reg_crd3 <- lm(Y1 ~ ordered(Dose),
                crd66)
 
 summary(reg_crd3)
@@ -171,14 +169,14 @@ cont_crd7 <- matrix(c(level,
 
 crd7 <- gexp(mu=NULL,
              r=4,
-             ef=list(f1=c(2, 10, 0, 0)),
-             factorsl=list(Dose=ordered(c(0, 10, 20, 30))),
+             fe=list(f1=c(2, 10, 0, 0)),
+             fl=list(Dose=ordered(c(0, 10, 20, 30))),
              contrasts=list(f1=cont_crd7))
 
 crd77 <- crd7$dfm
-crd77$dose <- as.numeric(as.character(crd77$Dose))
+#crd77$dose <- as.numeric(as.character(crd77$Dose))
 
-plot(Y1 ~ dose, crd77)
+plot(Y1 ~ Dose, crd77)
 
 medias  <- with(crd77,
                 tapply(Y1,
@@ -187,7 +185,7 @@ medias  <- with(crd77,
 
 plot(medias ~ names(medias))
 
-reg_crd4 <- lm(Y1 ~ dose + I(dose^2) + I(dose^3),
+reg_crd4 <- lm(Y1 ~ Dose + I(Dose^2) + I(Dose^3),
                crd77)
 
 summary(reg_crd4)
@@ -197,10 +195,10 @@ fitted(reg_crd4)
 # No caso de dois ou mais fatores, basta informar o valor de beta0 apenas para o primeiro fator.
 crd8 <- gexp(mu=NULL,
              r=4,
-             ef=list(f1=c(2, 10, 0, 0),#linear
+             fe=list(f1=c(2, 10, 0, 0),#linear
                      f2=c(0,3,4,0)),#quadrático
-             factorsl=list(Fosfo=ordered(level),
-                           Nitro=ordered(1:4)),
+             fl=list(Fosfo=ordered(level),
+                     Nitro=ordered(1:4)),
              contrasts=list(f1=cont_crd4,f2=cont_crd4))
 
 with(crd8$dfm,
@@ -211,13 +209,13 @@ with(crd8$dfm,
 # Multivariated!
 crd9 <- gexp(mu=NULL,
              r=4,               #L #Q
-             ef=list(f1=matrix(c(2, 1, 
+             fe=list(f1=matrix(c(2, 1,
                                  10,1, 
                                  0, 5,
                                  0, 0),
                                ncol = 2,
                                byrow=TRUE)),
-             factorsl=list(Dose=ordered(level)),
+             fl=list(Dose=ordered(level)),
              contrasts=list(f1=cont_crd4))
 
 with(crd9$dfm,
@@ -226,16 +224,19 @@ with(crd9$dfm,
      plot(Y2 ~ Dose))
 
 #! Contrastes polinomiais e de tratamentos juntos
-error <- matrix(rep(0,24),ncol=1)
-cont_qualit  <- diag(3) 
+(error <- matrix(rep(0, 24), 
+                 ncol=1))
+
+(cont_qualit  <- diag(3) )
+
 crd10 <- gexp(mu=NULL,
-              err = error,
+              err=error,
               r=2,               
-              ef=list(f1=c(2, 1, 0, 0),#quantitative linear
-                      f2=c(0,1,0)),#qualitative
-              factorsl=list(Dose=ordered(level),
-                            Variety=letters[1:3]),
-              contrasts=list(f1=cont_crd4,
+              fe=list(f1=c(2, 1, 0, 0), # Quantitative linear
+                      f2=c(0, 1, 0)),   # Qualitative
+              fl=list(Dose=ordered(level),
+                      Variety=letters[1:3]),
+              contrasts=list(f1=cont_crd,
                              f2=cont_qualit))
 summary(crd10)
 
@@ -248,7 +249,7 @@ e_binom <- as.matrix(rbinom(n=15,
 crd8 <- gexp(mu=20,
              err=e_binom,
              r=5,
-             ef=list(f1=c(1, 4, 1)))
+             fe=list(f1=c(1, 4, 1)))
 
 summary(crd8)
 
@@ -261,8 +262,8 @@ shapiro.test(mod8$res)
 
 #! RCBD
 rcbd1 <- gexp(mu=0,
-              ef=list(f1=c(5, 1, 1)),
-              eb=c(2, 1),
+              fe=list(f1=c(5, 1, 1)),
+              blke=c(2, 1),
               round=1,
               type='RCBD')
 summary(rcbd1)
@@ -282,8 +283,8 @@ summary(tk)
 #! RCBD without replication
 rcbd2 <- gexp(mu=0,
               r=1,
-              ef=list(f1=c(5, 1, 1)),
-              eb=c(2, 1),
+              fe=list(f1=c(5, 1, 1)),
+              blke=c(2, 1),
               round=1,
               type='RCBD')
 
@@ -307,16 +308,16 @@ rcbd3 <- gexp(mu=c(0, 2),
 #                                   sigma=matrix(c(1, 0, 
 #                                                  0, 1),
 #                                                ncol=2)),
-              ef=list(f1=matrix(c(1, 1, 
+              fe=list(f1=matrix(c(1, 1,
                                   5, 1, 
                                   1, 1),
                                 ncol=2,
                                 byrow=TRUE)),
-              eb=matrix(c(2, 1, 
-                          1, 2, 
-                          1, 1),
-                        ncol=2,
-                        byrow=TRUE),
+              blke=matrix(c(2, 1,
+                            1, 2,
+                            1, 1),
+                          ncol=2,
+                          byrow=TRUE),
               round=1,
               type='RCBD')
 
@@ -327,19 +328,19 @@ summary(rcbd3)
 # Orthogonal polynomios
 cont_rcbd4 <- contr.poly(4)  
 
-rcbd4 <- gexp(ef=list(f1=c(1, 3, 0, 0)),
-              eb=c(1, 2, 3),
+rcbd4 <- gexp(fe=list(f1=c(1, 3, 0, 0)),
+              blke=c(1, 2, 3),
               r=1,
-              factorsl=list(Dose=ordered(c(0, 2, 4, 6))),
-              blocksl=list(bloco=c('B1', 'B2', 'B3')),
+              fl=list(Dose=ordered(c(0, 2, 4, 6))),
+              blkl=list(bloco=c('B1', 'B2', 'B3')),
               contrasts=list(f1=cont_rcbd4,
                              bloco=diag(3)),
               type='RCBD')
 
 rcbd44 <- rcbd4$dfm
-rcbd44$dose <- as.numeric(as.character(rcbd44$Dose))
+#rcbd44$dose <- as.numeric(as.character(rcbd44$Dose))
 
-plot(Y1 ~ dose, rcbd44)
+plot(Y1 ~ Dose, rcbd44)
 
 medias  <- with(rcbd44,
                 tapply(Y1,
@@ -362,9 +363,9 @@ fitted(reg_rcbd4m)
 
 #! LSD 
 lsd1 <- gexp(mu=30,
-             ef=list(f1=c(1, 1, 10)),
-             erow=c(1, 1, 1),
-             ecol=c(1, 1, 1),
+             fe=list(f1=c(1, 1, 10)),
+             rowe=c(1, 1, 1),
+             cole=c(1, 1, 1),
              round=1,
              type='LSD')
 
@@ -385,9 +386,9 @@ summary(tk)
 
 #! FE - CRD
 fe_crd1 <- gexp(mu=30,
-                ef=list(f1=c(1, 1, 3),
+                fe=list(f1=c(1, 1, 3),
                         f2=c(1, 1)),
-                eint=c(3, 1, 1, 1, 1, 5),
+                inte=c(3, 1, 1, 1, 1, 5),
                 round=1,
                 type='FE')
 
@@ -408,10 +409,10 @@ summary(tk)
 
 #! FE - CRD: Tree factors
 fe_crd2 <- gexp(mu=30,
-                ef=list(f1=c(1, 1, 3),
+                fe=list(f1=c(1, 1, 3),
                         f2=c(1, 1),
                         f3=c(2, 1, 1, 1)),
-                eint=rep(1,50),
+                inte=rep(1,50),
                 round=1,
                 type='FE')
 
@@ -419,10 +420,10 @@ str(fe_crd2)
 
 #! FE - RCBD
 fe_rcbd1 <- gexp(mu=30,
-                 ef=list(f1=c(1, 1, 1),
+                 fe=list(f1=c(1, 1, 1),
                          f2=c(2, 3)),
-                 eb=c(1, 3),
-                 eint=c(1, 15, 1, 1, 5, 1),
+                 blke=c(1, 3),
+                 inte=c(1, 15, 1, 1, 5, 1),
                  round=1,
                  type='FE')
 
@@ -444,11 +445,11 @@ summary(tk)
 
 #! FE - LSD
 fe_lsd1 <- gexp(mu=30,
-                ef=list(f1=c(1, 1),
+                fe=list(f1=c(1, 1),
                         f2=c(2, 3)),
-                erow=c(1, 3, 2, 1),
-                ecol=c(2, 2, 1, 1),
-                eint=c(1, 15, 1, 1),
+                rowe=c(1, 3, 2, 1),
+                cole=c(2, 2, 1, 1),
+                inte=c(1, 15, 1, 1),
                 round=1,
                 type='FE')
 
@@ -470,9 +471,9 @@ summary(tk)
 
 #! SPLIT PLOT - CRD: two level
 split_crd1 <- gexp(mu=30,
-                   ef=list(f1=c(1, 1),
+                   fe=list(f1=c(1, 1),
                            f2=c(2, 3)),
-                   eint=c(1, 15, 1, 1),
+                   inte=c(1, 15, 1, 1),
                    round=1,
                    type='SPE')
 
@@ -499,10 +500,10 @@ summary(tk)
 
 #! SPLIT PLOT - CRD: tree level
 split_crd2 <- gexp(mu=30,
-                   ef=list(f1=c(1, 1),
+                   fe=list(f1=c(1, 1),
                            f2=c(2, 3),
                            f3=c(1, 1, 1)),
-                   eint=c(1, 15, 1, 1, rep(1, 24)),
+                   inte=c(1, 15, 1, 1, rep(1, 24)),
                    round=1,
                    type='SPE')
 
@@ -510,11 +511,11 @@ str(split_crd2)
 
 #SPLIT - RCBD
 split_rcbd1 <- gexp(mu=30,
-                    ef=list(f1=c(1, 1),
+                    fe=list(f1=c(1, 1),
                             f2=c(2, 3),
                             f3=c(1, 1, 1)),
-                    eb=c(1, 2, 3, 3),
-                    eint=c(1, 15, 1, 1, 1, 3, 4, 2, 1, 1, 4, 1,
+                    blke=c(1, 2, 3, 3),
+                    inte=c(1, 15, 1, 1, 1, 3, 4, 2, 1, 1, 4, 1,
                            1, 2, 1, 1,
                            1, 1, 1, 1, 1, 1,
                            1, 1, 3, 3, 3, 3),
@@ -544,11 +545,11 @@ summary(tk)
 
 #! SPLIT - LSD
 split_lsd1 <- gexp(mu=30,
-                   ef=list(f1=c(1, 1, 2),
+                   fe=list(f1=c(1, 1, 2),
                            f2=c(2, 3, 1)),
-                   eint=c(1, 15, 1, 1, 1, 1, 1, 1, 1),
-                   erow=c(1, 1, 1),
-                   ecol=c(1, 1, 1),
+                   inte=c(1, 15, 1, 1, 1, 1, 1, 1, 1),
+                   rowe=c(1, 1, 1),
+                   cole=c(1, 1, 1),
                    round=1,
                    type='SPE')
 
@@ -574,46 +575,48 @@ tk <- TukeyC(mod,
 summary(tk)
 
 #! SPLIT - LSD: tree factors 
+# TODO: não entendi este experimento!
 split_lsd2 <- gexp(mu=30,
-                   ef=list(f1=c(1, 1, 2),
+                   fe=list(f1=c(1, 1, 2),
                            f2=c(2, 3, 1),
                            f3=c(1, 1)),
-                   eint=rep(1, 39),
-                   erow=c(1, 1, 1),
-                   ecol=c(1, 1, 1),
+                   inte=rep(1, 39),
+                   rowe=c(1, 1, 1),
+                   cole=c(1, 1, 1),
                    round=1,
                    type='SPE')
 
 summary(split_lsd2)
+plot(split_lsd2)  #TODO: não dá o plot
 
 ########## COM FATORES FORNECIDOS PELOS USUÁRIOS #######
 crd_f1 <- update(crd_1,
-                 factorsl=list('Species'=c('Oreochromis', 'Piaractus')))
+                 fl=list('Species'=c('Oreochromis', 'Piaractus')))
 
 str(crd_f1)
 
 crd_f2 <- update(crd_1,
                  r=2,
-                 ef=list(f1=c(1, 1, 1)),
-                 factorsl=list('Breed'=c('Dexter', 'Guernsey', 'Jersey')))
+                 fe=list(f1=c(1, 1, 1)),
+                 fl=list('Breed'=c('Dexter', 'Guernsey', 'Jersey')))
 
 str(crd_f2)
 
 rcbd_f1 <- update(rcbd1,
-                  factorsl=list('Variety'=c('A', 'B', 'C')))
+                  fl=list('Variety'=c('A', 'B', 'C')))
 
 str(rcbd_f1)
 
 lsd_f1 <- update(lsd1,
-                 factorsl=list('Horse'=c('English', 'QM', 'ML')),
-                 rowsl=list('Linha'=1:3),
-                 colsl=list('Coluna'=1:3))
+                 fl=list('Horse'=c('English', 'QM', 'ML')),
+                 rowl=list('Linha'=1:3),
+                 coll=list('Coluna'=1:3))
 
 str(lsd_f1)
 
 fe_crd_f1 <- update(fe_crd1,
-                    factorsl=list('Ration'=c('0', '10', '20'),
-                                  'Chicken'=c('Cob', 'Ross')))
+                    fl=list('Ration'=c('0', '10', '20'),
+                            'Chicken'=c('Cob', 'Ross')))
 
 str(fe_crd_f1)
 
@@ -624,22 +627,22 @@ fe_rcbd_f1 <- update(fe_rcbd1,
 str(fe_rcbd_f1)
 
 fe_lsd_f1 <- update(fe_lsd1,
-                    factorsl=list('Ration'=c('0', '10'),
-                                  'Chicken'=c('Cob', 'Ross')))
+                    fl=list('Ration'=c('0', '10'),
+                            'Chicken'=c('Cob', 'Ross')))
 
 str(fe_lsd_f1)
 
 split_crd_f1 <- update(split_crd1,
-                       factorsl=list('Forage'=c('A', 'B'),
-                                     'Period'=c('I1', 'I2')))
+                       fl=list('Forage'=c('A', 'B'),
+                               'Period'=c('I1', 'I2')))
 
 str(split_crd_f1)
 
 split_lsd_f1 <- update(split_lsd1,
-                       factorsl=list('Ration'=c('0', '10', '20'),
-                                     'Chicken'=c('Cob', 'Ross', 'Caneludo')),
-                       rowsl=list('Linha'=1:3),
-                       colsl=list('Coluna'=1:3))
+                       fl=list('Ration'=c('0', '10', '20'),
+                               'Chicken'=c('Cob', 'Ross', 'Caneludo')),
+                       rowl=list('Linha'=1:3),
+                       coll=list('Coluna'=1:3))
 
 str(split_lsd_f1)
 
@@ -654,7 +657,7 @@ plot(crd_f2)
 # Obs: Clique apenas uma vez com o botão esquerdo do mouse sobre a unidade experimental. Após terminar, clique com o botão esquerdo do mouse para encerrar!!
 crd_p1 <- update(crd_1,
                  r=3,
-                 ef=list(f1=c(1, 1)))
+                 fe=list(f1=c(1, 1)))
 
 plot(crd_p1,
      dynamic=TRUE)
@@ -671,8 +674,8 @@ plot(rcbd1)
 # Obs: Clique apenas uma vez com o botão esquerdo do mouse sobre a unidade experimental. Após terminar, clique com o botão esquerdo do mouse para encerrar!!
 rcbd_1p <- update(rcbd1,
                   r=1,
-                  ef=list(f1=c(1, 1, 1, 1)),
-                  eb=c(1, 1, 1))
+                  fe=list(f1=c(1, 1, 1, 1)),
+                  blke=c(1, 1, 1))
 plot(rcbd_1p,
      dynamic=TRUE)
 

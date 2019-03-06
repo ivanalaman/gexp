@@ -44,7 +44,7 @@ plot.gexp.crd <- function(x,
                        sep=''))
   }
 
-  aux_rowsquare <- eval(getCall(x)$ef)
+  aux_rowsquare <- eval(getCall(x)$fe)
   aux_rowsquare1 <- lapply(aux_rowsquare, length)
   rowsquare <- do.call('prod', aux_rowsquare1)
   columsquare <- eval(getCall(x)$r)

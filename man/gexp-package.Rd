@@ -3,20 +3,44 @@
 
 \docType{package}
 
-\title{Generator of Experiments}
+\title{gexp: Generator of Experiments}
 
-\description{O pacote gexp foi criado para possibilitar planejar, criar e modelar experimentos estruturados, ou seja, sob simulando os delineamentos experimentais, no ambiente R. Os delineamentos são: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD) e Latin Squares Design (LSD). Os tipos de experimentos são: Factorial Experiment (FE) e Split-plot Experiment (SPE). Os experimentos podem ser gerados com uma ou mais variável de resposta, no último caso, pode se impor uma estrutura de covariância estre elas. É também possível planejar experimentos com o auxílio das funções gráficas para uso em planejamento a partir de figuras ou fotos da área experimental.
+\description{O pacote \code{gexp} foi criado para possibilitar planejar, criar
+ e modelar experimentos estruturados, ou seja, sob delineamento
+ experimental. Na modelagem permite simular resultados de experimentos com
+ possibilidade do usuÃ¡rio informar os efeitos e o(s) erro(s) aleatÃ³rio(s).
+ Os delineamentos sÃ£o: Completely Randomized Design (CRD),
+ Randomized Complete Block Design (RCBD) e
+ Latin Squares Design (LSD). Os tipos de experimentos sÃ£o: Factorial Experiment
+ (FE) e Split-plot Experiment (SPE).
 
- Os possíveis usos são múltiplos: no planejamento possibilita efetuar a distribuição e aleatorização dos tratamentos e unidades experimentais; na análise de dados permite gerar experimentos para aplicação em avaliações individuais e pode ser usado também para gerar experimentos para validações de novos recursos computacionais na área de análise de dados estruturados.
+ Os experimentos podem ser gerados com uma ou mais variÃ¡vel de resposta,
+ no Ãºltimo caso, pode se impor uma estrutura de covariÃ¢ncia estre elas.
+ Ã‰ tambÃ©m possÃ­vel planejar experimentos com o auxÃ­lio das funÃ§Ãµes grÃ¡ficas
+ para uso em planejamento a partir de figuras ou fotos da Ã¡rea experimental.
 
- Em síntese, o pacote provê recursos computacionais úteis no planejamento e modelagem de experimentos estruturados no ambiente R.
+ Os possÃ­veis usos sÃ£o mÃºltiplos: no planejamento possibilita efetuar a
+ distribuiÃ§Ã£o e aleatorizaÃ§Ã£o dos tratamentos e unidades experimentais;
+ na anÃ¡lise de dados permite gerar experimentos para aplicaÃ§Ã£o em avaliaÃ§Ãµes
+ individuais e pode ser usado tambÃ©m para gerar experimentos para validaÃ§Ãµes
+ de novos recursos computacionais na Ã¡rea de anÃ¡lise de dados estruturados.
+
+ Em sÃ­ntese, o pacote provÃª recursos computacionais Ãºteis no planejamento e
+ modelagem de experimentos estruturados no ambiente R.
 }
 
-\details{Em algumas situações, temos o interesse em simular uma variável aleatória de acordo com o procedimento experimental e cujo as diferenças entre tratamentos pode ser pré-determinada. Em um delineamento inteiramente ao acaso com dois tratamentos por exemplo, podemos ter interesse em simular uma variável aleatória cujo o tratamento A terá um efeito de 1 desvio e o tratamento B um efeito de 3 desvios em relação a uma determinada média geral. 
+\details{Em algumas situaÃ§Ãµes, temos o interesse em simular uma variÃ¡vel
+aleatÃ³ria de acordo com o procedimento experimental onde as diferenÃ§as entre
+tratamentos sejam prÃ©-determinadas. Em um delineamento inteiramente ao acaso
+com dois tratamentos por exemplo, podemos ter interesse em simular uma variÃ¡vel
+aleatÃ³ria cujo o tratamento A terÃ¡ um efeito de 1 desvio e o tratamento B um
+efeito de 3 desvios em relaÃ§Ã£o a uma determinada mÃ©dia geral. Adicionalmente,
+pode-se estar interessado em impor uma estrutura de erros prÃ©-estabelecida para
+fins avaliaÃ§Ã£o nas diversas estratÂ´gis de anÃ¡lise.
 }
 
 \author{
-Ivan Bezerra Allaman <ivanalaman@gmail.com> and José Cláudio Faria <joseclaudio.faria@gmail.com>.
+Ivan Bezerra Allaman <ivanalaman@gmail.com> and JosÃ© ClÃ¡udio Faria <joseclaudio.faria@gmail.com>.
 
 Maintainer: Ivan Bezerra Allaman <ivanalaman@gmail.com>
 }

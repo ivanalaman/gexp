@@ -13,7 +13,7 @@ plot.gexp.spe <- function(x,
                           dynamic    = FALSE,
                           ...)
 {
-  if(is.null(getCall(x)$eb) & is.null(getCall(x)$erow) & is.null(getCall(x)$ecol)){ #é um DIC
+  if(is.null(getCall(x)$blke) & is.null(getCall(x)$rowe) & is.null(getCall(x)$cole)){ #é um DIC
 
     aux <- update(x, random=FALSE) 
     aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
@@ -175,7 +175,7 @@ plot.gexp.spe <- function(x,
            unlist(matrplot),
            col = coltext) 
     }         
-  } else if(!is.null(getCall(x)$eb) & is.null(getCall(x)$erow) & is.null(getCall(x)$ecol)){#é um DBC
+  } else if(!is.null(getCall(x)$blke) & is.null(getCall(x)$rowe) & is.null(getCall(x)$cole)){#é um DBC
       
     aux <- update(x, random=FALSE) 
     aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
