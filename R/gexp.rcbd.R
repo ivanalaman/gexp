@@ -1,21 +1,21 @@
 gexp.rcbd <- function(mu        = mu,
                       err       = err,
                       r         = r,
-                      factorsl  = factorsl,
-                      blocksl   = blocksl,
-                      ef        = ef,
-                      eb        = eb,
+                      fl        = fl,
+                      blkl      = blkl,
+                      fe        = fe,
+                      blke      = blke,
                       contrasts = contrasts,
                       round     = round,
                       random    = random)  
 {
-  if(is.null(ef)) stop("You must specify at least a factor") 
+  if(is.null(fe)) stop("You must specify at least a factor")
 
-  if(is.null(factorsl)){ 
-    aux_factor <- lapply(ef,
+  if(is.null(fl)){
+    aux_factor <- lapply(fe,
                          function(x) as.matrix(x))
 
-    names(aux_factor) <- paste('X', 1:length(ef), sep='')
+    names(aux_factor) <- paste('X', 1:length(fe), sep='')
 
     aux_factor1 <- as.list(tolower(names(aux_factor)))
     aux_factor2 <- lapply(aux_factor,
@@ -28,17 +28,17 @@ gexp.rcbd <- function(mu        = mu,
 
     names(factors) <- names(aux_factor)
   } else {
-    if(!is.list(factorsl)){
+    if(!is.list(fl)){
       stop('This argument must be a list. See examples!')
     }
-    factors <- factorsl 
+    factors <- fl
   }
 
   factors$r <- 1:r
 
-  ifelse(is.null(blocksl),
-         factors$Block <- 1:dim(as.matrix(eb))[1],
-         factors[[names(blocksl)]] <- unlist(blocksl))
+  ifelse(is.null(blkl),
+         factors$Block <- 1:dim(as.matrix(blke))[1],
+         factors[[names(blkl)]] <- unlist(blkl))
 
   dados <- expand.grid(factors,
                        KEEP.OUT.ATTRS = FALSE)
@@ -57,7 +57,7 @@ gexp.rcbd <- function(mu        = mu,
   if(is.null(contrasts)){
     contrasts <- lapply(factors[aux_lf!='r'], function(x)diag(length(x)))
   } else{
-    if((length(ef)+1) != length(contrasts))stop('You must be include all the contrasts!')
+    if((length(fe)+1) != length(contrasts))stop('You must be include all the contrasts!')
   }
 
   names(contrasts) <- names(dados)[aux_lf!='r']
@@ -71,7 +71,7 @@ gexp.rcbd <- function(mu        = mu,
   if(is.null(err)){
    
     e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = diag(ncol(as.matrix(ef[[1]])))) 
+                          sigma = diag(ncol(as.matrix(fe[[1]]))))
  
   } else {
     if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
@@ -81,31 +81,31 @@ gexp.rcbd <- function(mu        = mu,
 
   if(length(mu)!=0 & length(mu) == 1){
 
-    betas <- as.matrix(c(mu, eb, unlist(ef))) 
+    betas <- as.matrix(c(mu, blke, unlist(fe)))
 
   } else if(length(mu)!=0 & length(mu) > 1){
 
-    betas <- rbind(mu, eb, do.call('rbind', ef)) 
+    betas <- rbind(mu, blke, do.call('rbind', fe))
 
-  } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+  } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
 
-    aux_betas <- lapply(ef[-1],
+    aux_betas <- lapply(fe[-1],
                         function(x)x[-1])
-    aux_betas1 <- c(ef[1],aux_betas)
-    aux_betas2 <- lapply(aux_betas1,as.matrix)
-    aux_betas3 <- do.call('rbind',aux_betas2)
-    betas <- as.matrix(c(eb,aux_betas3))
+    aux_betas1 <- c(fe[1], aux_betas)
+    aux_betas2 <- lapply(aux_betas1, as.matrix)
+    aux_betas3 <- do.call('rbind', aux_betas2)
+    betas <- as.matrix(c(blke, aux_betas3))
 
   } else {
 
-    aux_betas <- lapply(ef,as.matrix)
-    aux_betas2 <- do.call('rbind',aux_betas)
-    betas <- as.matrix(c(eb,aux_betas2))
+    aux_betas <- lapply(fe, as.matrix)
+    aux_betas2 <- do.call('rbind', aux_betas)
+    betas <- as.matrix(c(blke, aux_betas2))
     
   }
 
   #} else {
-  #  betas <- as.matrix(c(eb, unlist(ef)))
+  #  betas <- as.matrix(c(blke, unlist(fe)))
   #}
 
   yl <- X%*%betas + e
@@ -113,6 +113,14 @@ gexp.rcbd <- function(mu        = mu,
   colnames(yl) <- paste('Y', 1:dim(yl)[2], sep='') 
 
   Y <- round(yl, round)
+
+  # J.C.Faria
+  if(is.null(mu)){
+    dados <- lapply(dados, 
+                    function(x) if(is.ordered(factor(x))) as.numeric(as.character(x)) else x)
+
+    dados <- as.data.frame(dados)                
+  }                  
 
   dados <- cbind(dados, Y)
 

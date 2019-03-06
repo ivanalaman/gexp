@@ -1,41 +1,41 @@
 gexp.lsd <- function(mu        = mu, 
                      err       = err,
-                     factorsl  = factorsl,
-                     rowsl     = rowsl,
-                     colsl     = colsl,
-                     ef        = ef,  
-                     erow      = erow, 
-                     ecol      = ecol, 
+                     fl        = fl,
+                     rowl      = rowl,
+                     coll      = coll,
+                     fe        = fe,
+                     rowe      = rowe,
+                     cole      = cole,
                      nrand     = nrand,    
                      contrasts = contrasts,
                      round     = round, 
                      random    = random)
 {
 
-  if(length(ef) != 1){
+  if(length(fe) != 1){
     stop('Use only one factor!')
   }
 
-  f1 <- ef[[1]]
+  f1 <- fe[[1]]
   n <- length(f1)
 
-  if(is.null(factorsl)){
+  if(is.null(fl)){
     levelss <- paste('x', 1:n, sep='')
   } else {
-    if(length(factorsl)!=1){
+    if(length(fl)!=1){
       stop('Use only one factor!')
     }
 
-    levelss <- unlist(factorsl)
+    levelss <- unlist(fl)
   }
 
-  ifelse(is.null(rowsl),
+  ifelse(is.null(rowl),
     levelsrows <- factor(rep(1:n, rep(n, n))),
-    levelsrows <- factor(rep(unlist(rowsl), rep(n, n))))
+    levelsrows <- factor(rep(unlist(rowl), rep(n, n))))
 
-  ifelse(is.null(colsl),
+  ifelse(is.null(coll),
          levelscols <- factor(rep(1:n, n)),
-         levelscols <- factor(rep(unlist(colsl), n)))
+         levelscols <- factor(rep(unlist(coll), n)))
 
   aux_dados  <- latin(n,
                       levelss = levelss,
@@ -45,21 +45,21 @@ gexp.lsd <- function(mu        = mu,
                      Column = levelscols,
                      X1     = c(aux_dados))
 
-  if(!is.null(rowsl)){
+  if(!is.null(rowl)){
     names(dados) <- gsub('Row',
-                         names(rowsl),
+                         names(rowl),
                          names(dados))
   }
   
-  if(!is.null(colsl)){
+  if(!is.null(coll)){
     names(dados) <- gsub('Column',
-                         names(colsl),
+                         names(coll),
                          names(dados))
   }
    
-  if(!is.null(factorsl)){
+  if(!is.null(fl)){
     names(dados) <- gsub('X1',
-                         names(factorsl),
+                         names(fl),
                          names(dados))
   }
   
@@ -72,7 +72,7 @@ gexp.lsd <- function(mu        = mu,
   if(is.null(contrasts)){
     contrasts <- lapply(factors, function(x)diag(length(x)))
   } else{
-    if((length(ef)+length(erow)+length(ecol)) != length(contrasts))stop('You must be include all the contrasts!')
+    if((length(fe)+length(rowe)+length(cole)) != length(contrasts))stop('You must be include all the contrasts!')
   }
 
   names(contrasts) <- names(dados)
@@ -86,7 +86,7 @@ gexp.lsd <- function(mu        = mu,
   if(is.null(err)){
 
    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = diag(ncol(as.matrix(ef[[1]]))))  
+                          sigma = diag(ncol(as.matrix(fe[[1]]))))
 
   } else {
     if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
@@ -96,31 +96,31 @@ gexp.lsd <- function(mu        = mu,
  
   if(length(mu)!=0 & length(mu) == 1){
 
-    betas <- as.matrix(c(mu, erow, ecol, f1)) 
+    betas <- as.matrix(c(mu, rowe, cole, f1))
 
   } else if(length(mu)!=0 & length(mu) > 1){
 
-    betas <- rbind(mu, erow, ecol, f1) 
+    betas <- rbind(mu, rowe, cole, f1)
 
- } else if(is.null(mu) & length(ef) > 1 & all(unlist(lapply(factorsl,is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+ } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
 
-    aux_betas <- lapply(ef[-1],
+    aux_betas <- lapply(fe[-1],
                         function(x)x[-1])
-    aux_betas1 <- c(ef[1],aux_betas)
-    aux_betas2 <- lapply(aux_betas1,as.matrix)
-    aux_betas3 <- do.call('rbind',aux_betas2)
-    betas <- as.matrix(c(erow,ecol,aux_betas3))
+    aux_betas1 <- c(fe[1], aux_betas)
+    aux_betas2 <- lapply(aux_betas1, as.matrix)
+    aux_betas3 <- do.call('rbind', aux_betas2)
+    betas <- as.matrix(c(rowe, cole, aux_betas3))
 
   } else {
 
-    aux_betas <- lapply(ef,as.matrix)
-    aux_betas2 <- do.call('rbind',aux_betas)
-    betas <- as.matrix(c(erow,ecol,aux_betas2))
+    aux_betas <- lapply(fe, as.matrix)
+    aux_betas2 <- do.call('rbind', aux_betas)
+    betas <- as.matrix(c(rowe, cole, aux_betas2))
     
   }
    
     #   } else {
-    #     betas <- as.matrix(c(erow, ecol, f1))
+    #     betas <- as.matrix(c(rowe, cole, f1))
     #   }
 
   yl <- X%*%betas + e
@@ -128,6 +128,14 @@ gexp.lsd <- function(mu        = mu,
   colnames(yl) <- paste('Y', 1:dim(yl)[2], sep='')  
 
   Y <- round(yl, round)
+
+  # J.C.Faria
+  if(is.null(mu)){
+    dados <- lapply(dados, 
+                    function(x) if(is.ordered(factor(x))) as.numeric(as.character(x)) else x)
+
+    dados <- as.data.frame(dados)                
+  }                  
 
   dados <- cbind(dados, Y)
 

@@ -12,7 +12,7 @@ plot.gexp.fe <- function(x,
                          dynamic    = FALSE,
                          ...)
 {
-  if(is.null(getCall(x)$eb) & is.null(getCall(x)$erow) & is.null(getCall(x)$ecol)){ #é um DIC
+  if(is.null(getCall(x)$blke) & is.null(getCall(x)$rowe) & is.null(getCall(x)$cole)){ #é um DIC
 
     aux <- update(x, random=TRUE) 
     aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
@@ -120,7 +120,7 @@ plot.gexp.fe <- function(x,
            Lfactors,
            col = coltext)
     }         
-  } else if(!is.null(getCall(x)$eb) & is.null(getCall(x)$erow) & is.null(getCall(x)$ecol)){#é um DBC
+  } else if(!is.null(getCall(x)$blke) & is.null(getCall(x)$rowe) & is.null(getCall(x)$cole)){#é um DBC
 
     aux <- update(x, random=TRUE) 
     auxx <- aux$dfm
@@ -312,7 +312,7 @@ plot.gexp.fe <- function(x,
                          sep=''))
 
     }
-    rowsquare <- columsquare <- length(eval(getCall(x)$erow))
+    rowsquare <- columsquare <- length(eval(getCall(x)$rowe))
 
     aux_posxcentro <- 1/rowsquare
     aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)

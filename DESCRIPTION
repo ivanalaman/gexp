@@ -5,7 +5,7 @@ Date: 2019-01-01
 Author: Ivan Bezerra Allaman <ivanalaman@gmail.com>  and
         José Cláudio Faria <joseclaudio.faria@gmail.com>
 Maintainer: Ivan Bezerra Allaman <ivanalaman@gmail.com> 
-Depends: R (>= 3.5.1)
+Depends: R (>= 3.5.1), jpeg, png
 Description: Generator of the experiments which structurated data:
              completely randomized design, randomized block design, latin square design,
              factorial experiments and split-plot experiments
