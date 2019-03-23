@@ -16,10 +16,17 @@ plot.gexp.rcbd <- function(x,
   aux <- update(x, random=TRUE) 
   aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
   labelblock <- names(aux1)[3] 
-
+  nblocks <- length(levels(aux1[[labelblock]]))
+ 
   aux11 <- aux1[order(aux1[[labelblock]]), ]
 
   factors <- aux11[, 1]
+  
+ if (is.null(eval(getCall(x)$blkl))) {
+    blocks <- paste(labelblock, 1:nblocks, sep = " ")
+} else {
+    blocks <- levels(aux1[[labelblock]])
+}
 
   if(length(attr(aux$X, 'contrasts')[-1]) != 1){
     stop('Graphic option only for one factor!')
@@ -34,11 +41,9 @@ plot.gexp.rcbd <- function(x,
   if(is.null(sub)){
 
     aux_factors <- names(attr(x$X, 'contrasts'))
-    Lfactors <- aux_factors[aux_factors!='Block']
+    Lfactors <- aux_factors[aux_factors!=labelblock]
     levelss <- paste(levels(x$dfm[[Lfactors]]),
                      collapse=',')
-    repp <- length(unique(aux1$r))
-    blocks <- length(levels(aux1[[labelblock]]))
 
     sub <- paste('Factors:',
                  Lfactors,
@@ -52,15 +57,14 @@ plot.gexp.rcbd <- function(x,
                        sep=''),
                  '\n',
                  paste('Block:',
-                       blocks,
+                       nblocks,
                        sep=''))
 
   }
 
-  aux_colsquare <- eval(getCall(x)$fe)
-  aux_colsquare1 <- lapply(aux_colsquare, length)
-  columsquare <- do.call('prod', aux_colsquare1)*repp
-  rowsquare <- length(eval(getCall(x)$blke))
+  aux_colsquare <- length(levels(factors))
+  columsquare <- prod(aux_colsquare*repp)
+  rowsquare <- nblocks
 
   aux_posxcentro <- 1/rowsquare
   aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)
@@ -105,7 +109,7 @@ plot.gexp.rcbd <- function(x,
 
     text(-0.08,
          posxcentro,
-         paste(labelblock, 1:rowsquare),
+         blocks,
          col=colgrid,
          xpd=TRUE,
          srt=90)

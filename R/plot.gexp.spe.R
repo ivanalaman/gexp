@@ -29,9 +29,9 @@ plot.gexp.spe <- function(x,
                       ')',
                       sep='')
     aux22$inter <- with(aux22,
-                       eval(parse(text=auxinter)))
+                        eval(parse(text=auxinter)))
 
-    
+
 
     if(is.null(main)){
       main = 'Split plot Structure \n Completely Random Design'
@@ -42,14 +42,14 @@ plot.gexp.spe <- function(x,
     Lsub <- levels(aux22$inter)
     nsub <- length(Lsub)
     repp <- length(unique(aux1$r)) 
-    
+
     auxLplot <- sample(rep(Lplot, repp))
-    
+
     auxmatrplot <- rep(list(NA), length(auxLplot))
     names(auxmatrplot) <- auxLplot
 
     matrplot <- lapply(auxmatrplot, function(x) sample(Lsub))
-       
+
 
     if(is.null(sub)){
 
@@ -69,7 +69,7 @@ plot.gexp.spe <- function(x,
                          collapse=','),
                    '\n',
                    'Replication:',
-                         repp)
+                   repp)
     }
 
     rowsquare <- nplot
@@ -104,7 +104,7 @@ plot.gexp.spe <- function(x,
            ylab = '',
            main = main,
            sub  = sub,
-          ...)
+           ...)
 
       box()
 
@@ -130,7 +130,7 @@ plot.gexp.spe <- function(x,
            unlist(matrplot),
            srt = srttext,
            col = colgrid) 
-   } else {
+    } else {
       auxin <- tcltk::tk_choose.files()
       auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
       auxin2 <- toupper(auxin1)
@@ -169,23 +169,23 @@ plot.gexp.spe <- function(x,
            col = coltext)
 
       tcltk::tkmessageBox(message='Now, click with the left button on sub plot and end with the right button!') 
-    
+
       text(x = locator(),
            y = NULL,
            unlist(matrplot),
            col = coltext) 
     }         
   } else if(!is.null(getCall(x)$blke) & is.null(getCall(x)$rowe) & is.null(getCall(x)$cole)){#é um DBC
-      
+
     aux <- update(x, random=FALSE) 
     aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
     aux2 <- aux1[, -c(dim(aux1)[2]-1)]#tirando a repetição
 
-    block <- names(aux2)[dim(aux2)[2]]
+    labelblock <- names(aux2)[dim(aux2)[2]]
     plott <- names(aux2)[1] 
     subplott <- names(aux2)[-c(1, dim(aux2)[2])] 
 
-    aux22 <- aux2[order(aux2[[block]], aux2[[plott]]), ]
+    aux22 <- aux2[order(aux2[[labelblock]], aux2[[plott]]), ]
 
     auxinter <- paste('interaction(',
                       paste(subplott,
@@ -194,6 +194,14 @@ plot.gexp.spe <- function(x,
                       sep='')
     aux22$inter <- with(aux22,
                         eval(parse(text=auxinter)))
+
+    nblock <- length(levels(aux2[[labelblock]]))
+
+    if (is.null(eval(getCall(x)$blkl))) {
+      blocks <- paste(labelblock, 1:nblock, sep = " ")
+    } else {
+      blocks <- levels(aux1[[labelblock]])
+    }
 
     if(is.null(main)){
       main = 'Split plot Structure \n Random Completely Block Design'
@@ -204,7 +212,6 @@ plot.gexp.spe <- function(x,
     Lsub <- levels(aux22$inter)
     nsub <- length(Lsub)
     repp <- length(unique(aux1$r)) 
-    nblock <- length(levels(aux2[[block]]))
 
     auxLplot <- sample(rep(Lplot, repp))
 
@@ -212,17 +219,17 @@ plot.gexp.spe <- function(x,
     names(auxmatrblock) <- 1:nblock
 
     matrblock <- lapply(auxmatrblock,
-                            function(...) rep(list(NA),
-                                              length(auxLplot)))
+                        function(...) rep(list(NA),
+                                          length(auxLplot)))
 
     for(i in 1:nblock){
-    names(matrblock[[i]]) <- sample(auxLplot)
+      names(matrblock[[i]]) <- sample(auxLplot)
     }
 
     for(i in 1:nblock){
-     for(j in 1:length(auxLplot)){
-      matrblock[[i]][[j]] <- sample(Lsub)
-     }
+      for(j in 1:length(auxLplot)){
+        matrblock[[i]][[j]] <- sample(Lsub)
+      }
     } 
 
     if(is.null(sub)){
@@ -281,7 +288,7 @@ plot.gexp.spe <- function(x,
            main = main,
            sub  = sub,
            cex.sub=0.8,
-          ...)
+           ...)
 
       box()
 
@@ -318,8 +325,8 @@ plot.gexp.spe <- function(x,
              length=0.06) 
 
       text(-0.08,
-           posxcentro,
-           paste(block, 1:rowsquare),
+           subposycentro,
+           blocks,
            col=colgrid,
            xpd=TRUE,
            srt=90) 
@@ -359,7 +366,7 @@ plot.gexp.spe <- function(x,
 
       text(x = locator(),
            y = NULL,
-           paste(block, 1:rowsquare), 
+           paste(labelblock, 1:rowsquare), 
            col = coltext)
 
       tcltk::tkmessageBox(message='Click with the left button on plot and end with the right button!')   
@@ -381,6 +388,7 @@ plot.gexp.spe <- function(x,
     aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
     labelrow <- names(aux1)[1] 
     labelcol <- names(aux1)[2]
+    nrows <- ncols <- length(levels(aux1[[labelrow]]))  
 
     aux2 <- aux1[order(aux1[[labelrow]],
                        aux1[[labelcol]]),]
@@ -393,6 +401,18 @@ plot.gexp.spe <- function(x,
     aux2$inter <- with(aux2,
                        eval(parse(text=auxinter)))
 
+    if(is.null(eval(getCall(x)$rowl))){
+      rows <- paste(labelrow, 1:nrows)
+    } else {
+      rows <- levels(aux1[[labelrow]])
+    }
+
+    if(is.null(eval(getCall(x)$coll))){
+      cols <- paste(labelcol, 1:ncols)
+    } else {
+      cols <- levels(aux1[[labelcol]])
+    }
+
     if(is.null(main)){
       main = 'Split plot Structure: Latin Square Design'
     }
@@ -401,39 +421,38 @@ plot.gexp.spe <- function(x,
     nplot <- length(Lplot)
     Lsub <- levels(aux2$inter)
     nsub <- length(Lsub)
-    rows <- cols <- length(levels(aux1[[labelrow]])) 
 
-    auxmatr <- rep(list(NA), rows)
-    names(auxmatr) <- 1:rows
+    auxmatr <- rep(list(NA), nrows)
+    names(auxmatr) <- 1:nrows
 
     matr <- lapply(auxmatr,
-                       function(...) rep(list(NA),
-                                         cols))
-    for(i in 1:cols){
-    names(matr[[i]]) <- 1:cols
+                   function(...) rep(list(NA),
+                                     ncols))
+    for(i in 1:ncols){
+      names(matr[[i]]) <- 1:ncols
     }
 
     plott <- names(aux2)[3]
-    auxlsd <- matrix(aux2[[plott]], nrow=rows, byrow=T)
+    auxlsd <- matrix(aux2[[plott]], nrow=nrows, byrow=T)
     lsd <- apply(auxlsd, 1, unique)
 
-    for(i in 1:rows){
-     for(j in 1:cols){
-       matr[[i]][[j]] <- list(sample(Lsub))
-       names(matr[[i]][[j]]) <- lsd[i, j] 
-     }
+    for(i in 1:nrows){
+      for(j in 1:ncols){
+        matr[[i]][[j]] <- list(sample(Lsub))
+        names(matr[[i]][[j]]) <- lsd[i, j] 
+      }
     }
 
     if(is.null(sub)){
 
       subplott <- names(aux2)[-c(1:3, dim(aux2)[2])]
-      
+
       sub <- paste('Plot:',
                    plott,
                    '\n',
                    'Levels Plot:',
                    paste(Lplot,
-                   collapse=','),
+                         collapse=','),
                    '\n',
                    'Subplot:',
                    paste(subplott,
@@ -444,16 +463,16 @@ plot.gexp.spe <- function(x,
                          collapse=','), 
                    '\n',
                    paste('Rows:',
-                         rows,
+                         nrows,
                          sep=''),
                    '\n',
                    paste('Columns:',
-                         cols,
+                         ncols,
                          sep=''))
 
     }
 
-    rowsquare <- columsquare <- rows
+    rowsquare <- columsquare <- nrows
 
     aux_posxcentro <- 1/rowsquare
     aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)
@@ -470,7 +489,7 @@ plot.gexp.spe <- function(x,
     auxsub_posycentro <- 1/rowsquare
     auxsub_posycentro1 <- auxsub_posycentro + ((rowsquare - 1)*2/rowsquare)
     subposycentro <- seq(auxsub_posycentro, auxsub_posycentro1, by=2/rowsquare)
-     
+
     if(!dynamic){ 
       par(xaxs='i', yaxs='i')
       plot(1,
@@ -491,7 +510,7 @@ plot.gexp.spe <- function(x,
            col=1,
            lty = 1,
            lwd = 1)
-    
+
       grid(nx  = nsub*columsquare,
            ny  = 1,
            col = c(rep(colgrid, nsub-1), 1),
@@ -529,14 +548,14 @@ plot.gexp.spe <- function(x,
 
       text(-0.08,
            posxcentro,
-           paste(labelrow, 1:rowsquare),
+           rows,
            col=colgrid,
            xpd=TRUE,
            srt=90)
 
       text(posxcentro,
            2.08,
-           paste(labelcol, 1:columsquare),
+           cols,
            col=colgrid,
            xpd=TRUE)
 
@@ -570,9 +589,9 @@ plot.gexp.spe <- function(x,
                   ybottom = ybottomimg, 
                   xright = xrightimg, 
                   ytop = ytopimg) 
- 
+
       tcltk::tkmessageBox(message='Click with the left button on row block and end with the right button!')    
- 
+
       text(x = locator(),
            y = NULL,
            paste(labelrow, 1:rowsquare), 
@@ -584,16 +603,16 @@ plot.gexp.spe <- function(x,
            y = NULL,
            paste(labelcol, 1:columsquare), 
            col = coltext) 
-     
+
       tcltk::tkmessageBox(message='Click with the left button on plot and end with the right button!')     
-      
+
       text(x = locator(),
            y = NULL,
            unlist(lapply(matr, function(x)lapply(x, names))), 
            col = coltext)
 
       tcltk::tkmessageBox(message='Click with the left button on sub plot and end with the right button!')     
-     
+
       text(x = locator(),
            y = NULL,
            unlist(matr),
@@ -602,42 +621,3 @@ plot.gexp.spe <- function(x,
     }
   }
 }
-#simulando 3 tratamentos na parcela com 2 repetições
-#o 0.67 saiu da área do plot (2x2) divido pelo o número de parcelas (3x2).
-#para tentar enteder e bolar um algortimo.
-#       rect(0.67*0, 0.67*0  ,0.67*1, 0.67*1,lty=2)
-#       rect(0.67*1, 0.67*0  ,0.67*2, 0.67*1,lty=2) 
-#       rect(0.67*2, 0.67*0  ,0.67*3, 0.67*1,lty=2)  
-# 
-#       rect(0.67*0, 0.67*1  ,0.67*1, 0.67*2,lty=2)
-#       rect(0.67*1, 0.67*1  ,0.67*2, 0.67*2,lty=2) 
-#       rect(0.67*2, 0.67*1  ,0.67*3, 0.67*2,lty=2)  
-# 
-#       rect(0.67*0, 0.67*2  ,0.67*1, 0.67*3,lty=2)
-#       rect(0.67*1, 0.67*2  ,0.67*2, 0.67*3,lty=2) 
-#       rect(0.67*2, 0.67*2  ,0.67*3, 0.67*3,lty=2)  
-#      
-# 
-#       nplot=4
-#       nsub =4
-#       repp =4
-#       x = 2/repp
-#       y = 2/nplot  
-# 
-#       auxcoord <- seq(x/nsub,2,by=x/nsub)
-#       auxcoord1 <- auxcoord[-seq(nsub,length(auxcoord),by=nsub)]
-#       coord <- matrix(auxcoord1,ncol=nsub-1)
-# 
-#       for(j in 1:nplot){
-#         for(i in 1:repp){
-#           rect(x*(i-1),
-#                y*(j-1),
-#                (x*0.8)*i,
-#                y*j)
-#           segments(coord[i,],
-#                    y*(j-1),
-#                    coord[i,],
-#                    y*j,
-#                    lty = ltygrid,
-#                    col = colgrid)
-#         } 

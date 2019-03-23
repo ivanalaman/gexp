@@ -9,7 +9,7 @@ gexp.lsd <- function(mu        = mu,
                      nrand     = nrand,    
                      contrasts = contrasts,
                      round     = round, 
-                     random    = random)
+                     random    = random, ...)
 {
 
   if(length(fe) != 1){

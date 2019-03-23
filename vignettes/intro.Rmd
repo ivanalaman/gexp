@@ -1,87 +1,94 @@
 ---
-title: "Indrodução ao pacote gexp"
-author: Ivan Bezerra Allaman </br> José Cláudio Faria
+title: "An introduction to gexp package"
+author: "Ivan Bezerra Allaman </br> José Cláudio Faria"
 date: "`r Sys.Date()`"
 output: 
-  html_document:
-    pandoc_args: ["-F","pandoc-eqnos"]
-    css: mystyle.css
-bibliography: bibliography.bib
+  rmarkdown::html_vignette:
+      pandoc_args: ["-F","pandoc-eqnos"] 
+vignette: >
+  %\VignetteIndexEntry{An introduction to gexp package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ../inst/doc/bibliography.bib  
 ---
 
-O pacote `gexp` foi elaborado inspirado nas funções pessoais do professor José Cláudio Faria, cujo o objetivo é gerar uma ou **p** variáveis aleatórias de acordo com o tipo de experimento, cujo os efeitos dos tratamentos são indicados pelo usuário.
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+The `gexp` package was elaborated inspired by the personal functions of Professor José Cláudio Faria, whose objective is to generate one or **p** random variables according to the type of experiment, whose effects of the treatments are indicated by the user.
 
-A maioria dos pacotes como o agricolae por exemplo, possui funções que permitem ao usuário gerar apenas delineamentos, auxiliando deste modo aquele pesquisador que deseja montar um experimento. No entanto, se o usuário tem o interesse em gerar variáveis aleatórias de acordo com o tipo de experimento e ainda, podendo manipular quais tratamentos serão diferentes, então o pacote `gexp` tem este diferencial.
+Most packages like agricolae, for example, have functions that allow the user to generate only designs, thus helping the researcher who wants to set up an experiment. However, if the user has the interest in generating random variables according to the type of experiment and still, being able to manipulate which treatments will be different, then the `gexp` package has this differential.
 
-Os experimentos conteplados no pacote são: delineamento inteiramente ao acaso (DIC), delineamento em blocos ao acaso (DBC), delineamento em quadrado latino (DQL), esquemas fatoriais para DIC, DBC e DQL e esquema em parcelas subdivididas também considerando os delineamentos DIC, DBC e DQL [@Aquino:1992].
+The experiments included in the package are: a completely randomized design (CRD), randomized complete block design (RCBD), latin square design (LSD), factorial schemes for IHD, DBC and DQL and a schema in subdivided plots also considering the CRD, RCBD and LSD [@Aquino:1992].
 
-No caso dos delineamentos em DBC e DQL, o pacote não simula com repetições *dentro* de blocos, ou seja, o número de blocos é a própria repetição do experimento.
-
-Os argumentos da função se baseia em um modelo linear com a seguinte forma matricial [@Ferreira:2008, @Rencher:2007]:
+The arguments of the function are based on a linear model with the following matrix form [@Ferreira:2008, @Rencher:2007]:
 
 $$Y = X\beta + E$${#eq:m1}
 
-em que:
+then:
 
-Y é uma matriz n$\times$p, sendo **n** observações de **p** variáveis aleatórias;
+Y is a n$\times$p matrix, with **n** observation of **p** random variables;
 
-X é uma matriz n$\times$m, sendo **m** o número de parâmetros que influenciam a variável resposta ($\mu, \alpha's, \beta's, etc.$);
+X is a n$\times$m matrix, where **m** is the number of parameters that influence the response variable ($\mu, \alpha's, \beta's, etc.$);
 
-$\beta$ é uma matrix m$\times$p de efeitos dos fatores;
+$\beta$ is a m$\times$p matrix of factors effects;
 
-$E$ é uma matrix n$\times$p dos erros com distribuição normal p-variada com vetor de médias **0** e covariância comum **$\Sigma$**;
- 
-No caso do delineamento em parcelas subdivididas, o pacote trabalha considerando seguinte modelo linear misto [@Naes:2007]:
+$E$ is a n$\times$p matrix of the errors with p-variate normal distribution with mean vectors **0** and **$\Sigma$** covariance;
+
+In the case of the split-plot design, the package works considering the following linear mixed model [@Naes:2007]:
 
 $$Y = X\beta + Zu + E$${#eq:m2}
 
-em que:
+then:
 
-Z é uma matriz n$\times$q, sendo **q** o número de parâmetros da interação que influenciam o erro da parcela (DIC - repetição:$\alpha$, DBC - bloco:$\alpha$, DQL - linha:coluna:$\alpha$);
+Z is a n$\times$q matrix, where **q** is the number of parameters of the interaction that influence the plot error (CRD - repetition:$\alpha$, RCBD - block:$\alpha$, LSD - row:column:$\alpha$);
 
-u é uma matrix q$\times$p dos erros da parcela com distribuição normal p-variada com vetor de médias **0** e convariância comum **$\Sigma_{plot}$**
+u is a q$\times$p matrix of the plot errors with p-variate normal distribution with mean vectors **0** and **$\Sigma_{plot}$** covariance;
 
-$E$ é uma matrix n$\times$p dos erros com distribuição normal p-variada com vetor de médias **0** e covariância comum **$\Sigma_{sub-plot}$** da subparcela;
+$E$ is a n$\times$p matrix of the errors with p-variate normal distribution with mean vectors **0** and **$\Sigma_{sub-plot}$** covariance of subplot;
 
-Os demais componentes da equação @eq:m2 são análogos ao da equação @eq:m1.
- 
-A simbologia adotada foi a seguinte:
+The other components of the equation @eq:m2 are analogous to equation @eq:m1.
+
+The symbology adopted was as follows:
 
 <center>
 <table>
 <tr class='head'>
-<th>Fontes de Variação</th>
-<th>Símbolo</th>
+<th>Sources of Variation</th>
+<th>Symbol</th>
 </tr>
 <tr>
-<td>Tratamentos</td>
+<td>Treatments</td>
 <td>$\alpha,\tau$</td>
 </tr>
 <tr>
-<td>Bloco</td>
+<td>Block</td>
 <td>$\beta$</td>
 </tr>
 <tr>
-<td>Interação</td>
+<td>Interaction</td>
 <td>$\gamma$</td>
 </tr>
 <tr>
-<td>Bloco linha</td>
+<td>Row block</td>
 <td>$\eta$</td>
 </tr>
 <tr class='bottom'>
-<td>Bloco coluna</td>
+<td>Column block</td>
 <td>$\delta$</td>
 </tr>
 </table>
 </center>
 
-O **caso multivariado**, só será abordado no DIC, pois para os demais delineamentos o raciocínio é o mesmo. 
+The **multivariate case**, will only be addressed in the CRD, because for the other designs the reasoning is the same. 
 
-# Simulando um Delineamento Inteiramente ao Acaso (DIC)
-## Caso univariado
+# Simulating an Completely Randomized Design (CRD)
+## Univariate case
 
-Vamos supor que queiramos gerar uma **única** variável aleatória segundo um DIC com um fator e dois níveis sendo 3 repetições. Então, podemos denominar $Y_{ik}$ como sendo a variável aleatória observada na k-ésima unidade experimental (k = 1, 2, 3) que recebeu o i-ésimo nível do fator X1 (i=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$) e cada nível do fator em estudo influenciem em $\alpha_{1} = 1$ e $\alpha_{2} = -2$ a variável resposta respectivamente, teremos a seguinte configuração matricial:
+Let us assume that we want to generate a **single** random variable according to a CRD with a factor and two levels being 3 replicates. Then we can denote $Y_{ik}$ as being the random variable observed in the k-th experimental unit (k = 1, 2, 3) that received the i-th level of factor X1 (i = 1,2). Also, assuming that this variable is under the effect of a constant ($\mu = 15$) and each level of the factor under study influence $\alpha_1 = 1$ and $\alpha_2 = -2$ the response variable respectively, we will have the following matrix configuration:
 
 $$
 \begin{eqnarray}
@@ -97,8 +104,8 @@ Y_{23}
 \begin{array}{p{5cm}}
 \begin{matrix}
 \mu & \!\scriptsize{x11}\! & \scriptsize{x12}
- \end{matrix}\\
- \left[\begin{array}{c|cc}
+\end{matrix}\\
+\left[\begin{array}{c|cc}
 1\hphantom{0} & 1\hphantom{0}  & 0 \\
 1\hphantom{0} & 0\hphantom{0}  & 1 \\
 1\hphantom{0} & 1\hphantom{0}  & 0 \\
@@ -127,8 +134,8 @@ e_{23}
 \begin{array}{c}
 \begin{matrix}
 \mu & \!\scriptsize{x11}\! & \scriptsize{x12}
- \end{matrix}\\
- \left[\begin{array}{c|cc}
+\end{matrix}\\
+\left[\begin{array}{c|cc}
 1\hphantom{0} & 1\hphantom{0}  & 0 \\
 1\hphantom{0} & 0\hphantom{0}  & 1 \\
 1\hphantom{0} & 1\hphantom{0}  & 0 \\
@@ -174,7 +181,7 @@ e_{23}
 \end{eqnarray}
 $$ 
 
-Se considerarmos um erro com média 0 e variância 0 então teremos a seguinte variável aleatória simulada:
+If we consider an error with mean 0 and variance 0 then we have the following simulated random variable:
 
 $$
 \begin{bmatrix}
@@ -196,19 +203,21 @@ Y_{23}
 \end{bmatrix} 
 $$
 
-Utilizando o pacote `gexp` temos:
+With the `gexp` package we have:
 
 ```{r}
-dic <- gexp(mu   =15,
-            sigma=0,
-            r    =3,
-            ef   =list(alpha=c(1, -2)))
+library(gexp)
+dic <- gexp(mu   = 15,
+            err  = matrix(rep(0, 6),
+                          nrow = 6),
+            r    = 3,
+            fe   = list(alpha = c(1, -2)))
 summary(dic)
 ```
 
-## Caso multivariado
+## Multivariate Case
 
-Vamos supor agora que queiramos gerar **duas** variáveis aleatórias considerando o mesmo número de fatores e o mesmo número de repetições do caso anterior. Então, podemos denominar $Y_{ikl}$ como sendo a l-ésima variável aleatória (l=1,2) observada na k-ésima unidade experimental (k=1,2,3) que recebeu o i-ésimo nível do fator X1 (i=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu_1 = 15$ e $\mu_2 = 6$) e cada nível do fator em estudo influenciem em $\alpha_{11} = 1$ e $\alpha_{21}=-2$ a variável 1 e, $\alpha_{12}=2$ e $\alpha_{22}=3$ a variável 2, teremos a seguinte configuração matricial:
+Let us now assume that we want to generate **two** random variables by considering the same number of factors and the same number of repetitions of the previous case. Then we can denote $Y_{ikl}$ as being the lth random variable (l = 1,2) observed in the k-th experimental unit (k = 1,2,3) that received the i-th factor level X1 (i = 1,2). Also, assuming that this variable is under the effect of a constant ($\mu_1 = 15$ and $\mu_2 = 6$) and each level of the factor under study influence $\alpha_{11} = 1$ and $\alpha_{21} = -2$ the variable 1 and, $\alpha_{12} = 2$ and $\alpha_{22} = 3$ the variable 2, we will have the following matrix configuration:
 
 $$
 \begin{eqnarray}
@@ -224,8 +233,8 @@ Y_{231} & Y_{232}
 \begin{array}{c}
 \begin{matrix}
 \mu & \!\scriptsize{x11}\! & \scriptsize{x12}
- \end{matrix}\\
- \left[\begin{array}{c|cc}
+\end{matrix}\\
+\left[\begin{array}{c|cc}
 1\hphantom{0}  & 1\hphantom{0} & 0 \\
 1\hphantom{0}  & 0\hphantom{0} & 1 \\
 1\hphantom{0}  & 1\hphantom{0} & 0 \\
@@ -254,8 +263,8 @@ e_{231} & e_{232}
 \begin{array}{c}
 \begin{matrix}
 \mu & \!\scriptsize{x11}\! & \scriptsize{x12}
- \end{matrix}\\
- \left[\begin{array}{c|cc}
+\end{matrix}\\
+\left[\begin{array}{c|cc}
 1\hphantom{0}  & 1\hphantom{0}  & 0 \\
 1\hphantom{0}  & 0\hphantom{0}  & 1 \\
 1\hphantom{0}  & 1\hphantom{0}  & 0 \\
@@ -301,7 +310,7 @@ e_{231} & e_{232}
 \end{eqnarray}
 $$
 
-Se considerarmos um erro com médias 0 e uma matrix de variância-covariância 0 então teremos as seguintes variáveis aleatória simulada: 
+If we consider an error with averages 0 and a matrix of variance-covariance 0 then we will have the following simulated random variables:
 
 $$
 \begin{bmatrix}
@@ -323,21 +332,27 @@ Y_{231} & Y_{232}
 \end{bmatrix} 
 $$
 
-Utilizando o pacote gexp temos:
+With the `gexp` package we have:
 
 ```{r}
-dic_mv <- gexp(mu   =c(15, 6),
-               sigma=matrix(c(0, 0,
-                              0, 0), ncol=2),
-               r    =3L,
-               ef   =list(alpha=matrix(c(1, -2,
-                                         2,  3), ncol=2)))
+dic_mv <- gexp(mu  = c(15, 6),
+               err = matrix(c(0, 0,
+                              0, 0,
+                              0, 0,
+                              0, 0,
+                              0, 0,
+                              0, 0), 
+                            ncol = 2),
+               r   = 3L,
+               fe  = list(alpha = matrix(c(1, -2,
+                                           2,  3), 
+                                         ncol = 2)))
 summary(dic_mv)
 ```
 
-# Simulando um Delineamento em Blocos ao Acaso (DBC) 
+# Simulating a Randomized Completely Block Design (RCBD) 
 
-Supondo que queiramos gerar uma **única** variável aleatória segundo um DBC com um fator e dois níveis sendo um bloco com três níveis. Então, podemos denominar $Y_{ij}$ como sendo a variável aleatória observada no j-ésima bloco (j = 1, 2, 3) que recebeu o i-ésimo nível do fator X1 (i = 1, 2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$) e cada nível do fator em estudo influenciem em $\alpha_{1} = 1$ e $\alpha_{2} = -2$ a variáve resposta respectivamente, e cada bloco influenciem em $\beta_{1}=2, \beta_{2}=4$ e $\beta_{3}=6$ respectivamente, teremos a seguinte configuração matricial: 
+Assuming we want to generate a **single** random variable according to a RCBD with a factor and two levels being a block with three levels. Then we can denote $Y_ {ij}$ as the random variable observed in the j-th block (j = 1, 2, 3) that received the i-th level of factor X1 (i = 1, 2). Also, assuming that this variable is under the effect of a constant ($\mu = 15$) and each level of the factor under study influence $\alpha_1 = 1$ and $\alpha_2 = -2$ the variable response respectively, and each block influences in $\beta_1 = 2, \beta_2 = 4$ and $\beta_3 = 6$ respectively, we will have the following matrix configuration:
 
 $$
 \begin{eqnarray}
@@ -353,8 +368,8 @@ Y_{23}
 \begin{array}{c}
 \begin{matrix}
 \mu & \!\scriptsize{x11}\!&\scriptsize{x12}\hphantom{0}&\scriptsize{b1}&\scriptsize{b2}&\scriptsize{b3}
- \end{matrix}\\
- \left[\begin{array}{c|cc|ccc} 
+\end{matrix}\\
+\left[\begin{array}{c|cc|ccc} 
 1 & 1\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
 1 & 0\hphantom{0}& 1\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
 1 & 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\\
@@ -386,8 +401,8 @@ e_{23}
 \begin{array}{c}
 \begin{matrix}
 \mu & \!\scriptsize{x11}\!&\scriptsize{x12}\hphantom{0}&\scriptsize{b1}&\scriptsize{b2}&\scriptsize{b3}
- \end{matrix}\\
- \left[\begin{array}{c|cc|ccc} 
+\end{matrix}\\
+\left[\begin{array}{c|cc|ccc} 
 1 & 1\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
 1 & 0\hphantom{0}& 1\hphantom{0}& 1\hphantom{0}& 0\hphantom{0}& 0\\
 1 & 1\hphantom{0}& 0\hphantom{0}& 0\hphantom{0}& 1\hphantom{0}& 0\\
@@ -435,8 +450,8 @@ e_{23}
 \end{bmatrix} 
 \end{eqnarray}
 $$ 
- 
-Supondo um erro com média 0 e variância 0, temos:
+
+Assuming an error with mean 0 and variance 0, we have:
 
 $$
 \begin{bmatrix}
@@ -458,20 +473,22 @@ Y_{23}
 \end{bmatrix}
 $$
 
-Com o pacote `gexp` tem-se:
+With the `gexp` package we have:
 
 ```{r}
-rcbd <- gexp(mu   =15,
-             sigma=0,
-             ef   =list(alpha=c(1, -2)),
-             eb   =c(2, 4, 6),
-             type ='RCBD')
+rcbd <- gexp(mu   = 15,
+             r    = 1,
+             err  = matrix(rep(0, 6),
+                           nrow = 6),
+             fe   = list(alpha = c(1, -2)),
+             blke = c(2, 4, 6),
+             type = 'RCBD')
 summary(rcbd)
 ```
 
-# Simulando um Delineamento em Quadrado Latino (DQL)  
+# Simulating a Latin Square Design (LSD)
 
-Supondo que queiramos gerar uma **única** variável aleatória segundo um DQL com um fator e três níveis, sendo um fator de blocagem no sentido linha com três níveis e outro fator de blocagem no sentido coluna com três níveis. Então, podemos denominar $Y_{rci}$ como sendo a variável aleatória observada na c-ésima coluna (c = 1, 2, 3) e r-ésima linha (r = 1, 2, 3) que recebeu o i-ésimo nível do fator X1 (i = 1, 2, 3). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$) e cada nível do fator em estudo influenciem em $\alpha_{1}=1, \alpha_{2}=-2$ e $\alpha_{3}=3$ a variável resposta respectivamente, cada linha influenciem em $\eta_{1}=2, \eta_{2}=3$ e $\eta_{3}=4$ respectivamente e, cada coluna incluenciem em $\delta_{1}=6, \delta_{2}=7$ e $\delta_{3}=8$ respectivamente teremos a seguinte configuração matricial: 
+Assuming we want to generate a **single** random variable according to a LSD with a factor and three levels, with a blocking factor in the row sense with three levels and another blocking factor in the column sense with three levels. Then we can denote $Y_{rci}$ as being the random variable observed in the c-th column (c = 1, 2, 3) and r-th row (r = 1, 2, 3) that received the i-th level of factor X1 (i = 1, 2, 3). Also, assuming this variable is under the effect of a constant ($\mu = 15$) and each level of the factor under study influence $\alpha_1 = 1, \alpha_2 = -2$ e $\alpha_3 = 3$ the response variable respectively, each row influencing in $\eta_1 = 2,\eta_2 = 3$ and $\eta_3 = 4$ respectively and each column influencing in $\delta_1 = 6, \delta_2 = 7$ and $\delta_3 = 8$ respectively we will have the following matrix configuration:
 
 $$
 \begin{eqnarray}
@@ -490,8 +507,8 @@ Y_{332}
 \begin{array}{c}
 \begin{matrix}
 \mu & \!\scriptsize{r1}\!&\scriptsize{r2}&\scriptsize{r3}&\scriptsize{c1}&\scriptsize{c2}&\scriptsize{c3}&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x13}
- \end{matrix}\\
- \left[\begin{array}{c|ccc|ccc|ccc}  
+\end{matrix}\\
+\left[\begin{array}{c|ccc|ccc|ccc}  
 1&1&0&0\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
 1&1&0&0\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
 1&1&0&0\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
@@ -533,8 +550,8 @@ e_{332}
 \begin{array}{c}
 \begin{matrix}
 \mu & \!\scriptsize{r1}\!&\scriptsize{r2}&\scriptsize{r3}&\scriptsize{c1}&\scriptsize{c2}&\scriptsize{c3}&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x13}
- \end{matrix}\\
- \left[\begin{array}{c|ccc|ccc|ccc}  
+\end{matrix}\\
+\left[\begin{array}{c|ccc|ccc|ccc}  
 1&1&0&0\hphantom{0}&1&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\\
 1&1&0&0\hphantom{0}&0&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\\
 1&1&0&0\hphantom{0}&0&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\\
@@ -599,7 +616,7 @@ e_{332}
 \end{eqnarray}
 $$ 
 
-Considerando que o erro tem média 0 e variância 0 tem-se:
+Considering that the error has mean 0 and variance 0 we have:
 
 $$
 \begin{bmatrix}
@@ -627,23 +644,24 @@ Y_{332}
 \end{bmatrix} 
 $$
 
-Utilizando a função `gexp` tem-se:
+Using the `gexp` function we have:
 
 ```{r}
-lsd <- gexp(mu   =15,
-            sigma=0,
-            ef   =list(alpha=c(1, -2, 3)),
-            erow =c(2, 3, 4),
-            ecol =c(6, 7, 8),
-            nrand=0,
-            type ='LSD')
+lsd <- gexp(mu    = 15,
+            err   = matrix(rep(0, 9), 
+                           nrow = 9),
+            fe    = list(alpha = c(1, -2, 3)),
+            rowe  = c(2, 3, 4),
+            cole  = c(6, 7, 8),
+            nrand = 0,
+            type  = 'LSD')
 summary(lsd)
 ```
 
-# Ensaios Fatoriais
-## DIC
+# Factorial Experiments
+## CRD
 
-Considerando que queiramos gerar uma **única** variável aleatória segundo um DIC em um esquema fatorial do tipo 2 x 3 (dois níveis do fator X1 e três níveis do fator X2) com 2 repetições. Então, podemos denominar $Y_{ijk}$ como sendo a variável aleatória observada na k-ésima unidade experimental (k = 1, 2) que recebeu o i-ésimo nível do fator X1 (i=1,2) e j-ésimo nível do fator X2 (j=1,2,3). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$), e cada nível do fator X1 influenciem em $\alpha_{1}=1$ e $\alpha_{2}=-2$, cada nível do fator X2 influenciam em $\tau_{1}=1, \tau_{2}=-1$ e $\tau_{3}=1$ e que o efeito da interação seja de $\gamma_{11}=3, \gamma_{21}=1, \gamma_{12}=1, \gamma_{22}=-5, \gamma_{13}=1$ e $\gamma_{23}=1$ respectivamente, teremos a seguinte configuração matricial:
+Considering that we want to generate a **single** random variable according to a CRD in a factorial scheme of type 2 x 3 (two levels of factor X1 and three levels of factor X2) with 2 replicates. Then we can denote $Y_{ijk}$ as being the random variable observed in the k-th experimental unit (k = 1, 2) that received the i-th level of factor X1 (i = 1,2) and jth level of factor X2 (j = 1,2,3). Also, assuming this variable is under the effect of a constant ($\mu = 15$), and each level of factor X1 influences $\alpha_1 = 1$ and $\alpha_2 = -2$, each level of factor X2 influences in $\tau_1 = 1, \tau_2 = -1$ and $\tau_3 = 1$ and the effect of the interaction is $\gamma_{11} = 3,\gamma_{21} = 1,\gamma_{12} = 1,\gamma_{22} = -5,\gamma_{13} = 1$ And $\gamma_{23} = 1$ respectively, we shall have following matrix configuration:
 
 $$
 \begin{eqnarray}
@@ -796,7 +814,7 @@ e_{232}
 \end{eqnarray}
 $$
 
-Considerando que o erro tem média 0 e variância 0 tem-se:
+Considering that the error has mean 0 and variance 0 we have:
 
 $$
 \begin{bmatrix}
@@ -830,23 +848,26 @@ Y_{232}
 \end{bmatrix}
 $$
 
-Utilizando a função gexp tem-se:
+Using the `gexp` function we have:
 
 ```{r}
-fat_dic <- gexp(mu    =15,
-                sigma =0,
-                ef    =list(alpha=c(1, -2),
-                            tau=c(1, -1, 1)),
-                eint=c(3, 1, 1, -5, 1, 1),
-                type  ='FE')
+fat_dic <- gexp(mu   = 15,
+                r    = 2, 
+                err  = matrix(rep(0, 12),
+                              nrow = 12),
+                fe   = list(alpha = c(1, -2),
+                            tau = c(1, -1, 1)),
+                inte = c(3, 1, 1, 
+                         -5, 1, 1),
+                type = 'FE')
 summary(fat_dic)
 ```
 
-# Ensaios em Parcelas Sub-divididas
-## DIC
+# Split-plot experiments
+## CRD
 
 Supondo que queiramos gerar uma variável aleatória segundo um DIC em parcelas subdivididas com dois níveis do fator X1 na parcela e dois níveis do fator X2 na subparcela com 3 repetições. Então, podemos denominar $Y_{ijk}$ como sendo a variável aleatória observada na subparcela na k-ésima unidade experimental (k = 1, 2 e 3) que recebeu o i-ésimo nível do fator X1 (i=1,2) e j-ésimo nível do fator X2 (j=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$), e cada nível do fator X1 influenciem em $\alpha_{1}=1$ e $\alpha_{2}=-2$, cada nível do fator X2 influenciam em $\tau_{1}=1$ e $\tau_{2}=-1$ e que o efeito da interação seja de $\gamma_{11}=3, \gamma_{21}=1, \gamma_{12}=1$ e $\gamma_{22}=-5$ respectivamente, teremos a seguinte configuração matricial conforme a equação @eq:m2.
- 
+
 
 Portanto, tem-se a seguinte configuração matricial:
 
@@ -872,18 +893,18 @@ Y_{223}
 \mu&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x21}&\scriptsize{x22}&\scriptsize{x11x21}&\scriptsize{x12x21}&\scriptsize{x11x22}&\scriptsize{x12x22}
 \end{matrix}\\
 \left[\begin{array}{c|cc|cc|cccc}                                                  
- 1\hphantom{0}& 1\hphantom{0} & 0\hphantom{0} & 1\hphantom{0} & 0\hphantom{00} & 1\hphantom{000} & 0\hphantom{000} & 0\hphantom{000} & 0\hphantom{00}\\               
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+1\hphantom{0}& 1\hphantom{0} & 0\hphantom{0} & 1\hphantom{0} & 0\hphantom{00} & 1\hphantom{000} & 0\hphantom{000} & 0\hphantom{000} & 0\hphantom{00}\\               
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
 \end{array}\right]
 \end{array}
 \cdot
@@ -904,22 +925,22 @@ Y_{223}
 \scriptsize{x11r1}&\scriptsize{x12r1}\hspace{0.1cm}&\scriptsize{x11r2}&\scriptsize{x12r2}&\scriptsize{x11r3}&\scriptsize{x12r3}\hspace{0.6cm}
 \end{matrix}\\
 \left[\begin{array}{cccccc}                                   
- 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
+1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
 \end{array}\right]
 \end{array} 
 \cdot
- \begin{bmatrix}
+\begin{bmatrix}
 u_{11} \\
 u_{21} \\
 u_{12} \\
@@ -949,18 +970,18 @@ e_{223}
 \mu&\scriptsize{x11}&\scriptsize{x12}&\scriptsize{x21}&\scriptsize{x22}&\scriptsize{x11x21}&\scriptsize{x12x21}&\scriptsize{x11x22}&\scriptsize{x12x22}
 \end{matrix}\\
 \left[\begin{array}{c|cc|cc|cccc}                                                  
- 1\hphantom{0}& 1\hphantom{0} & 0\hphantom{0} & 1\hphantom{0} & 0\hphantom{00} & 1\hphantom{000} & 0\hphantom{000} & 0\hphantom{000} & 0\hphantom{00}\\               
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
- 1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+1\hphantom{0}& 1\hphantom{0} & 0\hphantom{0} & 1\hphantom{0} & 0\hphantom{00} & 1\hphantom{000} & 0\hphantom{000} & 0\hphantom{000} & 0\hphantom{00}\\               
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{00}&1\hphantom{000}&0\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&1\hphantom{0}&0\hphantom{00}&0\hphantom{000}&1\hphantom{000}&0\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&1\hphantom{0}&0\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&1\hphantom{000}&0\hphantom{00}\\   
+1\hphantom{0}&0\hphantom{0}&1\hphantom{0}&0\hphantom{0}&1\hphantom{00}&0\hphantom{000}&0\hphantom{000}&0\hphantom{000}&1\hphantom{00}\\   
 \end{array}\right]
 \end{array}
 \cdot
@@ -981,22 +1002,22 @@ e_{223}
 \scriptsize{x11r1}&\scriptsize{x12r1}\hspace{0.1cm}&\scriptsize{x11r2}&\scriptsize{x12r2}&\scriptsize{x11r3}&\scriptsize{x12r3}\hspace{0.6cm}
 \end{matrix}\\
 \left[\begin{array}{cccccc}                                   
- 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
+1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
 \end{array}\right]
 \end{array} 
 \cdot
- \begin{bmatrix}
+\begin{bmatrix}
 u_{11} \\
 u_{21} \\
 u_{12} \\
@@ -1041,22 +1062,22 @@ e_{223}
 \scriptsize{x11r1}&\scriptsize{x12r1}\hspace{0.1cm}&\scriptsize{x11r2}&\scriptsize{x12r2}&\scriptsize{x11r3}&\scriptsize{x12r3}\hspace{0.6cm}
 \end{matrix}\\
 \left[\begin{array}{cccccc}                                   
- 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
- 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
+1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{000}& 0\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 1\hphantom{00}& 0\hphantom{0} \\
+0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{000}& 0\hphantom{00}& 1\hphantom{0} \\ 
 \end{array}\right]
 \end{array} 
 \cdot
- \begin{bmatrix}
+\begin{bmatrix}
 u_{11} \\
 u_{21} \\
 u_{12} \\
@@ -1082,7 +1103,7 @@ e_{223}
 \end{eqnarray}
 $$
 
-Considerando que o erro da parcela e subparcela tem média 0 e variância 0 tem-se:
+Considering that the error of plot and subplot has mean 0 and variance 0 we have:
 
 $$
 \begin{bmatrix}
@@ -1116,18 +1137,862 @@ Y_{223}
 \end{bmatrix}  
 $$
 
-Utilizando o pacote `gexp` tem-se:
+Using the `gexp` package we have:
 
 ```{r}
-split_dic <- gexp(mu    =15,
-                  sigma =0,
-                  sigmap=0,
-                  r     =3,
-                  ef    =list(alpha=c(1, -2),
-                              tau =c(1, -1)),
-                  eint=c(3, 1, 1, -5),
-                  type  ='SPE')
+split_dic <- gexp(mu   = 15,
+                  err  = matrix(rep(0, 12),
+                                nrow = 12),
+                  errp = matrix(rep(0, 6),
+                                nrow = 6),
+                  r    = 3,
+                  fe   = list(alpha = c(1, -2),
+                              tau   = c(1, -1)),
+                  inte = c(3, 1, 1, -5),
+                  type = 'SPE')
 summary(split_dic)
 ```
+# Simulating a CRD with a quantitative factor
+## Non-Orthogonal Contrast
+### Linear Effect
+
+Let us suppose that we want to generate a **single** random variable according to a CRD with one factor and four levels (0, 5, 10, 15) being 3 repetitions. Then we can denote $Y_ {ik}$ as being the random variable observed in the k-th experimental unit (k = 1, 2, 3) that received the i-th level of factor X1 (i = 1,2,3,4). In this case, it is only possible to adjust a regression up to the third degree. As the treatment is quantitative, instead of indicating the effects of treatments as deviations from the general mean, we will indicate the value we want for each regression coefficient. So, instead of having $\mu, \alpha_1, \alpha_2, \alpha_3$ and $\alpha_4$, we have $\beta_0$ (the intercept), $\beta_1$ (the angular coefficient), $\beta_2$ the quadratic coefficient) and $\beta_3$ (the cubic coefficient). Since the effect we want is linear, then we can provide the following values for betas: $\beta_0 = 2, \beta_1 = 3, \beta_2 = 0$ and $\beta_3 = 0$. Therefore, we will have the following matrix configuration:
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{11} \\
+Y_{21} \\
+Y_{31} \\
+Y_{41} \\
+Y_{12} \\
+Y_{22} \\
+Y_{32} \\
+Y_{42} \\
+Y_{13} \\
+Y_{23} \\
+Y_{33} \\
+Y_{43}
+\end{bmatrix}
+&=&
+\begin{array}{p{5cm}}
+\begin{matrix}
+\beta_0 & \!\scriptsize{x11}\! & \scriptsize{x12} & \scriptsize{x13} 
+\end{matrix}\\
+\left[\begin{array}{c|cc}
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\ 
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+\beta_{0} \\
+\beta_{1} \\
+\beta_{2} \\
+\beta_{3}
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{31} \\
+e_{41} \\
+e_{12} \\
+e_{22} \\
+e_{23} \\
+e_{24} \\
+e_{13} \\
+e_{23} \\
+e_{33} \\
+e_{43}
+\end{bmatrix}
+\\
+&=&
+\begin{array}{c}
+\begin{matrix}
+\beta_0 & \!\scriptsize{x11}\! & \scriptsize{x12} & \scriptsize{x13} 
+\end{matrix}\\
+\left[\begin{array}{c|cc}
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\  
+\end{array}\right]
+\end{array} 
+\cdot
+\begin{bmatrix}
+2 \\
+3  \\
+0  \\
+0  \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{31} \\
+e_{41} \\
+e_{12} \\
+e_{22} \\
+e_{23} \\
+e_{24} \\
+e_{13} \\
+e_{23} \\
+e_{33} \\
+e_{43} 
+\end{bmatrix} 
+\\
+&=&
+\begin{bmatrix}
+2 \\
+17 \\
+32 \\
+47 \\
+2 \\
+17 \\
+32 \\
+47 \\
+2 \\
+17 \\
+32 \\
+47
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{31} \\
+e_{41} \\
+e_{12} \\
+e_{22} \\
+e_{23} \\
+e_{24} \\
+e_{13} \\
+e_{23} \\
+e_{33} \\
+e_{43}  
+\end{bmatrix} 
+\end{eqnarray}
+$$ 
+
+If we consider an error with mean 0 and variance 0 then we have the following simulated random variable:
+
+$$
+\begin{bmatrix}
+Y_{11} \\
+Y_{21} \\
+Y_{31} \\
+Y_{41} \\
+Y_{12} \\
+Y_{22} \\
+Y_{32} \\
+Y_{42} \\
+Y_{13} \\
+Y_{23} \\
+Y_{33} \\
+Y_{43} 
+\end{bmatrix}
+=
+\begin{bmatrix}
+2 \\
+17 \\
+32 \\
+47 \\
+2 \\
+17 \\
+32 \\
+47 \\
+2 \\
+17 \\
+32 \\
+47 
+\end{bmatrix} 
+$$
+
+Using the `gexp` package we have:
+
+```{r}
+level <- seq(0, 15, 5)
+cont_crd <- matrix(c(level,
+                     level^2,
+                     level^3),
+                   ncol=3)
+
+crd_l <- gexp(mu        = NULL,
+              r         = 3,
+              err       = matrix(rep(0,12),
+                                 nrow = 12),
+              fe        = list(f1 = c(2, 3, 0, 0)),
+              contrasts = list(f1 = cont_crd))
+
+summary(crd_l)
+```
+
+Below the simulation chart.
+
+```{r echo=FALSE, results='hide'}
+with(crd_l$dfm,
+     plot(Y1 ~ rep(level, 3),
+          axes = FALSE,
+          ylim = c(0,50),
+          xlab = 'X1'))
+axis(1, pos = 0)
+axis(2, pos = 0)
+abline(h = 2, col = 'red')
+abline(2, 3, col = 'red', lty = 2)
+text(-0.5,2,'2',col = 'red', xpd = TRUE) 
+```
+
+### Quadratic effect
+
+Taking advantage of the same previous example, adding only the quadratic effect to the data, that is, $\beta_2 = 4$. Therefore, we will have the following matrix configuration:
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{11} \\
+Y_{21} \\
+Y_{31} \\
+Y_{41} \\
+Y_{12} \\
+Y_{22} \\
+Y_{32} \\
+Y_{42} \\
+Y_{13} \\
+Y_{23} \\
+Y_{33} \\
+Y_{43}
+\end{bmatrix}
+&=&
+\begin{array}{p{5cm}}
+\begin{matrix}
+\beta_0 & \!\scriptsize{x11}\! & \scriptsize{x12} & \scriptsize{x13} 
+\end{matrix}\\
+\left[\begin{array}{c|cc}
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\ 
+\end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+\beta_{0} \\
+\beta_{1} \\
+\beta_{2} \\
+\beta_{3}
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{31} \\
+e_{41} \\
+e_{12} \\
+e_{22} \\
+e_{23} \\
+e_{24} \\
+e_{13} \\
+e_{23} \\
+e_{33} \\
+e_{43}
+\end{bmatrix}
+\\
+&=&
+\begin{array}{c}
+\begin{matrix}
+\beta_0 & \!\scriptsize{x11}\! & \scriptsize{x12} & \scriptsize{x13} 
+\end{matrix}\\
+\left[\begin{array}{c|cc}
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\
+1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  \\
+1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  \\
+1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 \\
+1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 \\  
+\end{array}\right]
+\end{array} 
+\cdot
+\begin{bmatrix}
+2 \\
+3  \\
+4  \\
+0  \\
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{31} \\
+e_{41} \\
+e_{12} \\
+e_{22} \\
+e_{23} \\
+e_{24} \\
+e_{13} \\
+e_{23} \\
+e_{33} \\
+e_{43} 
+\end{bmatrix} 
+\\
+&=&
+\begin{bmatrix}
+2 \\
+117 \\
+432 \\
+947 \\
+2 \\
+117 \\
+432 \\
+947 \\
+2 \\
+117 \\
+432 \\
+947
+\end{bmatrix}
++
+\begin{bmatrix}
+e_{11} \\
+e_{21} \\
+e_{31} \\
+e_{41} \\
+e_{12} \\
+e_{22} \\
+e_{23} \\
+e_{24} \\
+e_{13} \\
+e_{23} \\
+e_{33} \\
+e_{43}  
+\end{bmatrix} 
+\end{eqnarray}
+$$ 
+
+Using the `gexp` package we have:
+
+```{r}
+crd_q <- gexp(mu        = NULL,
+              r         = 3,
+              err       = matrix(rep(0,12),
+                                 nrow = 12),
+              fe        = list(f1 = c(2, 3, 4, 0)),
+              contrasts = list(f1 = cont_crd))
+
+summary(crd_q)
+```
+
+Below the simulation chart.
+
+```{r echo=FALSE, results='hide'}
+with(crd_q$dfm,
+     plot(Y1 ~ rep(level, 3),
+          axes = FALSE,
+          #ylim = c(0,50),
+          xlab = 'X1'))
+axis(1, pos = 0)
+axis(2, pos = 0)
+curve(2+3*x+4*x^2, col = 'red', lty = 2, add=T)
+text(-0.5,2,'2',col = 'red', xpd = TRUE) 
+``` 
+
+# Simulating a CRD in a factorial experiments with two quantitative factors
+## Linear Response Surface
+
+Let us suppose that we want to generate a **single** random variable according to a CRD with two quantitative factors with levels 0, 5, 10, 15 and 2, 4, 6, 8 respectively, being 2 replicates. Then we can denote $Y_{ijk}$ as being the random variable observed in the k-th experimental unit (k = 1, 2) that received the i-th level of factor X1 (i = 1,2,3,4) and j-th level of factor X2 (j = 1,2,3,4). In these cases, we should note that there is only one intercept. Therefore, such an intercept must appear in the first factor to be declared. In the others, the value of the intercept must be declared as 0 (only to compute the length of the vector correctly). Therefore, consider the following values for the first factor: $\beta_0 = 1, \beta_1 = 3, \beta_2 = 0, \beta_3 = 0$. For the second factor we have: $\beta_4 = 2, \beta_5 = 0, \beta_6 = 0$. Matrically we have:
+
+$$
+\begin{eqnarray}
+\begin{bmatrix}
+Y_{111} \\
+Y_{211} \\
+Y_{311} \\
+Y_{411} \\
+Y_{121} \\
+Y_{221} \\
+Y_{321} \\
+Y_{421} \\
+Y_{131} \\
+Y_{231} \\
+Y_{331} \\
+Y_{431} \\
+Y_{141} \\
+Y_{241} \\
+Y_{341} \\
+Y_{441} \\
+Y_{112} \\
+Y_{212} \\
+Y_{312} \\
+Y_{412} \\
+Y_{122} \\
+Y_{222} \\
+Y_{322} \\
+Y_{422} \\
+Y_{132} \\
+Y_{232} \\
+Y_{332} \\
+Y_{432} \\
+Y_{142} \\
+Y_{242} \\
+Y_{342} \\
+Y_{442} \\
+\end{bmatrix}
+&=&
+  \begin{array}{p{5cm}}
+\begin{matrix}
+\beta_0 & \!\scriptsize{x11}\! & \scriptsize{x12} & \scriptsize{x13} & \!\scriptsize{x21}\! & \scriptsize{x22} & \scriptsize{x23} 
+\end{matrix}\\
+\left[\begin{array}{c|cc}
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 8\hphantom{0}  & 8^2 & 8^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 8\hphantom{0}  & 8^2 & 8^3 \\ 
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 8\hphantom{0}  & 8^2 & 8^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 8\hphantom{0}  & 8^2 & 8^3 \\  
+      \end{array}\right]
+\end{array}
+\cdot
+\begin{bmatrix}
+\beta_{0} \\
+\beta_{1} \\
+\beta_{2} \\
+\beta_{3} \\
+\beta_{4} \\
+\beta_{5} \\
+\beta_{6}
+\end{bmatrix}
++
+  \begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{311} \\
+e_{411} \\
+e_{121} \\
+e_{221} \\
+e_{321} \\
+e_{421} \\
+e_{131} \\
+e_{231} \\
+e_{331} \\
+e_{431} \\
+e_{141} \\
+e_{241} \\
+e_{341} \\
+e_{441} \\
+e_{112} \\
+e_{212} \\
+e_{312} \\
+e_{412} \\
+e_{122} \\
+e_{222} \\
+e_{322} \\
+e_{422} \\
+e_{132} \\
+e_{232} \\
+e_{332} \\
+e_{432} \\
+e_{142} \\
+e_{242} \\
+e_{342} \\
+e_{442} \\ 
+\end{bmatrix}
+\\
+&=&
+  \begin{array}{c}
+\begin{matrix}
+\beta_0 & \!\scriptsize{x11}\! & \scriptsize{x12} & \scriptsize{x13} & \!\scriptsize{x21}\! & \scriptsize{x22} & \scriptsize{x23} 
+\end{matrix}\\
+\left[\begin{array}{c|cc}
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 8\hphantom{0}  & 8^2 & 8^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 8\hphantom{0}  & 8^2 & 8^3 \\ 
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 2\hphantom{0}  & 2^2 & 2^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 2\hphantom{0}  & 2^2 & 2^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 4\hphantom{0}  & 4^2 & 4^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 4\hphantom{0}  & 4^2 & 4^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 6\hphantom{0}  & 6^2 & 6^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 6\hphantom{0}  & 6^2 & 6^3 \\
+      1\hphantom{0} & 0\hphantom{0}  & 0^2  & 0^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 5\hphantom{0}  & 5^2  & 5^3  & 8\hphantom{0}  & 8^2 & 8^3  \\
+      1\hphantom{0} & 10\hphantom{0} & 10^2 & 10^3 & 8\hphantom{0}  & 8^2 & 8^3 \\
+      1\hphantom{0} & 15\hphantom{0} & 15^2 & 15^3 & 8\hphantom{0}  & 8^2 & 8^3 \\   
+      \end{array}\right]
+\end{array} 
+\cdot
+\begin{bmatrix}
+1 \\
+3  \\
+0  \\
+0  \\
+2  \\
+0   \\
+0
+\end{bmatrix}
++
+  \begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{311} \\
+e_{411} \\
+e_{121} \\
+e_{221} \\
+e_{321} \\
+e_{421} \\
+e_{131} \\
+e_{231} \\
+e_{331} \\
+e_{431} \\
+e_{141} \\
+e_{241} \\
+e_{341} \\
+e_{441} \\
+e_{112} \\
+e_{212} \\
+e_{312} \\
+e_{412} \\
+e_{122} \\
+e_{222} \\
+e_{322} \\
+e_{422} \\
+e_{132} \\
+e_{232} \\
+e_{332} \\
+e_{432} \\
+e_{142} \\
+e_{242} \\
+e_{342} \\
+e_{442} \\  
+\end{bmatrix} 
+\\
+&=&
+  \begin{bmatrix}
+ 5 \\
+20 \\ 
+35 \\ 
+50  \\
+ 9  \\
+24  \\
+39  \\
+54  \\
+13  \\
+28  \\
+43  \\
+58  \\
+17  \\
+32  \\
+47  \\
+62  \\
+ 5  \\
+20  \\
+35  \\
+50  \\
+ 9  \\
+24  \\
+39  \\
+54  \\
+13  \\
+28  \\
+43  \\
+58  \\
+17  \\
+32  \\
+47  \\
+62  
+\end{bmatrix}
++
+  \begin{bmatrix}
+e_{111} \\
+e_{211} \\
+e_{311} \\
+e_{411} \\
+e_{121} \\
+e_{221} \\
+e_{321} \\
+e_{421} \\
+e_{131} \\
+e_{231} \\
+e_{331} \\
+e_{431} \\
+e_{141} \\
+e_{241} \\
+e_{341} \\
+e_{441} \\
+e_{112} \\
+e_{212} \\
+e_{312} \\
+e_{412} \\
+e_{122} \\
+e_{222} \\
+e_{322} \\
+e_{422} \\
+e_{132} \\
+e_{232} \\
+e_{332} \\
+e_{432} \\
+e_{142} \\
+e_{242} \\
+e_{342} \\
+e_{442}    
+\end{bmatrix} 
+\end{eqnarray}
+$$ 
+
+Using the `gexp` package we have:
+
+```{r}
+level2 <- seq(2,8,2)
+cont_crd2 <- matrix(c(level2,level2^2,level2^3),ncol=3)
+
+crd_hb <- gexp(mu = NULL,
+               r  = 2,
+               err = matrix(rep(0,32),
+                            nrow = 32),
+               fe  = list(f1 = c(1, 3, 0, 0),
+                          f2 = c(0, 2, 0, 0)),
+               fl = list(N = ordered(level),
+                         P = ordered(level2)),
+               contrasts = list(f1 = cont_crd,
+                                f2 = cont_crd2))
+
+summary(crd_hb)
+```
+
+Below the simulation chart.
+
+```{r echo=FALSE, results='hide'}
+z <- matrix(crd_hb$dfm$Y1,
+            ncol=4,
+            byrow=TRUE)[1:4,]
+persp(level,
+      level2, 
+      z, 
+      theta=30,
+      xlab='N',
+      ylab='P',
+      col='red')
+``` 
+
+## Quadratic response surface
+
+Let's omit matrix algebra as it is analogous to the one presented above. Considering now $\beta_2 = 2$ and $\beta_5 = 3$, we have the following result using the `gexp` package.
  
-# References
+```{r}
+crd_hb2 <- gexp(mu = NULL,
+               r  = 2,
+               err = matrix(rep(0,32),
+                            nrow = 32),
+               fe  = list(f1 = c(1, 3, 2, 0),
+                          f2 = c(0, 2, 3, 0)),
+               fl = list(N = ordered(level),
+                         P = ordered(level2)),
+               contrasts = list(f1 = cont_crd,
+                                f2 = cont_crd2))
+
+summary(crd_hb2)
+```
+
+Below the simulation chart.
+
+```{r echo=FALSE, results='hide'}
+z1 <- matrix(crd_hb2$dfm$Y1,
+            ncol=4,
+            byrow=TRUE)[1:4,]
+persp(level,
+      level2, 
+      z1, 
+      theta=30,
+      xlab='N',
+      ylab='P',
+      col='red')
+``` 
+
+# Doing experiment planning
+## Not interactive
+### CRD
+
+Let's suppose that we are interested in planning a DIC with three treatments (default) and five repetitions (default). In this case, as we are not interested in simulating data, we can give any value to the effects of the treatments, because what matters is the arrangement of the treatments in the experimental units.
+
+So, using the `gexp` package we have:
+ 
+```{r}
+crd_design <- gexp(random = TRUE)
+summary(crd_design)
+```
+
+Graficamente, temos:
+
+```{r}
+plot(crd_design)
+```
+
+### RCBD without repetition
+
+Let us consider an RCBD in which the block is the very repetition of the experiment. Consider also three treatments (default) and three blocks (default).
+
+With the `gexp` package we have:
+
+```{r}
+rcbd_designs <- gexp(r = 1, type = 'RCBD', random = TRUE)
+summary(rcbd_designs)
+```
+
+Graphically, we have:
+
+```{r fig.width = 7, fig.height = 7}
+plot(rcbd_designs)
+```
+
+### RCBD with repetition
+
+Considering the same experiment previous, alternating the number of repetitions inside blocks. Let us now consider two replicates per block.
+
+With the `gexp` package we have:
+
+```{r}
+rcbd_designc <- gexp(r = 2, type = 'RCBD', random = TRUE)
+summary(rcbd_designc)
+```
+
+Graphically, we have:
+
+```{r fig.width = 7, fig.height = 7}
+plot(rcbd_designc)
+```
+
+### LSD
+
+Consider a LSD with three treatments (default), three rows and three columns. In this case we have the following planning.
+
+```{r}
+lsd_design <- gexp(type = 'LSD', random = TRUE)
+summary(lsd_design)
+```
+
+Graphically, we have:
+
+```{r fig.width = 7, fig.height = 7}
+plot(lsd_design)
+```
+ 
+### Factorial - CRD
+
+Let us assume that we are interested in planning a 2x3 factorial (default) design with three replicates. 
+
+```{r}
+fat_design <- gexp(r = 3, type = 'FE', random = TRUE)
+summary(fat_design)
+```
+
+Using the graph we have:
+
+```{r fig.width = 7, fig.height = 7}
+plot(fat_design)
+```
+
+### Split-plot - CRD
+
+Assuming that we are interested in planning a CRD in split-plot, with two treatments in the plot (default) and three treatments in the subplot (default), with three replications.
+ 
+```{r}
+split_design <- gexp(r = 3, type = 'SPE', random = TRUE)
+summary(split_design)
+```
+
+Using the graph we have:
+
+```{r fig.width = 7, fig.height = 7}
+plot(split_design)
+```
+
+## Interactive
+### DIC
+
+If the researcher has a sketch of the experimental area in the PNG, JPG or JPEG formats, it is possible to import such a file with the functions of the gexp package and to randomly distribute the treatments in the experimental units. Suppose we have a sketch with six fish tanks, and we want to distribute two treatments with three replicates in the image. Then we proceed from the following form: 
+
+<video width="320" height="240" controls>
+  <source src="../inst/video/crd.mp4" type="video/mp4">
+</video>
+ 
+```{r eval=FALSE}
+dic_plot <- gexp(r = 3, fe = list(f1=rep(1,2)))
+plot(dic_plot,
+     dynamic = TRUE)
+```
+
+# References 

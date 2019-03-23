@@ -7,9 +7,9 @@ gexp.rcbd <- function(mu        = mu,
                       blke      = blke,
                       contrasts = contrasts,
                       round     = round,
-                      random    = random)  
+                      random    = random, ...)  
 {
-  if(is.null(fe)) stop("You must specify at least a factor")
+  if(is.null(fe))  fe <- list(f1 = rep(1,3))
 
   if(is.null(fl)){
     aux_factor <- lapply(fe,

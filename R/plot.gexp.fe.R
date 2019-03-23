@@ -129,6 +129,7 @@ plot.gexp.fe <- function(x,
     aux1 <- auxx[, -dimen[2]]
 
     labelblock <- names(aux1)[dimen[2]-1]
+    nblocks <- length(levels(aux1[[labelblock]]))
 
     aux11 <- aux1[order(aux1[[labelblock]]), ] 
 
@@ -141,12 +142,17 @@ plot.gexp.fe <- function(x,
     aux2$inter <- with(aux2,
                        eval(parse(text=auxinter)))
 
+    if (is.null(eval(getCall(x)$blkl))) {
+      blocks <- paste(labelblock, 1:nblocks, sep = " ")
+    } else {
+      blocks <- levels(aux1[[labelblock]])
+    }
+
     if(is.null(main)){
       main = 'Factorial Structure \n Random Completely Block Design'
     }
 
     Lfactors <- aux2$inter
-    blocks <- length(levels(aux1[[labelblock]]))  
 
     if(is.null(sub)){
 
@@ -168,12 +174,12 @@ plot.gexp.fe <- function(x,
                          sep=''),
                    '\n',
                    paste('Block:',
-                         blocks,
+                         nblocks,
                          sep='')) 
     }
 
-    rowsquare <- blocks
-    columsquare <- dim(aux11)[1]/blocks
+    rowsquare <- nblocks
+    columsquare <- dim(aux11)[1]/nblocks
 
     aux_posxcentro <- 1/columsquare
     aux_posxcentro1 <- aux_posxcentro + ((columsquare - 1)*2/columsquare)
@@ -219,7 +225,7 @@ plot.gexp.fe <- function(x,
 
       text(-0.08,
            posycentro,
-           paste(labelblock, 1:rowsquare),
+           blocks,
            col=colgrid,
            xpd=TRUE,
            srt=90)
@@ -270,6 +276,7 @@ plot.gexp.fe <- function(x,
     aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
     labelrow <- names(aux1)[1] 
     labelcol <- names(aux1)[2]
+    nrows <- ncols <- length(levels(aux1[[labelrow]])) 
 
     aux2 <- aux1[order(aux1[[labelrow]],
                        aux1[[labelcol]]), ]
@@ -281,6 +288,18 @@ plot.gexp.fe <- function(x,
                       sep='')
     aux2$inter <- with(aux2,
                        eval(parse(text=auxinter)))
+
+    if(is.null(eval(getCall(x)$rowl))){
+      rows <- paste(labelrow, 1:nrows)
+    } else {
+      rows <- levels(aux1[[labelrow]])
+    }
+
+    if(is.null(eval(getCall(x)$coll))){
+      cols <- paste(labelcol, 1:ncols)
+    } else {
+      cols <- levels(aux1[[labelcol]])
+    }
 
     if(is.null(main)){
       main = 'Factorial Structure: Latin Square Design'
@@ -294,7 +313,6 @@ plot.gexp.fe <- function(x,
                        collapse=',')
       levelss <- paste(levels(aux2$inter),
                        collapse=',')
-      rows <- cols <- length(levels(aux1[[labelrow]]))
 
       sub <- paste('Factors:',
                    factors,
@@ -304,11 +322,11 @@ plot.gexp.fe <- function(x,
                          sep=''),
                    '\n',
                    paste('Rows:',
-                         rows,
+                         nrows,
                          sep=''),
                    '\n',
                    paste('Columns:',
-                         cols,
+                         ncols,
                          sep=''))
 
     }
@@ -362,14 +380,14 @@ plot.gexp.fe <- function(x,
 
       text(-0.08,
            posxcentro,
-           paste(labelrow, 1:rowsquare),
+           rows,
            col=colgrid,
            xpd=TRUE,
            srt=90)
 
       text(posxcentro,
            2.08,
-           paste(labelcol, 1:columsquare),
+           cols,
            col=colgrid,
            xpd=TRUE)
 

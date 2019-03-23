@@ -13,9 +13,8 @@ gexp.fe <- function(mu        = mu,
                     nrand     = nrand,    
                     contrasts = contrasts,
                     round     = round,
-                    random    = random) 
+                    random    = random, ...) 
 {
-  if(is.null(fe)) stop("You must specify at least a factor")
   if(is.null(fl)){
     aux_factor <- lapply(fe,
                          function(x) as.matrix(x))
@@ -244,7 +243,8 @@ gexp.fe <- function(mu        = mu,
 
     dados  <- data.frame(Row    = levelsrows,
                          Column = levelscols,
-                         trats)
+                         trats,
+                         row.names = NULL)
 
     if(!is.null(rowl)){
       names(dados) <- gsub('Row',

@@ -16,42 +16,18 @@
 }
 
 \usage{
-  \method{summary}{gexp}(x,
+  \method{print}{gexp}(x,
      digits=3L, \dots)
 }
-%- maybe also 'usage' for other objects documented here.
 
 \arguments{
-  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, code{gexp.fe} 
-   or \code{gexp.spe} object.}
-  \item{digits}{...}
+  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, code{gexp.fe} or \code{gexp.spe} object.}
+  \item{digits}{Number of decimal digits in the results.The default is 3.}
   \item{\dots}{Further arguments (required by generic).}
 }
 
-\details{
-%  ~~ If necessary, more details than the description above ~~
-}
-
-\value{
-%  ~Describe the value returned
-%  If it is a LIST, use
-%  \item{comp1 }{Description of 'comp1'}
-%  \item{comp2 }{Description of 'comp2'}
-% ...
-}
-
-\references{
-% ~put references to the literature/web site here ~
-}
-
-\note{
-%  ~~further notes~~
-}
-
-% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-% ~~objects to See Also as \code{\link{help}}, ~~~
+ \code{\link{gexp}}
 }
 
 \examples{
@@ -90,6 +66,8 @@ crd_fe <- gexp(mu=0,
                        E=paste('e',
                                1:5,
                                sep='')),
+               inte = rep(1,848),
+               type = 'FE',
                round=0)
 print(crd_fe)
 crd_fe
@@ -159,7 +137,7 @@ split_rcbd <- gexp(mu=30,
                           1, 1, 3, 3, 3, 3),
                    round=1,
                    type='SPE')
-print(split_rcbd)  #TODO: é melhor sair o label real do bloco, não o nome da lista!
+print(split_rcbd)  
 split_rcbd
 
 #! Latin Square Design (LSD)
@@ -184,16 +162,16 @@ fe_lsd <- gexp(mu=30,
                        f2=c(2, 3)),
                rowe=c(1, 3, 2, 1),
                cole=c(2, 2, 1, 1),
-#               rowl=list(Row=paste('r',
-#                                   1:4,
-#                                   sep='')),
-#               coll=list(Col=paste('c',
-#                                   1:4,
-#                                   sep='')),
+               rowl=list(Row=paste('r',
+                                   1:4,
+                                   sep='')),
+               coll=list(Col=paste('c',
+                                   1:4,
+                                   sep='')),
                inte=c(1, 15, 1, 1),
                round=1,
                type='FE')
-print(fe_lsd)  #TODO: não entendi mensagem de erro ao informar rowl e coll!
+print(fe_lsd)  
 fe_lsd
 
 #! Split-plot Experiment (SPE) - LSD

@@ -17,6 +17,10 @@ plot.gexp.crd <- function(x,
   aux1 <- aux$dfm[ , -dim(aux$dfm)[2]]
   aux2 <- aux1[ , -dim(aux1)[2]]
 
+  factors <- names(attr(x$X, 'contrasts'))
+  levelss <- paste(levels(x$dfm[[factors]]))
+  repp <- max(aux1[,2])
+
   if(length(attr(aux$X, 'contrasts')) != 1){
   stop('Graphic option only for one factor!')
   }
@@ -27,27 +31,19 @@ plot.gexp.crd <- function(x,
 
   if(is.null(sub)){
   
-    factors <- names(attr(x$X, 'contrasts'))
-    levelss <- paste(levels(x$dfm[[factors]]),
-                     collapse=',')
-    repp <- eval(getCall(x)$r)
-
+    s_levels <- paste('Levels:',
+                       paste(levelss,collapse=','))
     sub <- paste('Factors:',
                  factors,
                  '\n',
-                 paste('Levels:',
-                       levelss,
-                       sep=''),
+                 s_levels,
                  '\n',
-                 paste('Replication:',
-                       repp,
-                       sep=''))
+                 'Replication:',
+                 repp)
   }
 
-  aux_rowsquare <- eval(getCall(x)$fe)
-  aux_rowsquare1 <- lapply(aux_rowsquare, length)
-  rowsquare <- do.call('prod', aux_rowsquare1)
-  columsquare <- eval(getCall(x)$r)
+  rowsquare <- length(levelss)
+  columsquare <- repp
 
   aux_posxcentro <- 1/columsquare
   aux_posxcentro1 <- aux_posxcentro + ((columsquare - 1)*2/columsquare)

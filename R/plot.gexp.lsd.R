@@ -17,6 +17,7 @@ plot.gexp.lsd <- function(x,
   aux1 <- aux$dfm[, -dim(aux$dfm)[2]]
   labelrow <- names(aux1)[1] 
   labelcol <- names(aux1)[2]
+  nrows <- ncols <- length(levels(aux1[[labelrow]]))
 
   aux11 <- aux1[order(aux1[[labelrow]],
                       aux1[[labelcol]]), ]
@@ -31,12 +32,23 @@ plot.gexp.lsd <- function(x,
     main = 'Latin Square Design'
   }
 
+  if(is.null(eval(getCall(x)$rowl))){
+    rows <- paste(labelrow, 1:nrows)
+  } else {
+    rows <- levels(aux1[[labelrow]])
+  }
+
+  if(is.null(eval(getCall(x)$coll))){
+    cols <- paste(labelcol, 1:ncols)
+  } else {
+    cols <- levels(aux1[[labelcol]])
+  }
+
   if(is.null(sub)){
 
     Lfactors <- names(aux1)[3]
     levelss <- paste(levels(x$dfm[[Lfactors]]),
                      collapse=',')
-    rows <- cols <- length(levels(aux1[[labelrow]]))
 
     sub <- paste('Factors:',
                  Lfactors,
@@ -46,16 +58,16 @@ plot.gexp.lsd <- function(x,
                        sep=''),
                  '\n',
                  paste('Rows:',
-                       rows,
+                       nrows,
                        sep=''),
                  '\n',
                  paste('Columns:',
-                       cols,
+                       ncols,
                        sep=''))
 
   }
 
-  rowsquare <- columsquare <- length(eval(getCall(x)$rowe))
+  rowsquare <- columsquare <- nrows
 
   aux_posxcentro <- 1/rowsquare
   aux_posxcentro1 <- aux_posxcentro + ((rowsquare - 1)*2/rowsquare)
@@ -105,17 +117,16 @@ plot.gexp.lsd <- function(x,
 
     text(-0.08,
          posxcentro,
-         paste(labelrow, 1:rowsquare),
+         rows,
          col=colgrid,
          xpd=TRUE,
          srt=90)
-    
+
     text(posxcentro,
          2.08,
-         paste(labelcol, 1:columsquare),
+         cols,
          col=colgrid,
          xpd=TRUE)
-
 
   } else {
     auxin <- tcltk::tk_choose.files()
@@ -161,9 +172,9 @@ plot.gexp.lsd <- function(x,
          y = NULL,
          paste(labelcol, 1:columsquare), 
          col = coltext) 
-   
+
     tcltk::tkmessageBox(message='Now, click with the left button on experimental unit and end with the right button!') 
-   
+
     text(x = locator(),
          y = NULL,
          factors,

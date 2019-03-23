@@ -17,178 +17,194 @@
 
 \title{Generator of Experiments}
 
-\description{ O pacote provê recursos computacionais úteis no planejamento e
- modelagem de experimentos estruturados no ambiente R.
+\description{The package provides non-computational resources
+  modeling of structured experiments in the R. 
 
- A funçao genérica S3 \code{gexp} foi criada para possibilitar
- planejar, criar e modelar experimentos estruturados, ou seja, sob delineamento
- experimental. Na modelagem permite simular resultados de experimentos com
- possibilidade do usuário informar os efeitos e o(s) erro(s) aleatório(s).
- Os delineamentos são: Completely Randomized Design (CRD),
- Randomized Complete Block Design (RCBD) e
- Latin Squares Design (LSD). Os tipos de experimentos são: Factorial Experiment
- (FE) e Split-plot Experiment (SPE).
+  The generic function S3 \code{gexp} was created to enable
+  plan, create and model structured experiments, that is, under a design
+  experimental. In the modeling it is possible to simulate results of experiments with
+  possibility of user informing the effects and the random error(s).
+  The designs are: Completely Randomized Design (CRD),Randomized complete block design (RCBD) and
+  Latin Squares Design (LSD). The types of experiments are: Factorial Experimentation
+  (FE) and Split-plot experiment (SPE).
 
- Os experimentos podem ser gerados com uma
- ou mais variável de resposta, no último caso, pode se impor uma estrutura de
- covariância estre elas. É também possível planejar experimentos com o auxílio 
- das funções gráficas para uso em planejamento a partir de figuras ou fotos da 
- área experimental.
+  The experiments can be generated with one or more variable response, in the latter case, 
+  it may be important for a structure covariance between them. It is also possible to plan experiments with
+  of graphic parts for use in planning from figures or pictures of the experimental area.
+  %  O pacote provê recursos computacionais úteis no planejamento e
+  %  modelagem de experimentos estruturados no ambiente R.
+  %
+  %  A função genérica S3 \code{gexp} foi criada para possibilitar
+  %  planejar, criar e modelar experimentos estruturados, ou seja, sob delineamento
+  %  experimental. Na modelagem permite simular resultados de experimentos com
+  %  possibilidade do usuário informar os efeitos e o(s) erro(s) aleatório(s).
+  %  Os delineamentos são: Completely Randomized Design (CRD),
+  %  Randomized Complete Block Design (RCBD) e
+  %  Latin Squares Design (LSD). Os tipos de experimentos são: Factorial Experiment
+  %  (FE) e Split-plot Experiment (SPE).
+  %
+  %  Os experimentos podem ser gerados com uma
+  %  ou mais variável de resposta, no último caso, pode se impor uma estrutura de
+  %  covariância estre elas. É também possível planejar experimentos com o auxílio 
+  %  das funções gráficas para uso em planejamento a partir de figuras ou fotos da 
+  %  área experimental.
 }
 
 \usage{
-gexp(x, ...)
+gexp(mu, ...)
 
 \method{gexp}{default}(
-       mu        = NULL,
-       err       = NULL,
-       errp      = NULL,
-       r         = 2L,
-       fl        = NULL,
-       blkl      = NULL,
-       rowl      = NULL,
-       coll      = NULL,
-       fe        = NULL,
-       inte      = NULL,
-       blke      = NULL,
-       rowe      = NULL,
-       cole      = NULL,
-       contrasts = NULL,
-       type      = c('CRD','RCBD','LSD','FE','SPE'),
-       nrand     = 1,
-       round     = 2L,
-       random    = FALSE,
-       ...)
+     mu        = 26,
+     err       = NULL,
+     errp      = NULL,
+     r         = 5L,
+     fl        = NULL,
+     blkl      = NULL,
+     rowl      = NULL,
+     coll      = NULL,
+     fe        = NULL,
+     inte      = NULL,
+     blke      = NULL,
+     rowe      = NULL,
+     cole     = NULL,
+     contrasts = NULL,
+     type      = c('CRD','RCBD','LSD','FE','SPE'),
+     nrand     = 1L,
+     round     = 2L,
+     random    = FALSE,
+     ...)
 
 \method{gexp}{crd}(
-       mu,
-       err,
-       r,
-       fl,
-       fe,
-       contrasts,
-       round,
-       random)
+     mu,
+     err,
+     r,
+     fl,
+     fe,
+     contrasts,
+     round,
+     random, ...)
 
 \method{gexp}{rcbd}(
-       mu,
-       err,
-       r,
-       fl,
-       blkl,
-       fe,
-       blke,
-       contrasts,
-       round,
-       random)
+     mu,
+     err,
+     r,
+     fl,
+     blkl,
+     fe,
+     blke,
+     contrasts,
+     round,
+     random, ...)
 
 \method{gexp}{lsd}(
-       mu, 
-       err,
-       fl,
-       rowl,
-       coll,
-       fe,
-       rowe,
-       cole,
-       nrand,
-       contrasts,
-       round,
-       random)
+     mu, 
+     err,
+     fl,
+     rowl,
+     coll,
+     fe,
+     rowe,
+     cole,
+     nrand,
+     contrasts,
+     round,
+     random, ...)
 
 \method{gexp}{fe}(
-       mu,
-       err,
-       r,
-       fl,
-       blkl,
-       rowl,
-       coll,
-       fe,
-       inte,
-       blke,
-       rowe,
-       cole,
-       nrand,
-       contrasts,
-       round,
-       random)
+     mu,
+     err,
+     r,
+     fl,
+     blkl,
+     rowl,
+     coll,
+     fe,
+     inte,
+     blke,
+     rowe,
+     cole,
+     nrand,
+     contrasts,
+     round,
+     random, ...)
 
 \method{gexp}{spe}(
-       mu,
-       err,
-       errp,
-       r,
-       fl,
-       blkl,
-       rowl,
-       coll,
-       fe,
-       inte,
-       blke,
-       rowe,
-       cole,
-       contrasts,
-       nrand,
-       round,
-       random)
+     mu,
+     err,
+     errp,
+     r,
+     fl,
+     blkl,
+     rowl,
+     coll,
+     fe,
+     inte,
+     blke,
+     rowe,
+     cole,
+     contrasts,
+     nrand,
+     round,
+     random, ...)
 }
 
 \arguments{
-  \item{mu}{É um escalar numérico, ou um vetor para dados multivariados (MD, 
-   mais de uma variável resposta), que representa a média de cada fator.}
-  \item{err}{É um vetor, ou matrix para MD, que representa o erro experimental. 
-   O valor default é NULL, ou seja, para cada variável de resposta é adicionado
-   um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
-  \item{errp}{É um vetor, ou uma matrix para MD, do erro associado as parcelas 
-   no caso de type ser igual a SPE (Split-Plot Experiments). O valor default é 
-   NULL, ou seja, para cada variável de resposta é adicionado um erro normal 
-   com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
-  \item{r}{É um escalar do número de repetições do experimento.}
-  \item{fl}{Lista de um vetor de caracteres, ou uma matrix (MD). É uma lista 
-   dos nomes dos fatores.}
-  \item{blkl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes 
-   dos blocos}
-  \item{rowl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes 
-   das linhas no caso de type ser igual a LSD (Latin Square Design).}
-  \item{coll}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes 
-   das colunas no caso de type ser igual a LSD (Latin Square Design).}
-  \item{fe}{É um vetor numérico, ou uma matrix (MD). É uma lista do efeito de 
-   um fator.}
-  \item{inte}{É um vetor numérico, ou uma matrix para MD, dos efeitos da 
-   interação.}
-  \item{blke}{É um vetor numérico, ou uma matriz para MD, dos efeitos dos 
-   blocos.}
-  \item{rowe}{É um vetor numérico, ou uma matriz para MD, dos efeitos das 
-   linhas no caso de type ser igual a LSD (Latin Square Design).}
-  \item{cole}{É um vetor numérico, ou uma matriz para MD, dos efeitos das 
-   colunas no caso de type ser igual a LSD (Latin Square Design).}
-  \item {contrasts}{...}
-  \item{type}{É um vetor de strings que contém o tipo de delineamento e tipo de 
-   experimento a ser utilizado:
-   Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD),
-   Latin Squares Design (LSD), Factorial Experiment (FE) and Split-plot 
-   Experiment (SPE). CRD é o default.}
-  \item{nrand}{É um escalar numérico utilizado especificamente no Latin Squares 
-   Design (LSD) para embaralhar os tratamentos nas linhas e colunas.}
-  \item{round}{É um escalar numérico para arredondamentos da variável de 
-   resposta.}
-  \item{random}{É um argumento lógico quando o objetivo é planejar experimentos 
-   para que ocorra a casualização dos tratamentos nas unidades experimentais.
-   FALSE é o default.}
-  \item{\dots}{Further arguments (required by generic).}
+ \item{mu}{Is a numeric scalar, or a vector to Multivarite Data (MD), that represent the mean of each factor.}
+ \item{err}{It is a vector, or matrix for MD, that represents the experimental error. The default value is NULL, that is, for each response variable a normal error is added with mean 0 and variance 1: rmvnorm(sigma = diag(length(mu))).}
+ \item{errp}{It is a vector, or a matrix for MD, of the error associated with the plots if type is equal to SPE (Split-Plot Experiments). The default value is NULL, that is, for each response variable a normal error is added with mean 0 and variance 1: rmvnorm(sigma = diag(length(mu))).}
+ \item{r}{It is a scalar of the number of repetitions of the experiment.}
+ \item{fl}{List of a vector of characters, or a matrix (MD). It's a list of factor names.}
+ \item{blkl}{List of a vector of characters, or an array for MD, of block names}
+ \item{rowl}{List a vector of characters, or an array for MD, of the line names in case type is equal to LSD (Latin Square Design).}
+ \item{coll}{List of a vector of characters, or an array for MD, of the column names in case the type is equal to LSD (Latin Square Design).}
+ \item{fe}{It is a numerical vector, or a matrix (MD). It's a list of the effect of a factor.}
+ \item{inte}{It is a numerical vector, or a matrix for MD, of the effects of the interaction.}
+ \item{blke}{It is a numerical vector, or a matrix for MD, of the effects of the blocks.}
+ \item{rowe}{It is a numerical vector, or an array for MD, of the effects of the lines in case the type is equal to LSD (Latin Square Design).}
+ \item{cole}{Is a numeric vector, or a matrix for MD, of the effects of the columns in case the type is equal to LSD (Latin Square Design).}
+ \item{contrasts}{A list, whose entries are values (numeric matrices or character strings naming functions) to be used as replacement values for the 'contrasts' function and whose names are the names of columns of' . See "contrasts.arg" argument of the model.matrix function to more details.}
+ \item{type}{It is a vector of strings that contains the type of design and type of experiment to be used: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD), Latin Squares Design (LSD), Factorial Experiment (FE) and Split-plot Experiment (SPE). CRD is the default.}
+ \item{nrand}{It is a numerical scalar used specifically in Latin Squares Design (LSD) to shuffle treatments in rows and columns.}
+ \item{round}{This is a numeric scalar for rounding of the response variable.}
+ \item{random}{It is a logical argument when the purpose is to plan experiments so that randomisation of treatments occurs in the experimental units. FALSE is the default.}
+ \item{\dots}{Further arguments (required by generic).}
 }
 \value{
-  The method \code{gexp} returns a list of class \code{gexp} with the slots:
-  \item{X}{É a matriz de incidência do delineamento.}
-  \item{Z}{É a matriz de incidência do erro da parcela principal no caso de type 
-   ser igual a SPLIT.}
-  \item{Y}{É um vetor, ou uma matrix para MD, com os valores da(s) variável(eis) 
-   aleatória(s).}
-  \item{dfm}{É um data.frame com todas as informações do experimento: 
-   tratamentos, repetições e a variável aleatória de resposta.}
+  The method \code{gexp} returns the list of class \code{gexp} with the slots:
+  \item{X}{It is the incidence matrix of the design.}
+  \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type
+       be equal to SPLIT.}
+  \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
+  \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
 }
-
+  %  \item{err}{É um vetor, ou matrix para MD, que representa o erro experimental. O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
+  %  \item{errp}{É um vetor, ou uma matrix para MD, do erro associado as parcelas no caso de type ser igual a SPE (Split-Plot Experiments). O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
+  %  \item{r}{É um escalar do número de repetições do experimento.}
+  %  \item{fl}{Lista de um vetor de caracteres, ou uma matrix (MD). É uma lista dos nomes dos fatores.}
+  %  \item{blkl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes dos blocos}
+  %  \item{rowl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes das linhas no caso de type ser igual a LSD (Latin Square Design).}
+  %  \item{coll}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes das colunas no caso de type ser igual a LSD (Latin Square Design).}
+  %  \item{fe}{É um vetor numérico, ou uma matrix (MD). É uma lista do efeito de um fator.}
+  %  \item{inte}{É um vetor numérico, ou uma matrix para MD, dos efeitos da interação.}
+  %  \item{blke}{É um vetor numérico, ou uma matriz para MD, dos efeitos dos blocos.}
+  %  \item{rowe}{É um vetor numérico, ou uma matriz para MD, dos efeitos das linhas no caso de type ser igual a LSD (Latin Square Design).}
+  %  \item{cole}{É um vetor numérico, ou uma matriz para MD, dos efeitos das colunas no caso de type ser igual a LSD (Latin Square Design).}
+  %  \item{contrasts}{A list, whose entries are values (numeric matrices or character strings naming functions) to be used as replacement values for the ‘contrasts’ replacement function and whose names are the names of columns of ‘data’ containing ‘factor’s. See "contrasts.arg" argument of the model.matrix function to more details.}
+  %  \item{type}{É um vetor de strings que contém o tipo de delineamento e tipo de experimento a ser utilizado: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD), Latin Squares Design (LSD), Factorial Experiment (FE) and Split-plot Experiment (SPE). CRD é o default.}
+  %  \item{nrand}{É um escalar numérico utilizado especificamente no Latin Squares Design (LSD) para embaralhar os tratamentos nas linhas e colunas.}
+  %  \item{round}{É um escalar numérico para arredondamentos da variável de resposta.}
+  %  \item{random}{É um argumento lógico quando o objetivo é planejar experimentos para que ocorra a casualização dos tratamentos nas unidades experimentais. FALSE é o default.}
+  %  \item{\dots}{Further arguments (required by generic).}
+  %}
+  %\value{
+  %  The method \code{gexp} returns a list of class \code{gexp} with the slots:
+  %  \item{X}{É a matriz de incidência do delineamento.}
+  %  \item{Z}{É a matriz de incidência do erro da parcela principal no caso de type 
+  %    ser igual a SPLIT.}
+  %  \item{Y}{É um vetor, ou uma matrix para MD, com os valores da(s) variável(eis) aleatória(s).}
+  %  \item{dfm}{É um data.frame com todas as informações do experimento: tratamentos, repetições e a variável aleatória de resposta.}
+  %}
+  %
 \references{
   Ferreira, Daniel Furtado. 2008. \emph{Estatística Multivariada}. 1 ed. 
   Lavras: Ed. UFLA. 
@@ -198,7 +214,7 @@ gexp(x, ...)
   Lavras, 1992.
 
   Rencher, Alvin C. and Schaalje, Bruce G. 2007. \emph{Linear Models in 
-  Statistics, second edition}. Hoboken: John Wiley \& Sons.
+    Statistics, second edition}. Hoboken: John Wiley \& Sons.
 
   Naes, T.; Aastveit, A.H.; Sahni, N.S. 2007. "Analysis of split-plot designs: 
   An Overview and Comparison of Methods". \emph{Qual. Reliab. Engng. Int.} 23, 
@@ -274,15 +290,11 @@ mod <- aov(Y1 ~ X1,
 shapiro.test(mod$res)
 
 #! Factorial Experiment (FE) - CRD - QL
-# 5 factors (f1..f5, level^factor): 3^1 * 2^1 * 3^1 * 2^1 * 4^1 * 2 = 360 experimental units
-# 5 factors (f1..f5, level^factor): 3^2 * 2^2 * 5^1 = 180 * 2 = 360 experimental units
 crd_fe <- gexp(mu=0,
                r=2,
                fe=list(f1=c(1, 1, 5),
                        f2=c(1, 1),
-                       f3=c(2, 2, 1),
-                       f4=c(1, 5),
-                       f5=c(1, 2, 3, 4, 5)),
+                       f3=c(2, 2, 1)),
                fl=list(A=paste('a',
                                1:3,
                                sep=''),
@@ -291,14 +303,10 @@ crd_fe <- gexp(mu=0,
                                sep=''),
                        C=paste('c',
                                1:3,
-                               sep=''),
-                       D=paste('d',
-                               1:2,
-                               sep=''),
-                       E=paste('e',
-                               1:5,
                                sep='')),
-               round=0)
+               inte = rep(1,39),
+               round=0,
+               type = 'FE')
 summary(crd_fe)
 
 #! Factorial Experiment (FE) - Multivariated - CRD - QL
@@ -309,14 +317,14 @@ crd_femn <- gexp(mu=c(0, 0),
                                       sigma=matrix(c(0, 0,
                                                      0, 0),
                                                    ncol=2)),
-                                   #Y1 Y2
+                 #Y1 Y2
                  fe=list(f1=matrix(c(0, 3,  #X1  X1
                                      1, 4,  #X2  X2
                                      2, 5), #X3  X3
                                    ncol=2,
                                    byrow=TRUE),
-    
-                                   #Y1 Y2
+
+                         #Y1 Y2
                          f2=matrix(c(0, 2,  #X1  X1
                                      1, 3), #X2  X2
                                    ncol=2,
@@ -392,7 +400,7 @@ split_crd <- gexp(mu=30,
                   inte=c(1, 15, 1, 1),
                   round=1,
                   type='SPE')
-summary(split_crd)  #TODO: Não está errado mas é melhor se o resultado for orddnado pela parcela, não pela subparcela!
+summary(split_crd)  
 
 #! Randomized Complete Block Design (RCBD) - QL
 # 1 factor, 3 blocks
@@ -405,7 +413,7 @@ rcbd <- gexp(mu=0,
                                  sep='')),
              round=1,
              type='RCBD')
-summary(rcbd) # TODO: não dá o plot
+summary(rcbd) 
 
 #! Factorial Experiment (FE) - RCBD - QL
 fe_rcbd <- gexp(mu=30,
@@ -457,7 +465,7 @@ split_rcbd <- gexp(mu=30,
                           1, 1, 3, 3, 3, 3),
                    round=1,
                    type='SPE')
-summary(split_rcbd)  #TODO: é melhor sair o label real do bloco, não o nome da lista!
+summary(split_rcbd)  
 
 #! Latin Square Design (LSD) - QL
 lsd <- gexp(mu=30,
@@ -480,16 +488,16 @@ fe_lsd <- gexp(mu=30,
                        f2=c(2, 3)),
                rowe=c(1, 3, 2, 1),
                cole=c(2, 2, 1, 1),
-#               rowl=list(Row=paste('r',
-#                                   1:4,
-#                                   sep='')),
-#               coll=list(Col=paste('c',
-#                                   1:4,
-#                                   sep='')),
+               rowl=list(Row=paste('r',
+                                   1:4,
+                                   sep='')),
+               coll=list(Col=paste('c',
+                                   1:4,
+                                   sep='')),
                inte=c(1, 15, 1, 1),
                round=1,
                type='FE')
-summary(fe_lsd)  #TODO: não entendi mensagem de erro ao informar rowl e coll!
+summary(fe_lsd)  
 
 #! Split-plot Experiment (SPE) - LSD - QL
 split_lsd <- gexp(mu=30,
@@ -525,7 +533,7 @@ cont_crd <- contr.poly(length(level))
 # Linear effect
 crd_lo <- gexp(mu=NULL,
                r=4,
-                         # B0 B1 B2 B3  Linear only
+               # B0 B1 B2 B3  Linear only
                fe=list(f1=c(2, 5, 0, 0)),
                fl=list(Dose=ordered(level)),
                contrasts=list(f1=cont_crd))
@@ -536,7 +544,7 @@ plot(Y1 ~ Dose,
 # Quadratic effect
 crd_qo <- gexp(mu=NULL,
                r=4,
-                         # B0 B1 B2 B3  quadratic
+               # B0 B1 B2 B3  quadratic
                fe=list(f1=c(2, 0, 5, 0)),
                fl=list(Dose=ordered(c(0, 10, 20, 30))),
                contrasts=list(f1=cont_crd))
@@ -547,7 +555,7 @@ plot(Y1 ~ Dose,
 # Cubic effect
 crd_co <- gexp(mu=NULL,
                r=4,
-                         # B0 B1 B2 B3  cubic
+               # B0 B1 B2 B3  cubic
                fe=list(f1=c(2, 0, 0, 5)),
                fl=list(Dose=ordered(c(0, 10, 20, 30))),
                contrasts=list(f1=cont_crd))
@@ -577,11 +585,11 @@ reg <- lm(Y1 ~ Dose + I(Dose^2) + I(Dose^3),
 summary(reg)
 
 # Linear and quadratic
-# No caso de dois ou mais fatores, basta informar o valor de Beta0 apenas para o primeiro fator.  #TODO: não entendi!
+# When has two or more factor, to inform only Beta0 to first factor.
 crd_lq <- gexp(mu=NULL,
                r=3,
                fe=list(f1=c(0, 10, 0, 0),  #linear
-                       f2=c(0,  3, 4, 0)), #quadratic
+                       f2=c(0, 3, 4, 0)), #quadratic
                fl=list(P=ordered(level),
                        N=ordered(1:4)),
                contrasts=list(f1=cont_crd,
@@ -599,8 +607,8 @@ crd_m <- gexp(mu=NULL,
               r=4,                #L  Q
               fe=list(f1=matrix(c( 2,  2,
                                   10,  0,
-                                   0, 10,
-                                   0,  0),
+                                  0, 10,
+                                  0,  0),
                                 ncol=2,
                                 byrow=TRUE)),
               fl=list(Dose=ordered(level)),
@@ -615,7 +623,8 @@ with(crd_m$dfm,
 # Orthogonal polynomios - RCBD
 cont_rcbd <- contr.poly(4)
 
-rcbd <- gexp(fe=list(f1=c(1, 3, 0, 0)),
+rcbd <- gexp(mu=NULL,
+             fe=list(f1=c(1, 3, 0, 0)),
              blke=c(1, 2, 3),
              r=2,
              fl=list(Dose=ordered(c(0, 2, 4, 6))),
@@ -643,27 +652,25 @@ crd_hb <- gexp(mu=NULL,
                               f2=cont_crd))
 summary(crd_hb)
 
-# RCBD - Tentativa - JCF
+# RCBD 
 r <- 2
+blke <- c(1, 2)
 (error <- matrix(rep(0,
-                     4^1*3^1*r),
+                     4^1*3^1*r*length(blke)),
                  ncol=1))
 
-#TODO: Comentado para tentar R RCMD check/build
-#TODO: Não doda em blocos?
-#rcbd_hb <- gexp(mu=NULL,
-#                err=error,
-#                r=r,
-#                fe=list(f1=c(0, 1, 0),      # Qualitative
-#                        f2=c(2, 1, 0, 0)),  # Quantitative linear
-#                fl=list(Var=LETTERS[1:3],
-#                        Dose=ordered(level)),
-#                blke=c(1, 2),
-#                blkl=list(Blk=c('B1', 'B2')),
-#                contrasts=list(f1=diag(3),
-#                               f2=cont_crd,
-#                               Blk=diag(2)),
-#                type='RCBD')
-#summary(rcbd_hb)
-
+rcbd_hb <- gexp(mu=NULL,
+                err=error,
+                r=r,
+                fe=list(f1=c(0, 1, 0),      # Qualitative
+                        f2=c(2, 1, 0, 0)),  # Quantitative linear
+                fl=list(Var=LETTERS[1:3],
+                        Dose=ordered(level)),
+                blke=blke,
+                blkl=list(Blk=c('B1', 'B2')),
+                contrasts=list(f1=diag(3),
+                               f2=cont_crd,
+                               Blk=diag(2)),
+                type='RCBD')
+summary(rcbd_hb)
 }

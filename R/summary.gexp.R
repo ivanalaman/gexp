@@ -1,11 +1,11 @@
-summary.gexp <- function(x,
+summary.gexp <- function(object,
                          digits=3L,
                          ...){
 
   cat("Database \n")
 
-  print(x$dfm,
+  print(object$dfm,
         digits = digits,
-        ...)  
+        ...) 
 
 }

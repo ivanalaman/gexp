@@ -1,7 +1,7 @@
-gexp.default <- function(mu        = NULL, 
+gexp.default <- function(mu        = 26, 
                          err       = NULL,   
                          errp      = NULL,   
-                         r         = 2L,  
+                         r         = 5L,  
                          fl        = NULL,
                          blkl      = NULL,
                          rowl      = NULL,
@@ -13,7 +13,7 @@ gexp.default <- function(mu        = NULL,
                          cole      = NULL,
                          contrasts = NULL,
                          type      = c('CRD','RCBD','LSD','FE','SPE'),
-                         nrand     = 1,    
+                         nrand     = 1L,    
                          round     = 2L,   
                          random    = FALSE,  
                          ...)
@@ -25,6 +25,8 @@ gexp.default <- function(mu        = NULL,
          CRD = {
            if(any(!is.null(inte) | !is.null(blke) | !is.null(rowe) | !is.null(cole))) stop("Only fe must be specified as effect of treatment!")
 
+           if(is.null(fe)) fe <- list(f1 = rep(1,3)) 
+
            result <- gexp.crd(mu        = mu, 
                               err       = err,   
                               r         = r,   
@@ -32,11 +34,12 @@ gexp.default <- function(mu        = NULL,
                               fe        = fe,
                               contrasts = contrasts, 
                               round     = round, 
-                              random    = random)
+                              random    = random,
+                              ...)
            class(result) <- c('gexp.crd', 'gexp', 'list')
          },
          RCBD= {
-           if(is.null(blke)) stop("You must specify the block effect with 'blke' argument!")
+           if(is.null(blke))  blke <- rep(1,3) 
 
            result <- gexp.rcbd(mu        = mu,
                                err       = err,
@@ -47,11 +50,16 @@ gexp.default <- function(mu        = NULL,
                                blke      = blke,
                                contrasts = contrasts,
                                round     = round,
-                               random    = random)
+                               random    = random,
+                               ...)
            class(result) <- c('gexp.rcbd', 'gexp', 'list')
          },
          LSD = {
-           if(length(fe)!=1) stop("Use only one factor this design!")
+
+           if(is.null(fe)) fe <- list(f1 = rep(1,3))
+           if(length(fe)!=1) stop("Use only one factor this design!")  
+           if(is.null(rowe)) rowe <- unlist(fe)  
+           if(is.null(cole)) cole <- rowe 
 
            result <- gexp.lsd(mu        = mu, 
                               err       = err,
@@ -64,10 +72,18 @@ gexp.default <- function(mu        = NULL,
                               nrand     = nrand,
                               contrasts = contrasts,
                               round     = round,
-                              random    = random)
+                              random    = random,
+                              ...)
            class(result) <- c('gexp.lsd', 'gexp', 'list')
          },
          FE  = {
+
+           if(is.null(fe)) fe <- list(f1 = rep(1,2),
+                                      f2 = rep(1,3))
+           if(is.null(inte)) inte <- rep(1,
+                                         do.call('prod',
+                                                 lapply(fe,length)))
+
            result <- gexp.fe(mu        = mu,
                              err       = err, 
                              r         = r,
@@ -83,10 +99,18 @@ gexp.default <- function(mu        = NULL,
                              nrand     = nrand, 
                              contrasts = contrasts,
                              round     = round, 
-                             random    = random)
+                             random    = random,
+                             ...)
            class(result) <- c('gexp.fe', 'gexp', 'list')   
          },
          SPE = {
+
+           if(is.null(fe)) fe <- list(f1 = rep(1,2),
+                                      f2 = rep(1,3))
+           if(is.null(inte)) inte <- rep(1,
+                                         do.call('prod',
+                                                 lapply(fe,length)))
+
            result <- gexp.spe(mu        = mu,
                               err       = err,
                               errp      = errp,
@@ -103,7 +127,8 @@ gexp.default <- function(mu        = NULL,
                               nrand     = nrand,
                               contrasts = contrasts,
                               round     = round,
-                              random    = random) 
+                              random    = random,
+                              ...) 
            class(result) <- c('gexp.spe', 'gexp', 'list') 
          }
   )

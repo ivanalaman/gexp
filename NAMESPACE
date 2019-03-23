@@ -2,10 +2,32 @@
 # Remove the previous line if you edit this file
 
 # Export all names
-# exportPattern(".")
+exportPattern(".")
 
 # Import all packages listed as Imports or Depends
-#import(
-# stats
-#)
+import(
+ stats,
+ graphics,
+ tcltk,
+ png,
+ jpeg
+)
+
+importFrom("utils", "combn")
+importFrom("mvtnorm", "rmvnorm")
+
+# S3 methods
+S3method(gexp, crd)
+S3method(gexp, rcbd)
+S3method(gexp, lsd)
+S3method(gexp, fe)
+S3method(gexp, spe)
+S3method(gexp, default)
+S3method(summary, gexp)
+S3method(print, gexp)
+S3method(plot, gexp.crd)
+S3method(plot, gexp.rcbd)
+S3method(plot, gexp.lsd)
+S3method(plot, gexp.fe)
+S3method(plot, gexp.spe)
 

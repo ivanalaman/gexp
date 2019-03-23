@@ -14,9 +14,8 @@ gexp.spe <- function(mu        = mu,
                      contrasts = contrasts,
                      nrand     = nrand,    
                      round     = round,   
-                     random    = random) 
+                     random    = random, ...) 
 {
-  if(is.null(fe)) stop("You must specify at least a factor")
   if(is.null(fl)){
     aux_factor <- lapply(fe,
                          function(x) as.matrix(x))

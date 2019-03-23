@@ -12,7 +12,7 @@
 \alias{plot.gexp.spe}
 
 \title{
-  Plot mthods for \code{gexp} objects.
+  Plot methods for \code{gexp} objects.
 }
 
 \description{
@@ -28,7 +28,7 @@
 }
 
 \usage{
-  \method{plot}{gexp.crd}(x,
+\method{plot}{gexp.crd}(x,
      main= NULL,
      sub= NULL,
      colgrid='red',
@@ -41,7 +41,7 @@
      ytopimg=par()$usr[4],
      dynamic=FALSE, \dots)
 
-  \method{plot}{gexp.rcbd}(x,
+\method{plot}{gexp.rcbd}(x,
      main=NULL,
      sub=NULL,
      colgrid='red',
@@ -54,7 +54,7 @@
      ytopimg=par()$usr[4],
      dynamic=FALSE, \dots)
 
-  \method{plot}{gexp.lsd}(x,
+\method{plot}{gexp.lsd}(x,
      main=NULL,
      sub=NULL,
      colgrid='red',
@@ -67,7 +67,7 @@
      ytopimg=par()$usr[4],
      dynamic=FALSE, \dots)
 
-  \method{plot}{gexp.fe}(x,
+\method{plot}{gexp.fe}(x,
      main=NULL,
      sub=NULL,
      colgrid='red',
@@ -80,7 +80,7 @@
      ytopimg=par()$usr[4],
      dynamic=FALSE, \dots)
 
-  \method{plot}{gexp.spe}(x,
+\method{plot}{gexp.spe}(x,
      main=NULL,
      sub=NULL,
      coltext='blue',
@@ -94,46 +94,26 @@
      ytopimg=par()$usr[4],
      dynamic=FALSE, \dots)
 }
-%- maybe also 'usage' for other objects documented here.
 
 \arguments{
-  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, code{gexp.fe} 
-   or \code{gexp.spe} object.}
+  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, code{gexp.fe} or \code{gexp.spe} object.}
   \item{main}{An overall title for the plot.}
   \item{sub}{An sub title for the plot.}
   \item{coltext}{A color to the text on the plot}
-  \item{srttext}{...}
+  \item{srttext}{The string rotation in degrees. See \code{srt} argument of the par function.}.
   \item{colgrid}{A color to the drid on the plot}
   \item{ltygrid}{A \code{lty} to the drid on the plot}
   \item{lwdgrid}{A \code{lw} to the drid on the plot}
-  \item{xleftimg}{...}
-  \item{ybottomimg}{...}
-  \item{xrightimg}{...}
-  \item{ytopimg}{...}
-  \item{dynamic}{...}
+  \item{xleftimg}{A vector (or scalar) of left x positions.}
+  \item{ybottomimg}{A vector (or scalar) of bottom y positions.}
+  \item{xrightimg}{A vector (or scalar) of right x positions.}
+  \item{ytopimg}{A vector (or scalar) of top y positions.}
+  \item{dynamic}{A logical argument to plot experimental design using image.}
   \item{\dots}{Further arguments (required by generic).}
 }
 
-\details{
-%  ~~ If necessary, more details than the description above ~~
-}
-
-\value{
-%  ~Describe the value returned
-%  If it is a LIST, use
-%  \item{comp1 }{Description of 'comp1'}
-%  \item{comp2 }{Description of 'comp2'}
-% ...
-}
-
-\note{
-%  ~~further notes~~
-}
-
-% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
-% ~~objects to See Also as \code{\link{help}}, ~~~
+   \code{\link[graphics]{plot.default}}, \code{\link[graphics]{rasterImage}}
 }
 
 \examples{
@@ -156,35 +136,22 @@ plot(crd,  # Changing some arguments
      lwdgrid=3)
 
 #! Factorial Experiment (FE) - CRD
-# 5 factors (f1..f5, level^factor): 3^1 * 2^1 * 3^1 * 2^1 * 4^1 * 2 = 360 experimental units
-# 5 factors (f1..f5, level^factor): 3^2 * 2^2 * 5^1 = 180 * 2 = 360 experimental units
+# 2 factors (f1,f2, level^factor): 3^1 * 2^1 = 6 experimental units
 crd_fe <- gexp(mu=0,
                r=2,
                fe=list(f1=c(1, 1, 5),
-                       f2=c(1, 1),
-                       f3=c(2, 2, 1),
-                       f4=c(1, 5),
-                       f5=c(1, 2, 3, 4, 5)),
+                       f2=c(1, 1)),
                fl=list(A=paste('a',
                                1:3,
                                sep=''),
                        B=paste('b',
                                1:2,
-                               sep=''),
-                       C=paste('c',
-                               1:3,
-                               sep=''),
-                       D=paste('d',
-                               1:2,
-                               sep=''),
-                       E=paste('e',
-                               1:5,
                                sep='')),
-               round=0)
+               round=0,
+               inte = rep(1, 6),
+               type = 'FE')
 summary(crd_fe)
-# TODO: Comented to R CMD check/build
-#plot(crd_fe)  #TODO: não plota?
-               #Error in plot.gexp.crd(crd_fe) : Graphic option only for one factor!
+plot(crd_fe)  
 
 #! Split-plot Experiment (SPE) - CRD
 split_crd <- gexp(mu=30,
@@ -214,9 +181,7 @@ rcbd <- gexp(mu=0,
              round=1,
              type='RCBD')
 summary(rcbd) 
-# TODO: Comented to R CMD check/build
-#plot(rcbd)    # TODO: não dá o plot
-              # Error in .subset2(x, i, exact = exact) : índice fora de limites
+plot(rcbd)  
 
 #! Factorial Experiment (FE) - RCBD
 fe_rcbd <- gexp(mu=30,
@@ -229,8 +194,20 @@ fe_rcbd <- gexp(mu=30,
 summary(fe_rcbd)
 plot(fe_rcbd)
 
+fe_rcbd1 <- gexp(mu=30,
+                 fe=list(f1=c(1, 1, 1),
+                         f2=c(2, 3)),
+                 blke=c(1, 3),
+                 blkl=list(Blk=c('B1', 'B2')), 
+                 inte=c(1, 15, 1, 1, 5, 1),
+                 round=1,
+                 type='FE')
+summary(fe_rcbd1)
+plot(fe_rcbd1)
+
 #! Split-plot Experiment (SPE) - RCBD
 split_rcbd <- gexp(mu=30,
+                   r = 2,
                    fe=list(f1=c(1, 1),
                            f2=c(2, 3),
                            f3=c(1, 1, 1)),
@@ -243,9 +220,9 @@ split_rcbd <- gexp(mu=30,
                            C=paste('c',
                                    1:3,
                                    sep='')),
-                   blke=c(1, 2),
+                   blke=c(1, 2, 3),
                    blkl=list(BLK=paste('B',
-                                       1:2,
+                                       1:3,
                                        sep='')),
                    inte=c(1, 15, 1, 1, 1, 3, 4, 2, 1, 1, 4, 1,
                           1, 2, 1, 1,
@@ -253,7 +230,7 @@ split_rcbd <- gexp(mu=30,
                           1, 1, 3, 3, 3, 3),
                    round=1,
                    type='SPE')
-summary(split_rcbd)  #TODO: é melhor sair o label real do bloco, não o nome da lista!
+summary(split_rcbd)  
 plot(split_rcbd)
 
 #! Latin Square Design (LSD)
@@ -278,16 +255,16 @@ fe_lsd <- gexp(mu=30,
                        f2=c(2, 3)),
                rowe=c(1, 3, 2, 1),
                cole=c(2, 2, 1, 1),
-#               rowl=list(Row=paste('r',
-#                                   1:4,
-#                                   sep='')),
-#               coll=list(Col=paste('c',
-#                                   1:4,
-#                                   sep='')),
+               rowl=list(Row=paste('r',
+                                   1:4,
+                                   sep='')),
+               coll=list(Col=paste('c',
+                                   1:4,
+                                   sep='')),
                inte=c(1, 15, 1, 1),
                round=1,
                type='FE')
-summary(fe_lsd)  #TODO: não entendi mensagem de erro ao informar rowl e coll!
+summary(fe_lsd)  
 plot(fe_lsd)
 
 #! Split-plot Experiment (SPE) - LSD
@@ -314,78 +291,75 @@ split_lsd <- gexp(mu=30,
 summary(split_lsd)
 plot(split_lsd)
 
-   \dontrun{
-   #! Using images in plannig
-   # CRD
-   crd <- gexp(mu=1,
-               r=2,
-               fe=list(f1=c(1, 1, 5, 1, 1)),
-               fl=list(Treat=LETTERS[1:5]),
-               round=2)
-   summary(crd)
-   plot(crd)  # Default
+\dontrun{
+#! Using images in plannig
+# CRD
+crd <- gexp(mu=1,
+            r=2,
+            fe=list(f1=c(1, 1, 5, 1, 1)),
+            fl=list(Treat=LETTERS[1:5]),
+            round=2)
+summary(crd)
+plot(crd)  # Default
 
-   # Dynamic
-   # Open picture 'crd.jpg' whem requested
-   crd_i <- update(crd,
-                   r=3,
-                   fe=list(f1=c(1, 1)),
-                   fl=list(Treat=LETTERS[1:2]))
-   summary(crd_i)
-   plot(crd_i)  # Default
+# Dynamic
+# Open picture 'crd.jpg' whem requested
+crd_i <- update(crd,
+                r=3,
+                fe=list(f1=c(1, 1)),
+                fl=list(Treat=LETTERS[1:2]))
+summary(crd_i)
+plot(crd_i)  # Default
 
-   # dynamic plot require 'jpeg' package!
-   # TODO: não entendi o funcionamento dos argumentos, portatno não posso
-   # escrever sobre eles!
-   plot(crd_i,
-        dynamic=TRUE,
-        # Os valores abaixo são os default meus
-        xleftimg=.6,
-        ybottomimg=.6,
-        xrightimg=1.4,
-        ytopimg=1.4)
+# dynamic plot require 'jpeg' package!
+plot(crd_i,
+     dynamic=TRUE,
+     # Os valores abaixo são os default meus
+     xleftimg=0.6,
+     ybottomimg=.6,
+     xrightimg=1.4,
+     ytopimg=1.4)
 
-   # RCBD
-   rcbd <- gexp(mu=0,
-                fe=list(f1=c(5, 1, 1)),
-                fl=list(TR=LETTERS[1:3]),
-                blke=c(1, 2, 3),
-                blkl=list(BLK=paste('B',
-                                    1:3,
-                                    sep='')),
-                round=1,
-                type='RCBD')
-   summary(rcbd)
-   plot(rcbd)    # TODO: não dá o plot
-                 #Error in .subset2(x, i, exact = exact) : índice fora de limites
+# RCBD
+rcbd <- gexp(mu=0,
+             fe=list(f1=c(5, 1, 1)),
+             fl=list(TR=LETTERS[1:3]),
+             blke=c(1, 2, 3),
+             blkl=list(BLK=paste('B',
+                                 1:3,
+                                 sep='')),
+             round=1,
+             type='RCBD')
+summary(rcbd)
+plot(rcbd)   
 
-   rcbd_i <- update(rcbd,
-                    r=1,
-                    fe=list(f1=c(1, 1, 1, 1)),
-                    blke=c(1, 1, 1))
-   plot(rcbd_i,
-        dynamic=TRUE)
+rcbd_i <- update(rcbd,
+                 r=1,
+                 fe=list(f1=c(1, 1, 1, 1)),
+                 blke=c(1, 1, 1))
+plot(rcbd_i,
+     dynamic=TRUE)
 
-   # LSD
-   lsd <- gexp(mu=30,
-               fe=list(f1=c(1, 1, 10)),
-               rowe=c(1, 1, 1),
-               cole=c(1, 1, 1),
-               rowl=list(Row=paste('r',
-                                   1:3,
-                                   sep='')),
-               coll=list(Col=paste('c',
-                                   1:3,
-                                   sep='')),
-               round=1,
-               type='LSD')
-   summary(lsd)
+# LSD
+lsd <- gexp(mu=30,
+            fe=list(f1=c(1, 1, 10)),
+            rowe=c(1, 1, 1),
+            cole=c(1, 1, 1),
+            rowl=list(Row=paste('r',
+                                1:3,
+                                sep='')),
+            coll=list(Col=paste('c',
+                                1:3,
+                                sep='')),
+            round=1,
+            type='LSD')
+summary(lsd)
 
-   #TODO: dynamic plot require 'png' package!
-   plot(lsd)
-   plot(lsd,
-        dynamic=TRUE)
-   }
+#TODO: dynamic plot require 'png' package!
+plot(lsd)
+plot(lsd,
+     dynamic=TRUE)
+}
 }
 
 \keyword{experiment planning}

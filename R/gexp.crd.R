@@ -5,9 +5,9 @@ gexp.crd <- function(mu  = mu,
                      fe  = fe,
                      contrasts = contrasts,
                      round     = round,
-                     random    = random)
+                     random    = random, ...)
 {
-  if(is.null(fe)) stop("You must specify at least a factor")
+
 
   if(is.null(fl)){
     aux_factor <- lapply(fe,
