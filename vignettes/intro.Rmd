@@ -2,14 +2,12 @@
 title: "An introduction to gexp package"
 author: "Ivan Bezerra Allaman </br> José Cláudio Faria"
 date: "`r Sys.Date()`"
-output: 
-  rmarkdown::html_vignette:
-      pandoc_args: ["-F","pandoc-eqnos"] 
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{An introduction to gexp package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: ../inst/doc/bibliography.bib  
+bibliography: ../inst/biblio/bibliography.bib  
 ---
 
 ```{r setup, include = FALSE}
@@ -26,7 +24,7 @@ The experiments included in the package are: a completely randomized design (CRD
 
 The arguments of the function are based on a linear model with the following matrix form [@Ferreira:2008, @Rencher:2007]:
 
-$$Y = X\beta + E$${#eq:m1}
+$$Y = X\beta + E \hspace(5cm) (1)$$
 
 then:
 
@@ -40,7 +38,7 @@ $E$ is a n$\times$p matrix of the errors with p-variate normal distribution with
 
 In the case of the split-plot design, the package works considering the following linear mixed model [@Naes:2007]:
 
-$$Y = X\beta + Zu + E$${#eq:m2}
+$$Y = X\beta + Zu + E \hspace(5cm) (2)$$
 
 then:
 
@@ -50,7 +48,7 @@ u is a q$\times$p matrix of the plot errors with p-variate normal distribution w
 
 $E$ is a n$\times$p matrix of the errors with p-variate normal distribution with mean vectors **0** and **$\Sigma_{sub-plot}$** covariance of subplot;
 
-The other components of the equation @eq:m2 are analogous to equation @eq:m1.
+The other components of the equation 2 are analogous to equation 1.
 
 The symbology adopted was as follows:
 
@@ -866,7 +864,7 @@ summary(fat_dic)
 # Split-plot experiments
 ## CRD
 
-Supondo que queiramos gerar uma variável aleatória segundo um DIC em parcelas subdivididas com dois níveis do fator X1 na parcela e dois níveis do fator X2 na subparcela com 3 repetições. Então, podemos denominar $Y_{ijk}$ como sendo a variável aleatória observada na subparcela na k-ésima unidade experimental (k = 1, 2 e 3) que recebeu o i-ésimo nível do fator X1 (i=1,2) e j-ésimo nível do fator X2 (j=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$), e cada nível do fator X1 influenciem em $\alpha_{1}=1$ e $\alpha_{2}=-2$, cada nível do fator X2 influenciam em $\tau_{1}=1$ e $\tau_{2}=-1$ e que o efeito da interação seja de $\gamma_{11}=3, \gamma_{21}=1, \gamma_{12}=1$ e $\gamma_{22}=-5$ respectivamente, teremos a seguinte configuração matricial conforme a equação @eq:m2.
+Supondo que queiramos gerar uma variável aleatória segundo um DIC em parcelas subdivididas com dois níveis do fator X1 na parcela e dois níveis do fator X2 na subparcela com 3 repetições. Então, podemos denominar $Y_{ijk}$ como sendo a variável aleatória observada na subparcela na k-ésima unidade experimental (k = 1, 2 e 3) que recebeu o i-ésimo nível do fator X1 (i=1,2) e j-ésimo nível do fator X2 (j=1,2). Ainda, supondo que esta variável esteja sob o efeito de uma constante ($\mu=15$), e cada nível do fator X1 influenciem em $\alpha_{1}=1$ e $\alpha_{2}=-2$, cada nível do fator X2 influenciam em $\tau_{1}=1$ e $\tau_{2}=-1$ e que o efeito da interação seja de $\gamma_{11}=3, \gamma_{21}=1, \gamma_{12}=1$ e $\gamma_{22}=-5$ respectivamente, teremos a seguinte configuração matricial conforme a equação 2.
 
 
 Portanto, tem-se a seguinte configuração matricial:

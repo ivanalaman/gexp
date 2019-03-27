@@ -314,7 +314,6 @@ plot(crd_i)  # Default
 # dynamic plot require 'jpeg' package!
 plot(crd_i,
      dynamic=TRUE,
-     # Os valores abaixo são os default meus
      xleftimg=0.6,
      ybottomimg=.6,
      xrightimg=1.4,
