@@ -1,14 +1,15 @@
 Package: gexp
 Title: Generator of Experiments
 Version: 0.1-0
-Date: 2019-03-25
+Date: 2019-04-03
 Author: Ivan Bezerra Allaman <ivanalaman@gmail.com>  and
         José Cláudio Faria <joseclaudio.faria@gmail.com>
 Maintainer: Ivan Bezerra Allaman <ivanalaman@gmail.com> 
 Depends: R (>= 3.5.0), jpeg, png, tcltk, mvtnorm
-Description: Generator of the experiments which structurated data:
-             completely randomized design, randomized block design, 
-             latin square design, factorial experiments and split-plot experiments.
+Description: Generates experiments - simulating structured or experimental data as: completely randomized design, 
+             randomized block design, latin square design, factorial experiments and split-plot experiments 
+             (Ferreira, 2008, ISBN:8587692526; Naes et al., 2007<doi:10.1002/qre.841>; 
+             Rencher et al., 2007, ISBN:9780471754985; Montgomery, 2001, ISBN:0471316490).
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 License: GPL (>= 2)
