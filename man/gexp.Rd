@@ -1,8 +1,8 @@
 %===============================================================================
 % Name   : plot.gexp
 % Author : J.C.Faria
-% Date   : 17/02/2019 20:41:53
-% Version: v1
+% Date   : 06/04/2019 10:19:34
+% Version: v2
 %===============================================================================
 \name{gexp}
 \alias{gexp}
@@ -17,20 +17,12 @@
 
 \title{Generator of Experiments}
 
-\description{The package provides non-computational resources
-  modeling of structured experiments in the R. 
+\description{The package provides computational resources useful in planning and modeling of structured experiments in the R environment.
 
-  The generic function S3 \code{gexp} was created to enable
-  plan, create and model structured experiments, that is, under a design
-  experimental. In the modeling it is possible to simulate results of experiments with
-  possibility of user informing the effects and the random error(s).
-  The designs are: Completely Randomized Design (CRD),Randomized complete block design (RCBD) and
-  Latin Squares Design (LSD). The types of experiments are: Factorial Experimentation
-  (FE) and Split-plot experiment (SPE).
+  The generic function S3 \code{gexp} was created to enable plan, create and model structured experiments, that is, under a design experimental. In the modeling it is possible to simulate results of experiments with possibility of user informing the effects and the random error(s). The designs are: Completely Randomized Design (CRD),Randomized complete block design (RCBD) and Latin Squares Design (LSD). The types of experiments are: Factorial Experimentation (FE) and Split-plot experiment (SPE).
 
-  The experiments can be generated with one or more variable response, in the latter case, 
-  it may be important for a structure covariance between them. It is also possible to plan experiments with
-  of graphic parts for use in planning from figures or pictures of the experimental area.
+  The experiments can be generated with one or more variable response, in the latter case, it may be important for a structure covariance between them. It is also possible to plan experiments with of graphic parts for use in planning from figures or pictures of the experimental area.
+
   %  O pacote provê recursos computacionais úteis no planejamento e
   %  modelagem de experimentos estruturados no ambiente R.
   %
@@ -169,14 +161,7 @@ gexp(mu, ...)
  \item{random}{It is a logical argument when the purpose is to plan experiments so that randomisation of treatments occurs in the experimental units. FALSE is the default.}
  \item{\dots}{Further arguments (required by generic).}
 }
-\value{
-  The method \code{gexp} returns the list of class \code{gexp} with the slots:
-  \item{X}{It is the incidence matrix of the design.}
-  \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type
-       be equal to SPLIT.}
-  \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
-  \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
-}
+
   %  \item{err}{É um vetor, ou matrix para MD, que representa o erro experimental. O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
   %  \item{errp}{É um vetor, ou uma matrix para MD, do erro associado as parcelas no caso de type ser igual a SPE (Split-Plot Experiments). O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
   %  \item{r}{É um escalar do número de repetições do experimento.}
@@ -196,15 +181,28 @@ gexp(mu, ...)
   %  \item{random}{É um argumento lógico quando o objetivo é planejar experimentos para que ocorra a casualização dos tratamentos nas unidades experimentais. FALSE é o default.}
   %  \item{\dots}{Further arguments (required by generic).}
   %}
+
+\value{
+  The method \code{gexp} returns the list of class \code{gexp} with the slots:
+  \begin{itemize}
+    \item{X}{It is the incidence matrix of the design.}
+    \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type equal to SPLIT.}
+    \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
+    \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
+  \end{itemize}
+}
+
   %\value{
   %  The method \code{gexp} returns a list of class \code{gexp} with the slots:
-  %  \item{X}{É a matriz de incidência do delineamento.}
-  %  \item{Z}{É a matriz de incidência do erro da parcela principal no caso de type 
-  %    ser igual a SPLIT.}
-  %  \item{Y}{É um vetor, ou uma matrix para MD, com os valores da(s) variável(eis) aleatória(s).}
-  %  \item{dfm}{É um data.frame com todas as informações do experimento: tratamentos, repetições e a variável aleatória de resposta.}
+  %  \begin{itemize}
+  %    \item{X}{É a matriz de incidência do delineamento.}
+  %    \item{Z}{É a matriz de incidência do erro da parcela principal no caso de type ser igual a SPLIT.}
+  %    \item{Y}{É um vetor, ou uma matrix para MD, com os valores da(s) variável(eis) aleatória(s).}
+  %    \item{dfm}{É um data.frame com todas as informações do experimento: tratamentos, repetições e a variável aleatória de resposta.}
+  %  \end{itemize}
   %}
   %
+
 \references{
   Ferreira, Daniel Furtado. 2008. \emph{Estatística Multivariada}. 1 ed. 
   Lavras: Ed. UFLA. 
@@ -214,7 +212,7 @@ gexp(mu, ...)
   Lavras, 1992.
 
   Rencher, Alvin C. and Schaalje, Bruce G. 2007. \emph{Linear Models in 
-    Statistics, second edition}. Hoboken: John Wiley \& Sons.
+  Statistics, second edition}. Hoboken: John Wiley \& Sons.
 
   Naes, T.; Aastveit, A.H.; Sahni, N.S. 2007. "Analysis of split-plot designs: 
   An Overview and Comparison of Methods". \emph{Qual. Reliab. Engng. Int.} 23, 
@@ -674,3 +672,6 @@ rcbd_hb <- gexp(mu=NULL,
                 type='RCBD')
 summary(rcbd_hb)
 }
+
+\keyword{experiment planning}
+\keyword{experiment modeling}

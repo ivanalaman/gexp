@@ -22,9 +22,7 @@
   \code{gexp.lsd} - Latin Squares Design (LSD), 
   \code{gexp.fe} - Factorial Experiment (FE) and 
   \code{gexp.spe} - Split-plot Experiment (SPE). 
-  The main objective of these methods is to produce an experimental croqui with 
-  randomized treatments according with the design and type of experiment. It 
-  can be very useful in experiment planning.
+  The main objective of these methods is to produce an experimental croqui with randomized treatments according with the design and type of experiment. It can be very useful in experiment planning.
 }
 
 \usage{
