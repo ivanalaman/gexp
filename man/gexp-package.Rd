@@ -22,4 +22,3 @@ Ivan Bezerra Allaman <ivanalaman@gmail.com> and José Cláudio Faria <joseclaudio.
 Maintainer: Ivan Bezerra Allaman <ivanalaman@gmail.com>
 }
 
-\keyword{package}

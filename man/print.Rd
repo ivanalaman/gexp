@@ -199,4 +199,3 @@ print(split_lsd)
 split_lsd
 }
 
-\keyword{experiment planning}

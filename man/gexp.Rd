@@ -621,6 +621,3 @@ rcbd_hb <- gexp(mu=NULL,
                 type='RCBD')
 summary(rcbd_hb)
 }
-
-\keywords{experiment planning}
-\keywords{experiment design}

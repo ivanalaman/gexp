@@ -359,4 +359,3 @@ plot(lsd,
 }
 }
 
-\keyword{experiment planning}
