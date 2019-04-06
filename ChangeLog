@@ -1,2 +1,6 @@
+2018-10-12 vs. 0.1-1 - J.C.Faria <joseclaudio.faria@gmail.com>
+ * Fixed encodings of some documentation (.rmd) files that were generating
+ problems in the final compilation.
+
 2018-10-12 vs. 0.1-0 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Start of the gexp package.

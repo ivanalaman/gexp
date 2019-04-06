@@ -31,23 +31,23 @@
   The experiments can be generated with one or more variable response, in the latter case, 
   it may be important for a structure covariance between them. It is also possible to plan experiments with
   of graphic parts for use in planning from figures or pictures of the experimental area.
-  %  O pacote provÃª recursos computacionais Ãºteis no planejamento e
+  %  O pacote provê recursos computacionais úteis no planejamento e
   %  modelagem de experimentos estruturados no ambiente R.
   %
-  %  A funÃ§Ã£o genÃ©rica S3 \code{gexp} foi criada para possibilitar
+  %  A função genérica S3 \code{gexp} foi criada para possibilitar
   %  planejar, criar e modelar experimentos estruturados, ou seja, sob delineamento
   %  experimental. Na modelagem permite simular resultados de experimentos com
-  %  possibilidade do usuÃ¡rio informar os efeitos e o(s) erro(s) aleatÃ³rio(s).
-  %  Os delineamentos sÃ£o: Completely Randomized Design (CRD),
+  %  possibilidade do usuário informar os efeitos e o(s) erro(s) aleatório(s).
+  %  Os delineamentos são: Completely Randomized Design (CRD),
   %  Randomized Complete Block Design (RCBD) e
-  %  Latin Squares Design (LSD). Os tipos de experimentos sÃ£o: Factorial Experiment
+  %  Latin Squares Design (LSD). Os tipos de experimentos são: Factorial Experiment
   %  (FE) e Split-plot Experiment (SPE).
   %
   %  Os experimentos podem ser gerados com uma
-  %  ou mais variÃ¡vel de resposta, no Ãºltimo caso, pode se impor uma estrutura de
-  %  covariÃ¢ncia estre elas. Ã‰ tambÃ©m possÃ­vel planejar experimentos com o auxÃ­lio 
-  %  das funÃ§Ãµes grÃ¡ficas para uso em planejamento a partir de figuras ou fotos da 
-  %  Ã¡rea experimental.
+  %  ou mais variável de resposta, no último caso, pode se impor uma estrutura de
+  %  covariância estre elas. É também possível planejar experimentos com o auxílio 
+  %  das funções gráficas para uso em planejamento a partir de figuras ou fotos da 
+  %  área experimental.
 }
 
 \usage{
@@ -164,53 +164,53 @@ gexp(mu, ...)
  \item{cole}{Is a numeric vector, or a matrix for MD, of the effects of the columns in case the type is equal to LSD (Latin Square Design).}
  \item{contrasts}{A list, whose entries are values (numeric matrices or character strings naming functions) to be used as replacement values for the 'contrasts' function and whose names are the names of columns of' . See "contrasts.arg" argument of the model.matrix function to more details.}
  \item{type}{It is a vector of strings that contains the type of design and type of experiment to be used: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD), Latin Squares Design (LSD), Factorial Experiment (FE) and Split-plot Experiment (SPE). CRD is the default.}
-Â \item{nrand}{It is a numerical scalar used specifically in Latin Squares Design (LSD) to shuffle treatments in rows and columns.}
-Â \item{round}{This is a numeric scalar for rounding of the response variable.}
-Â \item{random}{It is a logical argument when the purpose is to plan experiments so that randomisation of treatments occurs in the experimental units. FALSE is the default.}
-Â \item{\dots}{Further arguments (required by generic).}
+ \item{nrand}{It is a numerical scalar used specifically in Latin Squares Design (LSD) to shuffle treatments in rows and columns.}
+ \item{round}{This is a numeric scalar for rounding of the response variable.}
+ \item{random}{It is a logical argument when the purpose is to plan experiments so that randomisation of treatments occurs in the experimental units. FALSE is the default.}
+ \item{\dots}{Further arguments (required by generic).}
 }
 \value{
   The method \code{gexp} returns the list of class \code{gexp} with the slots:
- Â \item{X}{It is the incidence matrix of the design.}
- Â \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type
-    Â Â Â be equal to SPLIT.}
- Â \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
- Â \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
+  \item{X}{It is the incidence matrix of the design.}
+  \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type
+       be equal to SPLIT.}
+  \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
+  \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
 }
-  %  \item{err}{Ã‰ um vetor, ou matrix para MD, que representa o erro experimental. O valor default Ã© NULL, ou seja, para cada variÃ¡vel de resposta Ã© adicionado um erro normal com mÃ©dia 0 e variÃ¢ncia 1: rmvnorm(sigma = diag(length(mu)).}
-  %  \item{errp}{Ã‰ um vetor, ou uma matrix para MD, do erro associado as parcelas no caso de type ser igual a SPE (Split-Plot Experiments). O valor default Ã© NULL, ou seja, para cada variÃ¡vel de resposta Ã© adicionado um erro normal com mÃ©dia 0 e variÃ¢ncia 1: rmvnorm(sigma = diag(length(mu)).}
-  %  \item{r}{Ã‰ um escalar do nÃºmero de repetiÃ§Ãµes do experimento.}
-  %  \item{fl}{Lista de um vetor de caracteres, ou uma matrix (MD). Ã‰ uma lista dos nomes dos fatores.}
+  %  \item{err}{É um vetor, ou matrix para MD, que representa o erro experimental. O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
+  %  \item{errp}{É um vetor, ou uma matrix para MD, do erro associado as parcelas no caso de type ser igual a SPE (Split-Plot Experiments). O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
+  %  \item{r}{É um escalar do número de repetições do experimento.}
+  %  \item{fl}{Lista de um vetor de caracteres, ou uma matrix (MD). É uma lista dos nomes dos fatores.}
   %  \item{blkl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes dos blocos}
   %  \item{rowl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes das linhas no caso de type ser igual a LSD (Latin Square Design).}
   %  \item{coll}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes das colunas no caso de type ser igual a LSD (Latin Square Design).}
-  %  \item{fe}{Ã‰ um vetor numÃ©rico, ou uma matrix (MD). Ã‰ uma lista do efeito de um fator.}
-  %  \item{inte}{Ã‰ um vetor numÃ©rico, ou uma matrix para MD, dos efeitos da interaÃ§Ã£o.}
-  %  \item{blke}{Ã‰ um vetor numÃ©rico, ou uma matriz para MD, dos efeitos dos blocos.}
-  %  \item{rowe}{Ã‰ um vetor numÃ©rico, ou uma matriz para MD, dos efeitos das linhas no caso de type ser igual a LSD (Latin Square Design).}
-  %  \item{cole}{Ã‰ um vetor numÃ©rico, ou uma matriz para MD, dos efeitos das colunas no caso de type ser igual a LSD (Latin Square Design).}
-  %  \item{contrasts}{A list, whose entries are values (numeric matrices or character strings naming functions) to be used as replacement values for the â€˜contrastsâ€™ replacement function and whose names are the names of columns of â€˜dataâ€™ containing â€˜factorâ€™s. See "contrasts.arg" argument of the model.matrix function to more details.}
-  %  \item{type}{Ã‰ um vetor de strings que contÃ©m o tipo de delineamento e tipo de experimento a ser utilizado: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD), Latin Squares Design (LSD), Factorial Experiment (FE) and Split-plot Experiment (SPE). CRD Ã© o default.}
-  %  \item{nrand}{Ã‰ um escalar numÃ©rico utilizado especificamente no Latin Squares Design (LSD) para embaralhar os tratamentos nas linhas e colunas.}
-  %  \item{round}{Ã‰ um escalar numÃ©rico para arredondamentos da variÃ¡vel de resposta.}
-  %  \item{random}{Ã‰ um argumento lÃ³gico quando o objetivo Ã© planejar experimentos para que ocorra a casualizaÃ§Ã£o dos tratamentos nas unidades experimentais. FALSE Ã© o default.}
+  %  \item{fe}{É um vetor numérico, ou uma matrix (MD). É uma lista do efeito de um fator.}
+  %  \item{inte}{É um vetor numérico, ou uma matrix para MD, dos efeitos da interação.}
+  %  \item{blke}{É um vetor numérico, ou uma matriz para MD, dos efeitos dos blocos.}
+  %  \item{rowe}{É um vetor numérico, ou uma matriz para MD, dos efeitos das linhas no caso de type ser igual a LSD (Latin Square Design).}
+  %  \item{cole}{É um vetor numérico, ou uma matriz para MD, dos efeitos das colunas no caso de type ser igual a LSD (Latin Square Design).}
+  %  \item{contrasts}{A list, whose entries are values (numeric matrices or character strings naming functions) to be used as replacement values for the ‘contrasts’ replacement function and whose names are the names of columns of ‘data’ containing ‘factor’s. See "contrasts.arg" argument of the model.matrix function to more details.}
+  %  \item{type}{É um vetor de strings que contém o tipo de delineamento e tipo de experimento a ser utilizado: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD), Latin Squares Design (LSD), Factorial Experiment (FE) and Split-plot Experiment (SPE). CRD é o default.}
+  %  \item{nrand}{É um escalar numérico utilizado especificamente no Latin Squares Design (LSD) para embaralhar os tratamentos nas linhas e colunas.}
+  %  \item{round}{É um escalar numérico para arredondamentos da variável de resposta.}
+  %  \item{random}{É um argumento lógico quando o objetivo é planejar experimentos para que ocorra a casualização dos tratamentos nas unidades experimentais. FALSE é o default.}
   %  \item{\dots}{Further arguments (required by generic).}
   %}
   %\value{
   %  The method \code{gexp} returns a list of class \code{gexp} with the slots:
-  %  \item{X}{Ã‰ a matriz de incidÃªncia do delineamento.}
-  %  \item{Z}{Ã‰ a matriz de incidÃªncia do erro da parcela principal no caso de type 
+  %  \item{X}{É a matriz de incidência do delineamento.}
+  %  \item{Z}{É a matriz de incidência do erro da parcela principal no caso de type 
   %    ser igual a SPLIT.}
-  %  \item{Y}{Ã‰ um vetor, ou uma matrix para MD, com os valores da(s) variÃ¡vel(eis) aleatÃ³ria(s).}
-  %  \item{dfm}{Ã‰ um data.frame com todas as informaÃ§Ãµes do experimento: tratamentos, repetiÃ§Ãµes e a variÃ¡vel aleatÃ³ria de resposta.}
+  %  \item{Y}{É um vetor, ou uma matrix para MD, com os valores da(s) variável(eis) aleatória(s).}
+  %  \item{dfm}{É um data.frame com todas as informações do experimento: tratamentos, repetições e a variável aleatória de resposta.}
   %}
   %
 \references{
-  Ferreira, Daniel Furtado. 2008. \emph{EstatÃ­stica Multivariada}. 1 ed. 
+  Ferreira, Daniel Furtado. 2008. \emph{Estatística Multivariada}. 1 ed. 
   Lavras: Ed. UFLA. 
 
-  Aquino, Luiz Henrique. \emph{TÃ©cnica Experimental com Animais I}. Apostila da 
-  disciplina ``TÃ©cnica Experimental com Animais'' da Universidade Federal de 
+  Aquino, Luiz Henrique. \emph{Técnica Experimental com Animais I}. Apostila da 
+  disciplina ``Técnica Experimental com Animais'' da Universidade Federal de 
   Lavras, 1992.
 
   Rencher, Alvin C. and Schaalje, Bruce G. 2007. \emph{Linear Models in 
