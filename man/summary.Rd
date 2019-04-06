@@ -186,4 +186,3 @@ split_lsd <- gexp(mu=30,
 summary(split_lsd)
 }
 
-\keyword{experiment planning}

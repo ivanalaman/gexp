@@ -1,8 +1,8 @@
 %===============================================================================
 % Name   : plot.gexp
 % Author : J.C.Faria
-% Date   : 17/02/2019 20:41:53
-% Version: v1
+% Date   : 06/04/2019 10:57:17
+% Version: v3
 %===============================================================================
 \name{gexp}
 \alias{gexp}
@@ -17,37 +17,11 @@
 
 \title{Generator of Experiments}
 
-\description{The package provides non-computational resources
-  modeling of structured experiments in the R. 
+\description{The package provides computational resources useful in planning and modeling of structured experiments in the R environment.
 
-  The generic function S3 \code{gexp} was created to enable
-  plan, create and model structured experiments, that is, under a design
-  experimental. In the modeling it is possible to simulate results of experiments with
-  possibility of user informing the effects and the random error(s).
-  The designs are: Completely Randomized Design (CRD),Randomized complete block design (RCBD) and
-  Latin Squares Design (LSD). The types of experiments are: Factorial Experimentation
-  (FE) and Split-plot experiment (SPE).
+  The generic function S3 \code{gexp} was created to enable plan, create and model structured experiments, that is, under a design experimental. In the modeling it is possible to simulate results of experiments with possibility of user informing the effects and the random error(s). The designs are: Completely Randomized Design (CRD), Randomized complete block design (RCBD) and Latin Squares Design (LSD). The types of experiments are: Factorial Experimentation (FE) and Split-plot experiment (SPE).
 
-  The experiments can be generated with one or more variable response, in the latter case, 
-  it may be important for a structure covariance between them. It is also possible to plan experiments with
-  of graphic parts for use in planning from figures or pictures of the experimental area.
-  %  O pacote provê recursos computacionais úteis no planejamento e
-  %  modelagem de experimentos estruturados no ambiente R.
-  %
-  %  A função genérica S3 \code{gexp} foi criada para possibilitar
-  %  planejar, criar e modelar experimentos estruturados, ou seja, sob delineamento
-  %  experimental. Na modelagem permite simular resultados de experimentos com
-  %  possibilidade do usuário informar os efeitos e o(s) erro(s) aleatório(s).
-  %  Os delineamentos são: Completely Randomized Design (CRD),
-  %  Randomized Complete Block Design (RCBD) e
-  %  Latin Squares Design (LSD). Os tipos de experimentos são: Factorial Experiment
-  %  (FE) e Split-plot Experiment (SPE).
-  %
-  %  Os experimentos podem ser gerados com uma
-  %  ou mais variável de resposta, no último caso, pode se impor uma estrutura de
-  %  covariância estre elas. É também possível planejar experimentos com o auxílio 
-  %  das funções gráficas para uso em planejamento a partir de figuras ou fotos da 
-  %  área experimental.
+  The experiments can be generated with one or more variable response, in the latter case, it may be important for a structure covariance between them. It is also possible to plan experiments with of graphic parts for use in planning from figures or pictures of the experimental area.
 }
 
 \usage{
@@ -169,42 +143,15 @@ gexp(mu, ...)
  \item{random}{It is a logical argument when the purpose is to plan experiments so that randomisation of treatments occurs in the experimental units. FALSE is the default.}
  \item{\dots}{Further arguments (required by generic).}
 }
+
 \value{
   The method \code{gexp} returns the list of class \code{gexp} with the slots:
   \item{X}{It is the incidence matrix of the design.}
-  \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type
-       be equal to SPLIT.}
+  \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type equal to SPLIT.}
   \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
   \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
 }
-  %  \item{err}{É um vetor, ou matrix para MD, que representa o erro experimental. O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
-  %  \item{errp}{É um vetor, ou uma matrix para MD, do erro associado as parcelas no caso de type ser igual a SPE (Split-Plot Experiments). O valor default é NULL, ou seja, para cada variável de resposta é adicionado um erro normal com média 0 e variância 1: rmvnorm(sigma = diag(length(mu)).}
-  %  \item{r}{É um escalar do número de repetições do experimento.}
-  %  \item{fl}{Lista de um vetor de caracteres, ou uma matrix (MD). É uma lista dos nomes dos fatores.}
-  %  \item{blkl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes dos blocos}
-  %  \item{rowl}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes das linhas no caso de type ser igual a LSD (Latin Square Design).}
-  %  \item{coll}{Lista de um vetor de caracteres, ou uma matriz para MD, dos nomes das colunas no caso de type ser igual a LSD (Latin Square Design).}
-  %  \item{fe}{É um vetor numérico, ou uma matrix (MD). É uma lista do efeito de um fator.}
-  %  \item{inte}{É um vetor numérico, ou uma matrix para MD, dos efeitos da interação.}
-  %  \item{blke}{É um vetor numérico, ou uma matriz para MD, dos efeitos dos blocos.}
-  %  \item{rowe}{É um vetor numérico, ou uma matriz para MD, dos efeitos das linhas no caso de type ser igual a LSD (Latin Square Design).}
-  %  \item{cole}{É um vetor numérico, ou uma matriz para MD, dos efeitos das colunas no caso de type ser igual a LSD (Latin Square Design).}
-  %  \item{contrasts}{A list, whose entries are values (numeric matrices or character strings naming functions) to be used as replacement values for the ‘contrasts’ replacement function and whose names are the names of columns of ‘data’ containing ‘factor’s. See "contrasts.arg" argument of the model.matrix function to more details.}
-  %  \item{type}{É um vetor de strings que contém o tipo de delineamento e tipo de experimento a ser utilizado: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD), Latin Squares Design (LSD), Factorial Experiment (FE) and Split-plot Experiment (SPE). CRD é o default.}
-  %  \item{nrand}{É um escalar numérico utilizado especificamente no Latin Squares Design (LSD) para embaralhar os tratamentos nas linhas e colunas.}
-  %  \item{round}{É um escalar numérico para arredondamentos da variável de resposta.}
-  %  \item{random}{É um argumento lógico quando o objetivo é planejar experimentos para que ocorra a casualização dos tratamentos nas unidades experimentais. FALSE é o default.}
-  %  \item{\dots}{Further arguments (required by generic).}
-  %}
-  %\value{
-  %  The method \code{gexp} returns a list of class \code{gexp} with the slots:
-  %  \item{X}{É a matriz de incidência do delineamento.}
-  %  \item{Z}{É a matriz de incidência do erro da parcela principal no caso de type 
-  %    ser igual a SPLIT.}
-  %  \item{Y}{É um vetor, ou uma matrix para MD, com os valores da(s) variável(eis) aleatória(s).}
-  %  \item{dfm}{É um data.frame com todas as informações do experimento: tratamentos, repetições e a variável aleatória de resposta.}
-  %}
-  %
+
 \references{
   Ferreira, Daniel Furtado. 2008. \emph{Estatística Multivariada}. 1 ed. 
   Lavras: Ed. UFLA. 
@@ -214,7 +161,7 @@ gexp(mu, ...)
   Lavras, 1992.
 
   Rencher, Alvin C. and Schaalje, Bruce G. 2007. \emph{Linear Models in 
-    Statistics, second edition}. Hoboken: John Wiley \& Sons.
+  Statistics, second edition}. Hoboken: John Wiley \& Sons.
 
   Naes, T.; Aastveit, A.H.; Sahni, N.S. 2007. "Analysis of split-plot designs: 
   An Overview and Comparison of Methods". \emph{Qual. Reliab. Engng. Int.} 23, 
