@@ -184,12 +184,10 @@ gexp(mu, ...)
 
 \value{
   The method \code{gexp} returns the list of class \code{gexp} with the slots:
-  \begin{itemize}
-    \item{X}{It is the incidence matrix of the design.}
-    \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type equal to SPLIT.}
-    \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
-    \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
-  \end{itemize}
+  \item{X}{It is the incidence matrix of the design.}
+  \item{Z}{It is the incidence matrix of the error of the main parcel in the case of type equal to SPLIT.}
+  \item{Y}{It is a vector, or a matrix for MD, with the values of the random variable (s).}
+  \item{dfm}{It is a data.frame with all experiment information: treatments, repetitions, and the random response variable.}
 }
 
   %\value{
