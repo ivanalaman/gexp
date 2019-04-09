@@ -1,6 +1,9 @@
-2018-10-12 vs. 0.1-1 - J.C.Faria <joseclaudio.faria@gmail.com>
- * Fixed encodings of some documentation (.rmd) files that were generating
- problems in the final compilation.
+2019-04-09 vs. 0.1-2 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
+ * Corrected word gerexp to gexp in the gexp-package.Rd file.
+ * Corrected data of the 0.1-1 version of the ChangeLog file.
+
+2019-04-06 vs. 0.1-1 - J.C.Faria <joseclaudio.faria@gmail.com>
+ * Fixed encodings of some documentation (.rmd) files that were generating problems in the final compilation.
  * Some improvements have been made to the documentation.
 
 2018-10-12 vs. 0.1-0 - Ivan Bezerra Allaman <ivanalaman@gmail.com>

@@ -1,5 +1,5 @@
 \name{Generator of Experiments}
-\alias{gerexp-package}
+\alias{gexp-package}
 
 \docType{package}
 
