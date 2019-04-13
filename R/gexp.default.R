@@ -19,7 +19,7 @@ gexp.default <- function(mu        = 26,
                          ...)
 {
 
-  cl <- match.call()     
+  #cl <- match.call()
 
   switch(match.arg(type),
          CRD = {
@@ -132,6 +132,6 @@ gexp.default <- function(mu        = 26,
            class(result) <- c('gexp.spe', 'gexp', 'list') 
          }
   )
-  result$call <- cl  
+  result$call <- match.call()
   return(result)
 }

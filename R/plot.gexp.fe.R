@@ -63,6 +63,7 @@ plot.gexp.fe <- function(x,
     posycentro <- seq(aux_posycentro, aux_posycentro1, by=2/rowsquare)
 
     if(!dynamic){ 
+      op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
       par(xaxs='i', yaxs='i')
       plot(1,
            type = 'n',
@@ -85,6 +86,7 @@ plot.gexp.fe <- function(x,
            y = rep(posycentro, length(posxcentro)),
            Lfactors,
            col = coltext)
+      par(op) # Restoring the original par('xaxs', 'yaxs')
     } else {
       auxin <- tcltk::tk_choose.files()
       auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
@@ -190,6 +192,7 @@ plot.gexp.fe <- function(x,
     posycentro <- seq(aux_posycentro, aux_posycentro1, by=2/rowsquare)
 
     if(!dynamic){ 
+      op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
       par(xaxs='i', yaxs='i')
       plot(1,
            type = 'n',
@@ -229,7 +232,7 @@ plot.gexp.fe <- function(x,
            col=colgrid,
            xpd=TRUE,
            srt=90)
-
+      par(op) # Restoring the original par('xaxs', 'yaxs')
     } else {
       auxin <- tcltk::tk_choose.files()
       auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
@@ -337,6 +340,7 @@ plot.gexp.fe <- function(x,
     posxcentro <- posycentro <- seq(aux_posxcentro, aux_posxcentro1, by=2/rowsquare)
 
     if(!dynamic){ 
+      op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
       par(xaxs='i', yaxs='i')
       plot(1,
            type = 'n',
@@ -390,8 +394,8 @@ plot.gexp.fe <- function(x,
            cols,
            col=colgrid,
            xpd=TRUE)
-
-    }else{
+      par(op) # Restoring the original par('xaxs', 'yaxs')
+    } else {
       auxin <- tcltk::tk_choose.files()
       auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
       auxin2 <- toupper(auxin1)
