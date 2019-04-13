@@ -93,6 +93,7 @@ plot.gexp.spe <- function(x,
 
 
     if(!dynamic){ 
+      op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
       par(xaxs='i', yaxs='i')
 
       plot(1,
@@ -130,6 +131,7 @@ plot.gexp.spe <- function(x,
            unlist(matrplot),
            srt = srttext,
            col = colgrid) 
+      par(op) # Restoring the original par('xaxs', 'yaxs')
     } else {
       auxin <- tcltk::tk_choose.files()
       auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
@@ -276,6 +278,7 @@ plot.gexp.spe <- function(x,
     subposycentro <- seq(auxsub_posycentro, auxsub_posycentro1, by=2/rowsquare)
 
     if(!dynamic){ 
+      op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
       par(xaxs='i', yaxs='i')
 
       plot(1,
@@ -330,7 +333,7 @@ plot.gexp.spe <- function(x,
            col=colgrid,
            xpd=TRUE,
            srt=90) 
-
+      par(op) # Restoring the original par('xaxs', 'yaxs')
     } else {
       auxin <- tcltk::tk_choose.files()
       auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
@@ -491,6 +494,7 @@ plot.gexp.spe <- function(x,
     subposycentro <- seq(auxsub_posycentro, auxsub_posycentro1, by=2/rowsquare)
 
     if(!dynamic){ 
+      op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
       par(xaxs='i', yaxs='i')
       plot(1,
            type = 'n',
@@ -558,7 +562,7 @@ plot.gexp.spe <- function(x,
            cols,
            col=colgrid,
            xpd=TRUE)
-
+      par(op) # Restoring the original par('xaxs', 'yaxs')
     }else{
       auxin <- tcltk::tk_choose.files()
       auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)

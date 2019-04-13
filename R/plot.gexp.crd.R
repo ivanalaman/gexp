@@ -54,6 +54,7 @@ plot.gexp.crd <- function(x,
   posycentro <- seq(aux_posycentro, aux_posycentro1, by=2/rowsquare)
 
   if(!dynamic){ 
+    op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
     par(xaxs='i', yaxs='i')
     plot(1,
          type = 'n',
@@ -76,6 +77,7 @@ plot.gexp.crd <- function(x,
          y = rep(posycentro, length(posxcentro)),
          aux2,
          col = coltext)
+    par(op) # Restoring the original par('xaxs', 'yaxs')
   } else {
 
     auxin <- tcltk::tk_choose.files()

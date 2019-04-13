@@ -75,6 +75,7 @@ plot.gexp.rcbd <- function(x,
   posycentro <- seq(aux_posycentro, aux_posycentro1, by=2/columsquare)
 
   if(!dynamic){ 
+    op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
     par(xaxs='i', yaxs='i')
     plot(1,
          type = 'n',
@@ -113,7 +114,7 @@ plot.gexp.rcbd <- function(x,
          col=colgrid,
          xpd=TRUE,
          srt=90)
-
+    par(op) # Restoring the original par('xaxs', 'yaxs')
   } else {
     auxin <- tcltk::tk_choose.files()
     auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)

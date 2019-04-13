@@ -1,3 +1,7 @@
+2019-04-13 vs. 0.1-3 - J.C.Faria <joseclaudio.faria@gmail.com>
+ * All plot functions now are returning to the graphic device the
+   parameters changed by the use of the par(xaxs='i', yaxs='i').
+ * There have been minor changes to the source code of some functions.
 2019-04-09 vs. 0.1-2 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Corrected word gerexp to gexp in the gexp-package.Rd file.
  * Corrected data of the 0.1-1 version of the ChangeLog file.
