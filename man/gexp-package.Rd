@@ -10,7 +10,7 @@
 
   The possible uses are multiple: in the planning it makes possible to distribution and randomization of treatments and experimental units; in the data analysis allows to generate experiments for application in evaluations individual and can also be used to generate experiments for validations of new computational resources in the area of structured data analysis.
 
-  In summary, the package provides computational resources useful in planning and modeling of structured experiments in the R.
+  In summary, the package provides computational resources useful in planning and modeling of structured experiments in the \code{R}.
 }
 
 \details{In some situations, we are interested in simulating a variable randomized according to the experimental procedure where the differences between treatments are predetermined. In a completely randomized design with two treatments for example, we may have an interest in simulating a variable random whose treatment A will have a 1-deviation effect and treatment B a effect of 3 deviations from a given overall average. In addition, may be interested in imposing a pre-established error structure for purposes evaluation in the various analysis strategies.

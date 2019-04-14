@@ -21,8 +21,8 @@
 }
 
 \arguments{
-  \item{object}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, code{gexp.fe} or \code{gexp.spe} object.}
-  \item{digits}{Number of decimal digits in the results.The default is 3.}
+  \item{object}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, \code{gexp.fe} or \code{gexp.spe} object.}
+  \item{digits}{Number of decimal digits in the results.The default is \code{3}.}
   \item{\dots}{Further arguments (required by generic).}
 }
 
@@ -62,7 +62,7 @@ crd_fe <- gexp(mu=0,
                                1:5,
                                sep='')),
                inte = rep(1,848),
-               type = 'FE', 
+               type = 'FE',
                round=0)
 summary(crd_fe)
 
@@ -92,7 +92,7 @@ rcbd <- gexp(mu=0,
                                  sep='')),
              round=1,
              type='RCBD')
-summary(rcbd) 
+summary(rcbd)
 
 #! Factorial Experiment (FE) - RCBD
 fe_rcbd <- gexp(mu=30,
@@ -128,7 +128,7 @@ split_rcbd <- gexp(mu=30,
                           1, 1, 3, 3, 3, 3),
                    round=1,
                    type='SPE')
-summary(split_rcbd)  
+summary(split_rcbd)
 
 #! Latin Square Design (LSD)
 lsd <- gexp(mu=30,
@@ -160,7 +160,7 @@ fe_lsd <- gexp(mu=30,
                inte=c(1, 15, 1, 1),
                round=1,
                type='FE')
-summary(fe_lsd)  
+summary(fe_lsd)
 
 #! Split-plot Experiment (SPE) - LSD
 split_lsd <- gexp(mu=30,

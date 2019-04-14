@@ -6,22 +6,22 @@
 %===============================================================================
 \name{plot}
 \alias{plot.gexp.crd}
-\alias{plot.gexp.rcbd} 
+\alias{plot.gexp.rcbd}
 \alias{plot.gexp.lsd}
 \alias{plot.gexp.fe}
 \alias{plot.gexp.spe}
 
 \title{
-  Plot methods for \code{gexp} objects.
+  Plot methods for \code{gexp} objects
 }
 
 \description{
-  These are methods for objects of class 
-  \code{gexp.crd} - Completely Randomized Design (CRD), 
+  These are methods for objects of class
+  \code{gexp.crd} - Completely Randomized Design (CRD),
   \code{gexp.rcbd} - Randomized Complete Block Design (RCBD),
-  \code{gexp.lsd} - Latin Squares Design (LSD), 
-  \code{gexp.fe} - Factorial Experiment (FE) and 
-  \code{gexp.spe} - Split-plot Experiment (SPE). 
+  \code{gexp.lsd} - Latin Squares Design (LSD),
+  \code{gexp.fe} - Factorial Experiment (FE) and
+  \code{gexp.spe} - Split-plot Experiment (SPE).
   The main objective of these methods is to produce an experimental croqui with randomized treatments according with the design and type of experiment. It can be very useful in experiment planning.
 }
 
@@ -94,14 +94,14 @@
 }
 
 \arguments{
-  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, code{gexp.fe} or \code{gexp.spe} object.}
-  \item{main}{An overall title for the plot.}
-  \item{sub}{An sub title for the plot.}
-  \item{coltext}{A color to the text on the plot}
-  \item{srttext}{The string rotation in degrees. See \code{srt} argument of the par function.}.
-  \item{colgrid}{A color to the drid on the plot}
-  \item{ltygrid}{A \code{lty} to the drid on the plot}
-  \item{lwdgrid}{A \code{lw} to the drid on the plot}
+  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, \code{gexp.fe} or \code{gexp.spe} object.}
+  \item{main}{An overall title for the \code{plot}.}
+  \item{sub}{An sub title for the \code{plot}.}
+  \item{coltext}{A color to the text on the \code{plot}.}
+  \item{srttext}{The string rotation in degrees. See \code{srt} argument of the par function.}
+  \item{colgrid}{A color to the grid on the \code{plot}.}
+  \item{ltygrid}{A \code{lty} to the grid on the \code{plot}.}
+  \item{lwdgrid}{A \code{lwd} to the grid on the \code{plot}.}
   \item{xleftimg}{A vector (or scalar) of left x positions.}
   \item{ybottomimg}{A vector (or scalar) of bottom y positions.}
   \item{xrightimg}{A vector (or scalar) of right x positions.}
@@ -149,7 +149,7 @@ crd_fe <- gexp(mu=0,
                inte = rep(1, 6),
                type = 'FE')
 summary(crd_fe)
-plot(crd_fe)  
+plot(crd_fe)
 
 #! Split-plot Experiment (SPE) - CRD
 split_crd <- gexp(mu=30,
@@ -178,8 +178,8 @@ rcbd <- gexp(mu=0,
                                  sep='')),
              round=1,
              type='RCBD')
-summary(rcbd) 
-plot(rcbd)  
+summary(rcbd)
+plot(rcbd)
 
 #! Factorial Experiment (FE) - RCBD
 fe_rcbd <- gexp(mu=30,
@@ -228,7 +228,7 @@ split_rcbd <- gexp(mu=30,
                           1, 1, 3, 3, 3, 3),
                    round=1,
                    type='SPE')
-summary(split_rcbd)  
+summary(split_rcbd)
 plot(split_rcbd)
 
 #! Latin Square Design (LSD)
@@ -262,7 +262,7 @@ fe_lsd <- gexp(mu=30,
                inte=c(1, 15, 1, 1),
                round=1,
                type='FE')
-summary(fe_lsd)  
+summary(fe_lsd)
 plot(fe_lsd)
 
 #! Split-plot Experiment (SPE) - LSD
@@ -328,7 +328,7 @@ rcbd <- gexp(mu=0,
              round=1,
              type='RCBD')
 summary(rcbd)
-plot(rcbd)   
+plot(rcbd)
 
 rcbd_i <- update(rcbd,
                  r=1,

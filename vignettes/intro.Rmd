@@ -24,7 +24,7 @@ The experiments included in the package are: a completely randomized design (CRD
 
 The arguments of the function are based on a linear model with the following matrix form [@Ferreira:2008, @Rencher:2007]:
 
-$$Y = X\beta + E \hspace(5cm) (1)$$
+$$Y = X\beta + E \hspace{5cm} (1)$$
 
 then:
 
@@ -38,7 +38,7 @@ $E$ is a n$\times$p matrix of the errors with p-variate normal distribution with
 
 In the case of the split-plot design, the package works considering the following linear mixed model [@Naes:2007]:
 
-$$Y = X\beta + Zu + E \hspace(5cm) (2)$$
+$$Y = X\beta + Zu + E \hspace{5cm} (2)$$
 
 then:
 

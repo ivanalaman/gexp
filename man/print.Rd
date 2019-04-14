@@ -21,8 +21,8 @@
 }
 
 \arguments{
-  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, code{gexp.fe} or \code{gexp.spe} object.}
-  \item{digits}{Number of decimal digits in the results.The default is 3.}
+  \item{x}{A \code{gexp.crd}, \code{gexp.rcbd}, \code{gexp.lsd}, \code{gexp.fe} or \code{gexp.spe} object.}
+  \item{digits}{Number of decimal digits in the results.The default is \code{3}.}
   \item{\dots}{Further arguments (required by generic).}
 }
 
@@ -137,7 +137,7 @@ split_rcbd <- gexp(mu=30,
                           1, 1, 3, 3, 3, 3),
                    round=1,
                    type='SPE')
-print(split_rcbd)  
+print(split_rcbd)
 split_rcbd
 
 #! Latin Square Design (LSD)
@@ -171,7 +171,7 @@ fe_lsd <- gexp(mu=30,
                inte=c(1, 15, 1, 1),
                round=1,
                type='FE')
-print(fe_lsd)  
+print(fe_lsd)
 fe_lsd
 
 #! Split-plot Experiment (SPE) - LSD
