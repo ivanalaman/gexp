@@ -27,8 +27,8 @@
 
 \usage{
 \method{plot}{gexp.crd}(x,
-     main= NULL,
-     sub= NULL,
+     main=NULL,
+     sub=NULL,
      colgrid='red',
      coltext='blue',
      ltygrid='dotted',
@@ -146,8 +146,8 @@ crd_fe <- gexp(mu=0,
                                1:2,
                                sep='')),
                round=0,
-               inte = rep(1, 6),
-               type = 'FE')
+               inte=rep(1, 6),
+               type='FE')
 summary(crd_fe)
 plot(crd_fe)
 
@@ -205,7 +205,7 @@ plot(fe_rcbd1)
 
 #! Split-plot Experiment (SPE) - RCBD
 split_rcbd <- gexp(mu=30,
-                   r = 2,
+                   r=2,
                    fe=list(f1=c(1, 1),
                            f2=c(2, 3),
                            f3=c(1, 1, 1)),
@@ -276,8 +276,8 @@ split_lsd <- gexp(mu=30,
                                    1:3,
                                    sep='')),
                   inte=c(1, 15, 1, 1, 1, 1, 1, 1, 1),
-                  rowe = c(1, 1, 1),
-                  cole = c(1, 1, 1),
+                  rowe=c(1, 1, 1),
+                  cole=c(1, 1, 1),
                   rowl=list(Row=paste('r',
                                       1:3,
                                       sep='')),
