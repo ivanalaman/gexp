@@ -41,7 +41,7 @@ gexp(mu, ...)
      inte      = NULL,
      blke      = NULL,
      rowe      = NULL,
-     cole     = NULL,
+     cole      = NULL,
      contrasts = NULL,
      type      = c('CRD','RCBD','LSD','FE','SPE'),
      nrand     = 1L,
@@ -252,9 +252,9 @@ crd_fe <- gexp(mu=0,
                        C=paste('c',
                                1:3,
                                sep='')),
-               inte = rep(1,39),
+               inte=rep(1,39),
                round=0,
-               type = 'FE')
+               type='FE')
 summary(crd_fe)
 
 #! Factorial Experiment (FE) - Multivariated - CRD - QL
@@ -375,11 +375,11 @@ summary(fe_rcbd)
 
 #! Multivariated - RCBD - QL
 rcbd_m <- gexp(mu=c(0, 2),
-               fe=list(f1= matrix(c(1, 1,
-                                    5, 1, 
-                                    1, 1),
-                                  ncol=2,
-                                  byrow=TRUE)),
+               fe=list(f1=matrix(c(1, 1,
+                                   5, 1,
+                                   1, 1),
+                                 ncol=2,
+                                 byrow=TRUE)),
                blke=matrix(c(2, 1,
                              1, 2,
                              1, 1),
@@ -458,8 +458,8 @@ split_lsd <- gexp(mu=30,
                                    1:3,
                                    sep='')),
                   inte=c(1, 15, 1, 1, 1, 1, 1, 1, 1),
-                  rowe = c(1, 1, 1),
-                  cole = c(1, 1, 1),
+                  rowe=c(1, 1, 1),
+                  cole=c(1, 1, 1),
                   rowl=list(Row=paste('r',
                                       1:3,
                                       sep='')),
@@ -537,7 +537,7 @@ summary(reg)
 crd_lq <- gexp(mu=NULL,
                r=3,
                fe=list(f1=c(0, 10, 0, 0),  #linear
-                       f2=c(0, 3, 4, 0)), #quadratic
+                       f2=c(0, 3, 4, 0)),  #quadratic
                fl=list(P=ordered(level),
                        N=ordered(1:4)),
                contrasts=list(f1=cont_crd,
@@ -552,11 +552,11 @@ with(crd_lq$dfm,
 
 # Multivariated!
 crd_m <- gexp(mu=NULL,
-              r=4,                #L  Q
+              r=4,                #L   Q
               fe=list(f1=matrix(c( 2,  2,
                                   10,  0,
-                                  0, 10,
-                                  0,  0),
+                                   0, 10,
+                                   0,  0),
                                 ncol=2,
                                 byrow=TRUE)),
               fl=list(Dose=ordered(level)),
