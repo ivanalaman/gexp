@@ -270,7 +270,7 @@ gexp.spe <- function(mu        = mu,
 
       aux_betas <- lapply(fe, as.matrix)
       aux_betas2 <- do.call('rbind', aux_betas)
-      betas <- as.matrix(c(blke, aux_betas2, inte))
+      betas <- as.matrix(c(aux_betas2[1,],blke, aux_betas2[-1,], inte))
 
     }
 
@@ -443,7 +443,7 @@ gexp.spe <- function(mu        = mu,
 
       aux_betas <- lapply(fe, as.matrix)
       aux_betas2 <- do.call('rbind', aux_betas)
-      betas <- as.matrix(c(rowe, cole, aux_betas2, inte))
+      betas <- as.matrix(c(aux_betas2[1], rowe, cole, aux_betas2[-1,], inte))
 
     }
 
