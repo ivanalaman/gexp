@@ -44,10 +44,10 @@ gexp.fe <- function(mu        = mu,
     inte <- rep(1,
                 resl2)
 
-#  if(length(inte)!=resl2){
-#    tcltk::tkmessageBox(message=paste('The number of effects this argument is ', resl2),
-#                        icon='error')
-#  }
+  if(length(inte)!=resl2)    # J.C.Faria
+    stop(paste("The length of the 'inte' argument must be: ", 
+               resl2,
+               sep=''))
 
   if(is.null(fl)){
     aux_factor <- lapply(fe,
