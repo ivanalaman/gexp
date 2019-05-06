@@ -35,18 +35,18 @@ plot.gexp.fe <- function(x,
 
       factors <- names(aux2)[-dim(aux2)[2]]
       levelss <- paste(levels(aux2$inter),
-                       collapse=',')
+                       collapse=', ')
       repp <- length(unique(aux1$r))
 
-      sub <- paste('Factors:',
+      sub <- paste('Factors: ',
                    paste(factors,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   paste('Levels:',
+                   paste('Levels: ',
                          levelss,
                          sep=''),
                    '\n',
-                   paste('Replication:',
+                   paste('Replication: ',
                          repp,
                          sep=''))
     }
@@ -160,22 +160,22 @@ plot.gexp.fe <- function(x,
 
       factors <- names(aux2)[-dim(aux2)[2]]
       levelss <- paste(levels(aux2$inter),
-                       collapse=',')
+                       collapse=', ')
       repp <- length(unique(aux1$r))
 
-      sub <- paste('Factors:',
+      sub <- paste('Factors: ',
                    paste(factors,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   paste('Levels:',
+                   paste('Levels: ',
                          levelss,
                          sep=''),
                    '\n',
-                   paste('Replication:',
+                   paste('Replication: ',
                          repp,
                          sep=''),
                    '\n',
-                   paste('Block:',
+                   paste('Block: ',
                          nblocks,
                          sep='')) 
     }
@@ -313,22 +313,22 @@ plot.gexp.fe <- function(x,
     if(is.null(sub)){
 
       factors <- paste(names(aux1)[-c(1:2)],
-                       collapse=',')
+                       collapse=', ')
       levelss <- paste(levels(aux2$inter),
-                       collapse=',')
+                       collapse=', ')
 
-      sub <- paste('Factors:',
+      sub <- paste('Factors: ',
                    factors,
                    '\n',
-                   paste('Levels:',
+                   paste('Levels: ',
                          levelss,
                          sep=''),
                    '\n',
-                   paste('Rows:',
+                   paste('Rows: ',
                          nrows,
                          sep=''),
                    '\n',
-                   paste('Columns:',
+                   paste('Columns: ',
                          ncols,
                          sep=''))
 

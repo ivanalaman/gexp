@@ -252,7 +252,7 @@ crd_fe <- gexp(mu=0,
                        C=paste('c',
                                1:3,
                                sep='')),
-               inte=rep(1,39),
+               inte=rep(1, 39), # (3*2*3) + (3*2) + (3*3) + (2*3)
                round=0,
                type='FE')
 summary(crd_fe)
@@ -330,7 +330,7 @@ fe_crd <- gexp(mu=30,
                        B=paste('b',
                                1:2,
                                sep='')),
-               inte=c(3, 1, 1, 1, 1, 5),
+               inte=c(3, 1, 1, 1, 1, 5), # (3*2)
                round=1,
                type='FE')
 summary(fe_crd)
@@ -345,7 +345,7 @@ split_crd <- gexp(mu=30,
                           SP=paste('sp',
                                    1:2,
                                    sep='')),
-                  inte=c(1, 15, 1, 1),
+                  inte=c(1, 15, 1, 1), # (2*2)
                   round=1,
                   type='SPE')
 summary(split_crd)
@@ -368,7 +368,7 @@ fe_rcbd <- gexp(mu=30,
                 fe=list(f1=c(1, 1, 1),
                         f2=c(2, 3)),
                 blke=c(1, 3),
-                inte=c(1, 15, 1, 1, 5, 1),
+                inte=c(1, 15, 1, 1, 5, 1), # (3*2)
                 round=1,
                 type='FE')
 summary(fe_rcbd)
@@ -407,10 +407,10 @@ split_rcbd <- gexp(mu=30,
                    blkl=list(BLK=paste('B',
                                        1:2,
                                        sep='')),
-                   inte=c(1, 15, 1, 1, 1, 3, 4, 2, 1, 1, 4, 1,
-                          1, 2, 1, 1,
-                          1, 1, 1, 1, 1, 1,
-                          1, 1, 3, 3, 3, 3),
+                   inte=c(1, 15, 1, 1, 1, 3, 4, 2, 1, 1, 4, 1, # (2*2*3)
+                          1, 2, 1, 1,                          # (2*2)
+                          1, 1, 1, 1, 1, 1,                    # (2*3)
+                          1, 1, 3, 3, 3, 3),                   # (2*3)
                    round=1,
                    type='SPE')
 summary(split_rcbd)
@@ -442,7 +442,7 @@ fe_lsd <- gexp(mu=30,
                coll=list(Col=paste('c',
                                    1:4,
                                    sep='')),
-               inte=c(1, 15, 1, 1),
+               inte=c(1, 15, 1, 1), # (2*2)
                round=1,
                type='FE')
 summary(fe_lsd)
@@ -457,7 +457,7 @@ split_lsd <- gexp(mu=30,
                           SP=paste('sp',
                                    1:3,
                                    sep='')),
-                  inte=c(1, 15, 1, 1, 1, 1, 1, 1, 1),
+                  inte=c(1, 15, 1, 1, 1, 1, 1, 1, 1), # (3*3)
                   rowe=c(1, 1, 1),
                   cole=c(1, 1, 1),
                   rowl=list(Row=paste('r',
@@ -476,13 +476,15 @@ summary(split_lsd)
 
 # CRD - Orthogonal polynomials
 level <- c(0, 10, 20, 30)
-cont_crd <- contr.poly(length(level))
+cont_crd <- contr.poly(level)
 
 # Linear effect
 crd_lo <- gexp(mu=NULL,
                r=4,
-               # B0 B1 B2 B3  Linear only
-               fe=list(f1=c(2, 5, 0, 0)),
+               fe=list(f1=c(2,   # itercept
+                            5,   # b1*
+                            0,   # b2
+                            0)), # b3
                fl=list(Dose=ordered(level)),
                contrasts=list(f1=cont_crd))
 summary(crd_lo)
@@ -492,8 +494,10 @@ plot(Y1 ~ Dose,
 # Quadratic effect
 crd_qo <- gexp(mu=NULL,
                r=4,
-               # B0 B1 B2 B3  quadratic
-               fe=list(f1=c(2, 0, 5, 0)),
+               fe=list(f1=c(2,   # itercept
+                            0,   # b1
+                            5,   # b2*
+                            0)), # b3
                fl=list(Dose=ordered(c(0, 10, 20, 30))),
                contrasts=list(f1=cont_crd))
 summary(crd_qo)
@@ -503,8 +507,10 @@ plot(Y1 ~ Dose,
 # Cubic effect
 crd_co <- gexp(mu=NULL,
                r=4,
-               # B0 B1 B2 B3  cubic
-               fe=list(f1=c(2, 0, 0, 5)),
+               fe=list(f1=c(2,   # itercept
+                            0,   # b1
+                            0,   # b2
+                            5)), # b3*
                fl=list(Dose=ordered(c(0, 10, 20, 30))),
                contrasts=list(f1=cont_crd))
 summary(crd_co)
@@ -536,8 +542,14 @@ summary(reg)
 # When has two or more factor, to inform only Beta0 to first factor.
 crd_lq <- gexp(mu=NULL,
                r=3,
-               fe=list(f1=c(0, 10, 0, 0),  #linear
-                       f2=c(0, 3, 4, 0)),  #quadratic
+               fe=list(f1=c(0,  # itercept
+                           10,  # b1*
+                            0,  # b2
+                            0), # b3
+                       f2=c(0,  # itercept
+                            3,  # b1
+                            4,  # b2*
+                            0)),# b3
                fl=list(P=ordered(level),
                        N=ordered(1:4)),
                contrasts=list(f1=cont_crd,
@@ -569,15 +581,13 @@ with(crd_m$dfm,
      plot(Y2 ~ Dose))
 
 # Orthogonal polynomios - RCBD
-cont_rcbd <- contr.poly(4)
-
 rcbd <- gexp(mu=NULL,
              fe=list(f1=c(1, 3, 0, 0)),
              blke=c(1, 2, 3),
              r=2,
              fl=list(Dose=ordered(c(0, 2, 4, 6))),
              blkl=list(Blk=c('B1', 'B2', 'B3')),
-             contrasts=list(f1=cont_rcbd,
+             contrasts=list(f1=contr.poly(4),
                             Blk=diag(3)),
              type='RCBD')
 summary(rcbd)
@@ -585,6 +595,8 @@ summary(rcbd)
 #! Hibrid: qualitative and quantitative factors in the same experiment - hb
 # CRD
 r <- 2
+level <- c(0, 10, 20, 30)
+cont_crd <- contr.poly(level)
 (error <- matrix(rep(0,
                      4^1*3^1*r),
                  ncol=1))
@@ -599,10 +611,13 @@ crd_hb <- gexp(mu=NULL,
                contrasts=list(f1=diag(3),
                               f2=cont_crd))
 summary(crd_hb)
+str(crd_hb)
 
 # RCBD
 r <- 2
 blke <- c(1, 2)
+level <- c(0, 10, 20, 30)
+cont_rcbd <- contr.poly(level)
 (error <- matrix(rep(0,
                      4^1*3^1*r*length(blke)),
                  ncol=1))
@@ -617,8 +632,9 @@ rcbd_hb <- gexp(mu=NULL,
                 blke=blke,
                 blkl=list(Blk=c('B1', 'B2')),
                 contrasts=list(f1=diag(3),
-                               f2=cont_crd,
+                               f2=cont_rcbd,
                                Blk=diag(2)),
                 type='RCBD')
 summary(rcbd_hb)
+str(rcbd_hb)
 }

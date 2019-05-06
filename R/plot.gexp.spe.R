@@ -31,8 +31,6 @@ plot.gexp.spe <- function(x,
     aux22$inter <- with(aux22,
                         eval(parse(text=auxinter)))
 
-
-
     if(is.null(main)){
       main = 'Split plot Structure \n Completely Random Design'
     }
@@ -50,25 +48,24 @@ plot.gexp.spe <- function(x,
 
     matrplot <- lapply(auxmatrplot, function(x) sample(Lsub))
 
-
     if(is.null(sub)){
 
       sub <- paste('Plot:',
                    plott,
                    '\n',
-                   'Levels Plot:',
+                   'Levels Plot: ',
                    paste(Lplot,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   'Subplot:',
+                   'Subplot: ',
                    paste(subplott,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   'Levels Subplot:',
+                   'Levels Subplot: ',
                    paste(Lsub,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   'Replication:',
+                   'Replication: ',
                    repp)
     }
 
@@ -90,7 +87,6 @@ plot.gexp.spe <- function(x,
     auxsub_posycentro <- 1/rowsquare
     auxsub_posycentro1 <- auxsub_posycentro + ((rowsquare - 1)*2/rowsquare)
     subposycentro <- seq(auxsub_posycentro, auxsub_posycentro1, by=2/rowsquare)
-
 
     if(!dynamic){ 
       op <- par('xaxs', 'yaxs') # Original par('xaxs', 'yaxs')
@@ -236,25 +232,25 @@ plot.gexp.spe <- function(x,
 
     if(is.null(sub)){
 
-      sub <- paste('Plot:',
+      sub <- paste('Plot: ',
                    plott,
                    '\n',
-                   'Levels Plot:',
+                   'Levels Plot: ',
                    paste(Lplot,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   'Subplot:',
+                   'Subplot: ',
                    paste(subplott,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   'Levels Subplot:',
+                   'Levels Subplot: ',
                    paste(Lsub,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   'Replication:',
+                   'Replication: ',
                    repp,
                    '\n',
-                   'Block:',
+                   'Block: ',
                    nblock)
     }
 
@@ -450,26 +446,27 @@ plot.gexp.spe <- function(x,
 
       subplott <- names(aux2)[-c(1:3, dim(aux2)[2])]
 
-      sub <- paste('Plot:',
+      sub <- paste('Plot: ',
                    plott,
                    '\n',
-                   'Levels Plot:',
+                   'Levels Plot: ',
                    paste(Lplot,
-                         collapse=','),
+                         collapse=', '),
                    '\n',
-                   'Subplot:',
-                   paste(subplott,
-                         collpase=','),
+                   'Subplot: ',
+#                   paste(subplott,
+#                         collpase=', '),
+                   subplott,                # J.C.Faria
                    '\n',
-                   'Levels Subplot:',
+                   'Levels Subplot: ',
                    paste(Lsub,
-                         collapse=','), 
+                         collapse=', '),
                    '\n',
-                   paste('Rows:',
+                   paste('Rows: ',
                          nrows,
                          sep=''),
                    '\n',
-                   paste('Columns:',
+                   paste('Columns: ',
                          ncols,
                          sep=''))
 

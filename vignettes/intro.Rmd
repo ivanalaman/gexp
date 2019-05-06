@@ -20,7 +20,7 @@ The `gexp` package was elaborated inspired by the personal functions of Professo
 
 Most packages like agricolae, for example, have functions that allow the user to generate only designs, thus helping the researcher who wants to set up an experiment. However, if the user has the interest in generating random variables according to the type of experiment and still, being able to manipulate which treatments will be different, then the `gexp` package has this differential.
 
-The experiments included in the package are: a completely randomized design (CRD), randomized complete block design (RCBD), latin square design (LSD), factorial schemes for IHD, DBC and DQL and a schema in subdivided plots also considering the CRD, RCBD and LSD [@Aquino:1992].
+The experiments included in the package are: a completely randomized design (CRD), randomized complete block design (RCBD), latin square design (LSD), factorial schemes considering CRD, DBC and DQL designs and a schema in split-plots also considering the CRD, RCBD and LSD designs [@Aquino:1992].
 
 The arguments of the function are based on a linear model with the following matrix form [@Ferreira:2008, @Rencher:2007]:
 
