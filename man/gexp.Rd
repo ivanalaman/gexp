@@ -484,7 +484,7 @@ crd_lo <- gexp(mu=NULL,
                fe=list(f1=c(2,   # itercept
                             5,   # b1*
                             0,   # b2
-                            0)), # b3
+                          0)), # b3
                fl=list(Dose=ordered(level)),
                contrasts=list(f1=cont_crd))
 summary(crd_lo)
@@ -512,7 +512,7 @@ crd_co <- gexp(mu=NULL,
                             0,   # b2
                             5)), # b3*
                fl=list(Dose=ordered(c(0, 10, 20, 30))),
-               contrasts=list(f1=cont_crd))
+             contrasts=list(f1=cont_crd))
 summary(crd_co)
 plot(Y1 ~ Dose,
      crd_co$dfm)
@@ -543,9 +543,9 @@ summary(reg)
 crd_lq <- gexp(mu=NULL,
                r=3,
                fe=list(f1=c(0,  # itercept
-                           10,  # b1*
+                            10,  # b1*
                             0,  # b2
-                            0), # b3
+                          0), # b3
                        f2=c(0,  # itercept
                             3,  # b1
                             4,  # b2*
@@ -567,8 +567,8 @@ crd_m <- gexp(mu=NULL,
               r=4,                #L   Q
               fe=list(f1=matrix(c( 2,  2,
                                   10,  0,
-                                   0, 10,
-                                   0,  0),
+                                  0, 10,
+                                  0,  0),
                                 ncol=2,
                                 byrow=TRUE)),
               fl=list(Dose=ordered(level)),
@@ -613,7 +613,7 @@ crd_hb <- gexp(mu=NULL,
 summary(crd_hb)
 str(crd_hb)
 
-# RCBD
+#!. RCBD - QT
 r <- 2
 blke <- c(1, 2)
 level <- c(0, 10, 20, 30)
@@ -637,4 +637,93 @@ rcbd_hb <- gexp(mu=NULL,
                 type='RCBD')
 summary(rcbd_hb)
 str(rcbd_hb)
+
+#!. DQL - QT
+set.seed(3)
+ql <- gexp(mu=NULL,
+           fe=list(f1=c(100,   # Intercepto
+                        10,   # b1
+                        20,   # b2
+                        30,   # b3
+                        40)), # b4
+           fl=list(tra=ordered(seq(0,
+                                   40,
+                                   by=10))),
+           rowe=c(1, 2, 3, 4, 5),
+           rowl=list(row=paste('r',
+                               1:5,
+                               sep='')),
+           cole=c(5, 4, 3, 2, 1),
+           coll=list(col=paste('c',
+                               1:5,
+                               sep='')),
+           contrasts=list(tra=contr.poly(5),
+                          row=diag(5),
+                          col=diag(5)),
+           type='LSD')
+summary(ql)
+plot(ql)
+
+#!. FE/DQL/QT
+fe_ql <- gexp(mu=NULL,
+              fe=list(f1=c(2, 3),
+                      f2=c(10,   # Intercepto
+                            5,   # b1*
+                            0,   # b2
+                            0,   # b3
+                            0)), # b4
+              #              inte=c(1, 15, rep(1, 6)),
+              rowe=rep(1, 10),
+              cole=rep(1, 10),
+              fl=list(var=paste('v',
+                                1:2,
+                                sep=''),
+                      tra=ordered(seq(0,
+                                      40,
+                                      by=10))),
+              coll=list(col=paste('c',
+                                  1:10,
+                                  sep='')),
+              rowl=list(row=paste('r',
+                                  1:10,
+                                  sep='')),
+              contrasts=list(var=diag(2),
+                             tra=contr.poly(5),
+                             col=diag(10),
+                             row=diag(10)),
+              type='FE')
+
+summary(fe_ql)
+plot(fe_ql)
+
+#!. PSD/QL/QT
+spe_ql <- gexp(mu=NULL,
+               fe=list(f1=c(2, 3, 1),
+                       f2=c(100,   # Intercepto
+                              1,   # b1
+                              5,   # b2*
+                              1)), # b3
+               fl=list(p=paste('p',
+                               1:3,
+                               sep=''),
+                       sp=ordered(seq(0,
+                                      30,
+                                      by=10))),
+               #               inte=c(1, 15, rep(1, 7)),
+               rowe=c(1, 2, 3),
+               cole=c(3, 2, 1),
+               rowl=list(row=paste('r',
+                                   1:3,
+                                   sep='')),
+               coll=list(col=paste('c',
+                                   1:3,
+                                   sep='')),
+               round=1,
+               contrasts=list(p=diag(3),
+                              sp=contr.poly(4),
+                              row=diag(3),
+                              col=diag(3)),
+               type='SPE')
+summary(spe_ql)
+plot(spe_ql)
 }
