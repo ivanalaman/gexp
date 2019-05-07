@@ -48,20 +48,20 @@ plot.gexp.lsd <- function(x,
 
     Lfactors <- names(aux1)[3]
     levelss <- paste(levels(x$dfm[[Lfactors]]),
-                     collapse=',')
+                     collapse=', ')
 
-    sub <- paste('Factors:',
+    sub <- paste('Factors: ',
                  Lfactors,
                  '\n',
-                 paste('Levels:',
+                 paste('Levels: ',
                        levelss,
                        sep=''),
                  '\n',
-                 paste('Rows:',
+                 paste('Rows: ',
                        nrows,
                        sep=''),
                  '\n',
-                 paste('Columns:',
+                 paste('Columns: ',
                        ncols,
                        sep=''))
 

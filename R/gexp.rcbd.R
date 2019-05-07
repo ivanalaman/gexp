@@ -9,13 +9,15 @@ gexp.rcbd <- function(mu        = mu,
                       round     = round,
                       random    = random, ...)  
 {
-  if(is.null(fe))  fe <- list(f1 = rep(1,3))
+  if(is.null(fe))  fe <- list(f1=rep(1, 3))
 
   if(is.null(fl)){
     aux_factor <- lapply(fe,
                          function(x) as.matrix(x))
 
-    names(aux_factor) <- paste('X', 1:length(fe), sep='')
+    names(aux_factor) <- paste('X',
+                               1:length(fe),
+                               sep='')
 
     aux_factor1 <- as.list(tolower(names(aux_factor)))
     aux_factor2 <- lapply(aux_factor,
@@ -24,7 +26,7 @@ gexp.rcbd <- function(mu        = mu,
     factors <- mapply(function(x, y) paste(x, y, sep=''),
                       aux_factor1,
                       aux_factor2,
-                      SIMPLIFY = FALSE)
+                      SIMPLIFY=FALSE)
 
     names(factors) <- names(aux_factor)
   } else {
@@ -41,7 +43,7 @@ gexp.rcbd <- function(mu        = mu,
          factors[[names(blkl)]] <- unlist(blkl))
 
   dados <- expand.grid(factors,
-                       KEEP.OUT.ATTRS = FALSE)
+                       KEEP.OUT.ATTRS=FALSE)
 
   aux_lf <- names(dados) 
 
@@ -70,8 +72,8 @@ gexp.rcbd <- function(mu        = mu,
 
   if(is.null(err)){
    
-    e <- mvtnorm::rmvnorm(n = dim(X)[1],  
-                          sigma = diag(ncol(as.matrix(fe[[1]]))))
+    e <- mvtnorm::rmvnorm(n=dim(X)[1],
+                          sigma=diag(ncol(as.matrix(fe[[1]]))))
  
   } else {
     if(!is.matrix(err)) stop("This argument must be a matrix n x 1 univariate or n x p multivariate!")
@@ -81,26 +83,36 @@ gexp.rcbd <- function(mu        = mu,
 
   if(length(mu)!=0 & length(mu) == 1){
 
-    betas <- as.matrix(c(mu, blke, unlist(fe)))
+    betas <- as.matrix(c(mu,
+                         blke,
+                         unlist(fe)))
 
   } else if(length(mu)!=0 & length(mu) > 1){
 
-    betas <- rbind(mu, blke, do.call('rbind', fe))
+    betas <- rbind(mu,
+                   blke,
+                   do.call('rbind', fe))
 
   } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered))==TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
 
     aux_betas <- lapply(fe[-1],
                         function(x)x[-1])
-    aux_betas1 <- c(fe[1], aux_betas)
-    aux_betas2 <- lapply(aux_betas1, as.matrix)
-    aux_betas3 <- do.call('rbind', aux_betas2)
-    betas <- as.matrix(c(blke, aux_betas3))
+    aux_betas1 <- c(fe[1],
+                    aux_betas)
+    aux_betas2 <- lapply(aux_betas1,
+                         as.matrix)
+    aux_betas3 <- do.call('rbind',
+                          aux_betas2)
+    betas <- as.matrix(c(blke,
+                       aux_betas3))
 
   } else {
 
     aux_betas <- lapply(fe, as.matrix)
     aux_betas2 <- do.call('rbind', aux_betas)
-    betas <- as.matrix(c(aux_betas2[1,], blke, aux_betas2[-1,]))
+    betas <- as.matrix(c(aux_betas2[1,],
+                       blke,
+                       aux_betas2[-1,]))
     
   }
 
@@ -110,9 +122,12 @@ gexp.rcbd <- function(mu        = mu,
 
   yl <- X%*%betas + e
 
-  colnames(yl) <- paste('Y', 1:dim(yl)[2], sep='') 
+  colnames(yl) <- paste('Y',
+                        1:dim(yl)[2],
+                        sep='')
 
-  Y <- round(yl, round)
+  Y <- round(yl,
+             round)
 
   # J.C.Faria
   if(is.null(mu)){
@@ -122,17 +137,15 @@ gexp.rcbd <- function(mu        = mu,
     dados <- as.data.frame(dados)                
   }                  
 
-  dados <- cbind(dados, Y)
+  dados <- cbind(dados,
+                 Y)
 
   if(random){
-
     dados <- dados[sample(dim(dados)[1]),]
-
   }
 
   res <- list(X   = X,
               Z   = Z,
               Y   = Y,
               dfm = dados)
-
 }

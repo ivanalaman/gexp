@@ -18,7 +18,8 @@ plot.gexp.crd <- function(x,
   aux2 <- aux1[ , -dim(aux1)[2]]
 
   factors <- names(attr(x$X, 'contrasts'))
-  levelss <- paste(levels(x$dfm[[factors]]))
+  #levelss <- paste(levels(x$dfm[[factors]]))
+  levelss <- paste(levels(factor(x$dfm[[factors]])))  # J.C.Faria bug fix to quantitative experiments
   repp <- max(aux1[,2])
 
   if(length(attr(aux$X, 'contrasts')) != 1){
@@ -31,14 +32,14 @@ plot.gexp.crd <- function(x,
 
   if(is.null(sub)){
   
-    s_levels <- paste('Levels:',
-                       paste(levelss,collapse=','))
-    sub <- paste('Factors:',
+    s_levels <- paste('Levels: ',
+                       paste(levelss,collapse=', '))
+    sub <- paste('Factors: ',
                  factors,
                  '\n',
                  s_levels,
                  '\n',
-                 'Replication:',
+                 'Replication: ',
                  repp)
   }
 

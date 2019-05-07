@@ -23,9 +23,10 @@ gexp.default <- function(mu        = 26,
 
   switch(match.arg(type),
          CRD = {
-           if(any(!is.null(inte) | !is.null(blke) | !is.null(rowe) | !is.null(cole))) stop("Only fe must be specified as effect of treatment!")
+           if(any(!is.null(inte) | !is.null(blke) | !is.null(rowe) | !is.null(cole)))
+             stop("Only fe must be specified as effect of treatment!")
 
-           if(is.null(fe)) fe <- list(f1 = rep(1,3)) 
+           if(is.null(fe)) fe <- list(f1=rep(1, 3))
 
            result <- gexp.crd(mu        = mu, 
                               err       = err,   
@@ -39,7 +40,7 @@ gexp.default <- function(mu        = 26,
            class(result) <- c('gexp.crd', 'gexp', 'list')
          },
          RCBD= {
-           if(is.null(blke))  blke <- rep(1,3) 
+           if(is.null(blke))  blke <- rep(1, 3)
 
            result <- gexp.rcbd(mu        = mu,
                                err       = err,
@@ -56,8 +57,9 @@ gexp.default <- function(mu        = 26,
          },
          LSD = {
 
-           if(is.null(fe)) fe <- list(f1 = rep(1,3))
-           if(length(fe)!=1) stop("Use only one factor this design!")  
+           if(is.null(fe)) fe <- list(f1=rep(1, 3))
+           if(length(fe)!=1)
+             stop("Use only one factor this design!")
            if(is.null(rowe)) rowe <- unlist(fe)  
            if(is.null(cole)) cole <- rowe 
 
@@ -76,13 +78,13 @@ gexp.default <- function(mu        = 26,
                               ...)
            class(result) <- c('gexp.lsd', 'gexp', 'list')
          },
-         FE  = {
+         FE = {
 
-           if(is.null(fe)) fe <- list(f1 = rep(1,2),
-                                      f2 = rep(1,3))
-           if(is.null(inte)) inte <- rep(1,
-                                         do.call('prod',
-                                                 lapply(fe,length)))
+           if(is.null(fe)) fe <- list(f1=rep(1, 2),
+                                      f2=rep(1, 3))
+#           if(is.null(inte)) inte <- rep(1,
+#                                         do.call('prod',
+#                                                 lapply(fe, length)))  # J.C.Faria: it was impruved in gexp.fe
 
            result <- gexp.fe(mu        = mu,
                              err       = err, 
@@ -105,11 +107,11 @@ gexp.default <- function(mu        = 26,
          },
          SPE = {
 
-           if(is.null(fe)) fe <- list(f1 = rep(1,2),
-                                      f2 = rep(1,3))
-           if(is.null(inte)) inte <- rep(1,
-                                         do.call('prod',
-                                                 lapply(fe,length)))
+           if(is.null(fe)) fe <- list(f1=rep(1, 2),
+                                      f2=rep(1, 3))
+#           if(is.null(inte)) inte <- rep(1,
+#                                         do.call('prod',
+#                                                 lapply(fe, length)))  # J.C.Faria: it was impruved in gexp.pse
 
            result <- gexp.spe(mu        = mu,
                               err       = err,

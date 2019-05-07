@@ -20,7 +20,8 @@ plot.gexp.rcbd <- function(x,
  
   aux11 <- aux1[order(aux1[[labelblock]]), ]
 
-  factors <- aux11[, 1]
+  #factors <- aux11[, 1]
+  factors <- as.factor(aux11[, 1])  # J.C.Faria bug fix to quantitative experiments
   
  if (is.null(eval(getCall(x)$blkl))) {
     blocks <- paste(labelblock, 1:nblocks, sep = " ")
@@ -42,21 +43,23 @@ plot.gexp.rcbd <- function(x,
 
     aux_factors <- names(attr(x$X, 'contrasts'))
     Lfactors <- aux_factors[aux_factors!=labelblock]
-    levelss <- paste(levels(x$dfm[[Lfactors]]),
-                     collapse=',')
+#    levelss <- paste(levels(x$dfm[[Lfactors]]),
+#                     collapse=',')
+    levelss <- paste(levels(factor(x$dfm[[Lfactors]])),  # J.C.Faria bug fix to quantitative experiments
+                     collapse=', ')
 
-    sub <- paste('Factors:',
+    sub <- paste('Factors: ',
                  Lfactors,
                  '\n',
-                 paste('Levels:',
+                 paste('Levels: ',
                        levelss,
                        sep=''),
                  '\n',
-                 paste('Replication:',
+                 paste('Replication: ',
                        repp,
                        sep=''),
                  '\n',
-                 paste('Block:',
+                 paste('Block: ',
                        nblocks,
                        sep=''))
 
