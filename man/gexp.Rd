@@ -67,7 +67,7 @@ gexp(mu, ...)
      blkl,
      fe,
      blke,
-     contrasts,
+    contrasts,
      round,
      random, ...)
 
@@ -174,6 +174,10 @@ gexp(mu, ...)
 }
 
 \examples{
+#++++++++++++++++++++++++++++#
+#    UNIVARIATE APPROACH     #
+#++++++++++++++++++++++++++++#
+
 #!___________________________
 #! Qualitative Factor(s) (QL)
 #!___________________________
@@ -192,9 +196,8 @@ crd00 <- gexp(mu=0,
                          nrow=r*fln),
               round=0)
 crd00
-print(crd00)
-str(crd00)
 summary(crd00)
+str(crd00) 
 
 #! 1 factor - CRD - QL
 # Nonsense(error is 0)
@@ -218,6 +221,7 @@ crd_1f <- gexp(mu=1,
                fl=list(Treat=LETTERS[1:5]),
                round=2)
 
+crd_1f$X
 summary(crd_1f)
 
 #! Binomial error - CRD - QL
@@ -252,73 +256,10 @@ crd_fe <- gexp(mu=0,
                        C=paste('c',
                                1:3,
                                sep='')),
-               inte=rep(1, 39), # (3*2*3) + (3*2) + (3*3) + (2*3)
                round=0,
                type='FE')
 summary(crd_fe)
 
-#! Factorial Experiment (FE) - Multivariated - CRD - QL
-# Error = 0 - Nonsense (you can easily undertand the effects)
-crd_femn <- gexp(mu=c(0, 0),
-                 r=1,
-                 err=mvtnorm::rmvnorm(n=3^1 * 2^1 * 1,
-                                      sigma=matrix(c(0, 0,
-                                                     0, 0),
-                                                   ncol=2)),
-                 #Y1 Y2
-                 fe=list(f1=matrix(c(0, 3,  #X1  X1
-                                     1, 4,  #X2  X2
-                                     2, 5), #X3  X3
-                                   ncol=2,
-                                   byrow=TRUE),
-
-                         #Y1 Y2
-                         f2=matrix(c(0, 2,  #X1  X1
-                                     1, 3), #X2  X2
-                                   ncol=2,
-                                   byrow=TRUE)),
-                 round=1)
-summary(crd_femn)
-
-#! Factorial Experiment (FE) - Multivariated - CRD - QL
-# Using default error
-set.seed(30)
-crd_femd <- gexp(mu=c(0, 2),
-                 r=3,
-                 fe=list(f1=matrix(c(1, 1,
-                                     5, 1,
-                                     1, 1),
-                                   ncol=2,
-                                   byrow=TRUE),
-                         f2=matrix(c(1, 3,
-                                     2, 2),
-                                   ncol=2,
-                                   byrow=TRUE)),
-                 round=1)
-summary(crd_femd)
-
-set.seed(30)
-crd_femi <- gexp(mu=c(0, 2),
-                 err=mvtnorm::rmvnorm(n=3^1 * 2^1 * 3,
-                                      sigma=matrix(c(1, 0,  # The same that the default error
-                                                     0, 1),
-                                                   ncol=2)),
-                 r=3,
-                 fe=list(f1=matrix(c(1, 1,
-                                     5, 1, 
-                                     1, 1),
-                                   ncol=2,
-                                   byrow=TRUE),
-                         f2=matrix(c(1, 3, 
-                                     2, 2),
-                                   ncol=2,
-                                   byrow=TRUE)),
-                 round=1)
-summary(crd_femi)
-
-crd_femd$dfm[, 4:5] # Use of the dafault error
-crd_femi$dfm[, 4:5] # Use of the user error (same as the default!)
-crd_femd$dfm[, 4:5] == crd_femi$dfm[, 4:5]
 
 #! Factorial Experiment (FE) - With interaction - CRD - QL
 fe_crd <- gexp(mu=30,
@@ -361,6 +302,8 @@ rcbd <- gexp(mu=0,
                                  sep='')),
              round=1,
              type='RCBD')
+rcbd
+rcbd$X             
 summary(rcbd)
 
 #! Factorial Experiment (FE) - RCBD - QL
@@ -407,10 +350,6 @@ split_rcbd <- gexp(mu=30,
                    blkl=list(BLK=paste('B',
                                        1:2,
                                        sep='')),
-                   inte=c(1, 15, 1, 1, 1, 3, 4, 2, 1, 1, 4, 1, # (2*2*3)
-                          1, 2, 1, 1,                          # (2*2)
-                          1, 1, 1, 1, 1, 1,                    # (2*3)
-                          1, 1, 3, 3, 3, 3),                   # (2*3)
                    round=1,
                    type='SPE')
 summary(split_rcbd)
@@ -475,44 +414,45 @@ summary(split_lsd)
 #!___________________________
 
 # CRD - Orthogonal polynomials
-level <- c(0, 10, 20, 30)
-cont_crd <- contr.poly(level)
 
 # Linear effect
-crd_lo <- gexp(mu=NULL,
-               r=4,
-               fe=list(f1=c(2,   # itercept
-                            5,   # b1*
-                            0,   # b2
-                          0)), # b3
-               fl=list(Dose=ordered(level)),
-               contrasts=list(f1=cont_crd))
+# Nonsense(error is 0)
+# Default contrasts: Orthogonal contrasts
+r <- 4  # (repet. number)
+fln <- 5  # (factor levels number)
+level <- c(0, 10, 20, 30, 40) 
+
+crd_lo <- gexp(mu=1,#in this case, mu=beta0 (intercept)
+              r=r,        #b1 #b2 #b3 #b4
+              fe=list(f1=c(2,  0,  0,  0)),
+              fl=list(Dose=level),
+              err=matrix(0,
+                         nrow=r*fln),
+              round=2)
+crd_lo$X
 summary(crd_lo)
+
 plot(Y1 ~ Dose,
      crd_lo$dfm)
 
 # Quadratic effect
-crd_qo <- gexp(mu=NULL,
-               r=4,
-               fe=list(f1=c(2,   # itercept
-                            0,   # b1
-                            5,   # b2*
-                            0)), # b3
-               fl=list(Dose=ordered(c(0, 10, 20, 30))),
-               contrasts=list(f1=cont_crd))
+crd_qo <- gexp(mu=2,
+               r=r,        #b1 #b2 #b3 #b4
+               fe=list(f1=c(0,  3,  0,  0)),
+               fl=list(Dose=level),
+               err=matrix(0,
+                          nrow=r*fln))
 summary(crd_qo)
 plot(Y1 ~ Dose,
      crd_qo$dfm)
 
 # Cubic effect
-crd_co <- gexp(mu=NULL,
-               r=4,
-               fe=list(f1=c(2,   # itercept
-                            0,   # b1
-                            0,   # b2
-                            5)), # b3*
-               fl=list(Dose=ordered(c(0, 10, 20, 30))),
-             contrasts=list(f1=cont_crd))
+crd_co <- gexp(mu=2,
+               r=r,        #b1 #b2 #b3 #b4
+               fe=list(f1=c(1,  1,  3,  0)), 
+               fl=list(Dose=level),
+               err=matrix(0,
+                         nrow=r*fln))
 summary(crd_co)
 plot(Y1 ~ Dose,
      crd_co$dfm)
@@ -521,39 +461,47 @@ plot(Y1 ~ Dose,
 # Linear
 cont_crd <- matrix(c(level,
                      level^2,
-                     level^3),
-                   ncol=3)
+                     level^3,
+                     level^4),
+                   ncol=4)
 
-crd_l <- gexp(mu=NULL,
-              r=4,
-              fe=list(f1=c(2, 10, 0, 0)),
-              fl=list(Dose=ordered(c(0, 10, 20, 30))),
-              contrasts=list(f1=cont_crd))
+crd_l <- gexp(mu=2,
+              r=2,        #b1 #b2 #b3 #b4
+              fe=list(f1=c(10,  0,  0,  0)),
+              fl=list(Dose=level),
+              contrasts=list(Dose=cont_crd))
+crd_l$X
 summary(crd_l)
+
 plot(Y1 ~ Dose,
      crd_l$dfm)
 
-reg <- lm(Y1 ~ Dose + I(Dose^2) + I(Dose^3),
+reg <- lm(Y1 ~ Dose + I(Dose^2) + I(Dose^3) + I(Dose^4),
           data=crd_l$dfm)
 
 summary(reg)
 
 # Linear and quadratic
-# When has two or more factor, to inform only Beta0 to first factor.
-crd_lq <- gexp(mu=NULL,
-               r=3,
-               fe=list(f1=c(0,  # itercept
-                            10,  # b1*
-                            0,  # b2
-                          0), # b3
-                       f2=c(0,  # itercept
-                            3,  # b1
-                            4,  # b2*
-                            0)),# b3
-               fl=list(P=ordered(level),
-                       N=ordered(1:4)),
-               contrasts=list(f1=cont_crd,
-                              f2=cont_crd))
+level1 <- seq(0,30,by=10)
+cont_crd1 <- matrix(c(level1,
+                     level1^2,
+                     level1^3),
+                   ncol=3)
+level2 <- 1:4
+cont_crd2 <- matrix(c(level2,
+                     level2^2,
+                     level2^3),
+                   ncol=3)
+
+crd_lq <- gexp(mu=1,
+               r=2,        #b1  #b2  #b3
+               fe=list(f1=c(10,  0,   0),
+                       f2=c(1,   8,   0)),
+               fl=list(P=level1,
+                       N=level2),
+               contrasts=list(N=cont_crd2,
+                              P=cont_crd1))
+crd_lq$X
 summary(crd_lq)
 
 with(crd_lq$dfm,
@@ -562,93 +510,132 @@ with(crd_lq$dfm,
 with(crd_lq$dfm,
      plot(Y1 ~ N))
 
-# Multivariated!
-crd_m <- gexp(mu=NULL,
-              r=4,                #L   Q
-              fe=list(f1=matrix(c( 2,  2,
-                                  10,  0,
-                                  0, 10,
-                                  0,  0),
-                                ncol=2,
-                                byrow=TRUE)),
-              fl=list(Dose=ordered(level)),
-              contrasts=list(f1=cont_crd))
-
-with(crd_m$dfm,
-     plot(Y1 ~ Dose))
-
-with(crd_m$dfm,
-     plot(Y2 ~ Dose))
-
-# Orthogonal polynomios - RCBD
-rcbd <- gexp(mu=NULL,
-             fe=list(f1=c(1, 3, 0, 0)),
+# RCBD - Orthogonal polynomios
+level3 <- c(0,2,4,6) 
+rcbd <- gexp(mu=1,      #b1 #b2 #b3
+             fe=list(f1=c(3,  0,  0)),
              blke=c(1, 2, 3),
              r=2,
-             fl=list(Dose=ordered(c(0, 2, 4, 6))),
+             fl=list(Dose=level3),
              blkl=list(Blk=c('B1', 'B2', 'B3')),
-             contrasts=list(f1=contr.poly(4),
-                            Blk=diag(3)),
              type='RCBD')
+rcbd$X
 summary(rcbd)
+
+# Not orthogonal
+cont_crd3 <- matrix(c(level3,level3^2,level3^3),ncol=3)
+
+rcbd_01 <- gexp(mu=1,      #b1 #b2 #b3
+             fe=list(f1=c(3,  0,  0)),           
+             blke=c(1, 2, 3),
+             r=2,
+             fl=list(Dose=level3),
+             blkl=list(Blk=c('B1', 'B2', 'B3')),
+             contrasts=list(Dose=cont_crd3),
+             type='RCBD')
+rcbd_01$X
+summary(rcbd_01)
+
+# Orthogonal polynomios - LSD
+lsd  <- gexp(mu=1,      #b1 #b2 #b3
+             fe=list(f1=c(3,  0,  0)),
+             rowe=rep(1,4),
+             cole=rep(1,4),
+             r=2,
+             fl=list(Dose=level1),
+             type='LSD')
+lsd$X
+summary(lsd)
+
+lsd_01  <- gexp(mu=1,      #b1 #b2 #b3
+             fe=list(f1=c(3,  0,  0)),
+             rowe=rep(1,4),
+             cole=rep(1,4),
+             rowl=list(row=paste('r',
+                               1:4,
+                               sep='')), 
+             r=2,
+             fl=list(Dose=level1),
+             type='LSD')
+lsd_01$X
+summary(lsd_01)
+
+# Not orthogonal 
+lsd_02 <- gexp(mu=1,      #b1 #b2 #b3
+               fe=list(f1=c(3,  0,  0)), 
+               rowe=rep(1,4),
+               cole=rep(1,4), 
+               r=2,
+               fl=list(Dose=level3),
+               contrasts=list(Dose=cont_crd3),
+               type='LSD') 
+lsd_02$X
+str(lsd_02)
 
 #! Hibrid: qualitative and quantitative factors in the same experiment - hb
 # CRD
-r <- 2
-level <- c(0, 10, 20, 30)
-cont_crd <- contr.poly(level)
-(error <- matrix(rep(0,
-                     4^1*3^1*r),
-                 ncol=1))
+r   <- 2  # (repet. number)
+fl1 <- 4# (first factor levels number)
+fl2 <- 3# (second factor levels number)
 
-crd_hb <- gexp(mu=NULL,
-               err=error,
-               r=r,
-               fe=list(f1=c(0, 1, 0),      # Qualitative
-                       f2=c(2, 1, 0, 0)),  # Quantitative linear
-               fl=list(Var=LETTERS[1:3],
-                       Dose=ordered(level)),
-               contrasts=list(f1=diag(3),
-                              f2=cont_crd))
+crd_hb <- gexp(mu=1,#in this case, mu=beta0 (intercept)
+              r=r,        #b1 #b2 #b3 
+              fe=list(f1=c(2,  0,  0),
+                      f2=c(1,  1,  3)),
+              fl=list(Dose=seq(0,30,by=10),
+                      Trat=LETTERS[1:3]),
+              err=matrix(0,
+                         nrow=r*fl1*fl2),
+              round=2)
+crd_hb$X
 summary(crd_hb)
-str(crd_hb)
+
+#Only one contrasts!
+crd_hb2 <- gexp(mu=1,#in this case, mu=beta0 (intercept)
+              r=r,        #b1 #b2 #b3 
+              fe=list(f1=c(2,  0,  0),
+                      f2=c(1,  1,  3)),
+              fl=list(Dose=level1,
+                      Trat=LETTERS[1:3]),
+              err=matrix(0,
+                         nrow=r*fl1*fl2),
+              contrasts=list(Dose=cont_crd1),           
+              round=2)
+crd_hb2$X
+summary(crd_hb)
 
 #!. RCBD - QT
 r <- 2
 blke <- c(1, 2)
 level <- c(0, 10, 20, 30)
-cont_rcbd <- contr.poly(level)
 (error <- matrix(rep(0,
                      4^1*3^1*r*length(blke)),
                  ncol=1))
 
-rcbd_hb <- gexp(mu=NULL,
+rcbd_hb <- gexp(mu=2,
                 err=error,
                 r=r,
-                fe=list(f1=c(0, 1, 0),      # Qualitative
-                        f2=c(2, 1, 0, 0)),  # Quantitative linear
+                fe=list(f1=c(0, 1, 0),  # Qualitative
+                        f2=c(1, 0, 0)), # Quantitative linear
                 fl=list(Var=LETTERS[1:3],
-                        Dose=ordered(level)),
+                        Dose=level),
                 blke=blke,
                 blkl=list(Blk=c('B1', 'B2')),
-                contrasts=list(f1=diag(3),
-                               f2=cont_rcbd,
-                               Blk=diag(2)),
                 type='RCBD')
+rcbd_hb$X                
 summary(rcbd_hb)
 str(rcbd_hb)
 
 #!. DQL - QT
 set.seed(3)
-ql <- gexp(mu=NULL,
-           fe=list(f1=c(100,   # Intercepto
-                        10,   # b1
+ql <- gexp(mu=100,
+           fe=list(f1=c(10,   # b1
                         20,   # b2
-                        30,   # b3
-                        40)), # b4
-           fl=list(tra=ordered(seq(0,
-                                   40,
-                                   by=10))),
+                        0,    # b3
+                        0)),  # b4
+           fl=list(tra=seq(0,
+                           40,
+                           by=10)),
            rowe=c(1, 2, 3, 4, 5),
            rowl=list(row=paste('r',
                                1:5,
@@ -657,18 +644,15 @@ ql <- gexp(mu=NULL,
            coll=list(col=paste('c',
                                1:5,
                                sep='')),
-           contrasts=list(tra=contr.poly(5),
-                          row=diag(5),
-                          col=diag(5)),
            type='LSD')
 summary(ql)
+plot(Y1 ~ tra,ql$dfm)
 plot(ql)
 
 #!. FE/DQL/QT
-fe_ql <- gexp(mu=NULL,
+fe_ql <- gexp(mu=10,
               fe=list(f1=c(2, 3),
-                      f2=c(10,   # Intercepto
-                            5,   # b1*
+                      f2=c( 5,   # b1*
                             0,   # b2
                             0,   # b3
                             0)), # b4
@@ -678,38 +662,33 @@ fe_ql <- gexp(mu=NULL,
               fl=list(var=paste('v',
                                 1:2,
                                 sep=''),
-                      tra=ordered(seq(0,
+                      tra=seq(0,
                                       40,
-                                      by=10))),
+                                      by=10)),
               coll=list(col=paste('c',
                                   1:10,
                                   sep='')),
               rowl=list(row=paste('r',
                                   1:10,
                                   sep='')),
-              contrasts=list(var=diag(2),
-                             tra=contr.poly(5),
-                             col=diag(10),
-                             row=diag(10)),
               type='FE')
-
+fe_ql$X
+str(fe_ql)
 summary(fe_ql)
 plot(fe_ql)
 
 #!. PSD/QL/QT
-spe_ql <- gexp(mu=NULL,
+spe_ql <- gexp(mu=100,
                fe=list(f1=c(2, 3, 1),
-                       f2=c(100,   # Intercepto
-                              1,   # b1
-                              5,   # b2*
-                              1)), # b3
+                       f2=c(1,   # b1
+                            5,   # b2*
+                            1)), # b3
                fl=list(p=paste('p',
                                1:3,
                                sep=''),
-                       sp=ordered(seq(0,
-                                      30,
-                                      by=10))),
-               #               inte=c(1, 15, rep(1, 7)),
+                       sp=seq(0,
+                              30,
+                              by=10)),
                rowe=c(1, 2, 3),
                cole=c(3, 2, 1),
                rowl=list(row=paste('r',
@@ -719,11 +698,222 @@ spe_ql <- gexp(mu=NULL,
                                    1:3,
                                    sep='')),
                round=1,
-               contrasts=list(p=diag(3),
-                              sp=contr.poly(4),
-                              row=diag(3),
-                              col=diag(3)),
                type='SPE')
 summary(spe_ql)
 plot(spe_ql)
+
+#++++++++++++++++++++++++++++#
+#   MULTIVARIATE APPROACH    #
+#++++++++++++++++++++++++++++#
+
+#! CRD - QL
+# Error = 0 - Nonsense (you can easily undertand the effects) 
+r <- 2  # (repet. number)
+fln <- 3  # (factor levels number)
+
+crd_m01 <- gexp(mu=c(0,10),
+                r=r,               #Y1 Y2
+                fe=list(f1=matrix(c(1, 0, 
+                                    2, 1,
+                                    3, 3),
+                                  ncol=2,
+                                  byrow=TRUE)),
+                err=mvtnorm::rmvnorm(n=fln * r,
+                                     sigma=matrix(c(0, 0,
+                                                    0, 0),
+                                                  ncol=2)),    
+                round=0)
+summary(crd_m01)
+ 
+#! CRD/FE - QL
+r <- 2
+crd_m_fe01 <- gexp(mu=c(0, 0),
+                 r=r,
+                 err=mvtnorm::rmvnorm(n=3^1 * 2^1 * r,
+                                      sigma=matrix(c(0, 0,
+                                                     0, 0),
+                                                   ncol=2)),
+                                    #Y1 Y2
+                 fe=list(f1=matrix(c(0, 3,  #X1  X1
+                                     1, 4,  #X2  X2
+                                     2, 5), #X3  X3
+                                   ncol=2,
+                                   byrow=TRUE),
+                                    #Y1 Y2
+                         f2=matrix(c(0, 2,  #X1  X1
+                                     1, 3), #X2  X2
+                                   ncol=2,
+                                   byrow=TRUE)),
+                 type='FE',
+                 round=1)
+summary(crd_m_fe01)
+
+#! CRD/FE - QL
+# Using default error
+set.seed(30)
+crd_m_fe02 <- gexp(mu=c(0, 2),
+                   r=3,
+                   fe=list(f1=matrix(c(1, 1,
+                                       5, 1,
+                                       1, 1),
+                                     ncol=2,
+                                     byrow=TRUE),
+                           f2=matrix(c(1, 3,
+                                       2, 2),
+                                     ncol=2,
+                                     byrow=TRUE)),
+                   round=1)
+summary(crd_m_fe02)
+
+#! CRD/SPE - QL
+# Using default error
+crd_m_spe01 <- gexp(mu=c(0, 2),
+                    r=3,
+                    fe=list(f1=matrix(c(1, 1,
+                                        5, 1,
+                                        1, 1),
+                                      ncol=2,
+                                      byrow=TRUE),
+                            f2=matrix(c(1, 3,
+                                        2, 2),
+                                      ncol=2,
+                                      byrow=TRUE)),
+                    type='SPE',
+                    round=1)
+summary(crd_m_spe01)
+
+#! RCBD - QL
+r <- 2  # (repet. number)
+fln <- 3  # (factor levels number)
+bln <- 3  # (block levels number)
+
+rcbd_m01 <- gexp(mu=c(0,10),
+                 r=r,              #Y1 Y2
+                 fe=list(f1=matrix(c(1, 0, 
+                                     2, 1,
+                                     3, 3),
+                                   ncol=2,
+                                   byrow=TRUE)),
+                 blke=matrix(c(2, 1,
+                               4, 1,
+                               6, 1),
+                             ncol=2,
+                             byrow=TRUE),
+                 err=mvtnorm::rmvnorm(n=fln * r * bln,
+                                      sigma=matrix(c(0, 0,
+                                                     0, 0),
+                                                   ncol=2)),
+                 type='RCBD',
+                 round=0)
+summary(rcbd_m01)
+ 
+#! RCBD/FE - QL
+rcbd_m_fe01 <- gexp(mu=c(0, 0),
+                    r=r,
+                    err=mvtnorm::rmvnorm(n=3^1 * 2^1 * r * bln,
+                                         sigma=matrix(c(0, 0,
+                                                        0, 0),
+                                                      ncol=2)),
+                                       #Y1 Y2
+                    fe=list(f1=matrix(c(0, 3,  #X1  X1
+                                        1, 4,  #X2  X2
+                                        2, 5), #X3  X3
+                                      ncol=2,
+                                      byrow=TRUE),
+                                       #Y1 Y2
+                            f2=matrix(c(0, 2,  #X1  X1
+                                        1, 3), #X2  X2
+                                      ncol=2,
+                                      byrow=TRUE)),
+                    blke=matrix(c(2, 1,
+                                  4, 1,
+                                  6, 1),
+                                ncol=2,
+                                byrow=TRUE), 
+                    type='FE',
+                    round=1)
+summary(rcbd_m_fe01)
+
+#! RCBD/SPE - QL
+rcbd_m_spe01 <- gexp(mu=c(0, 2),
+                     r=2,
+                     fe=list(f1=matrix(c(1, 1,
+                                         5, 1,
+                                         1, 1),
+                                       ncol=2,
+                                       byrow=TRUE),
+                             f2=matrix(c(1, 3,
+                                         2, 2),
+                                       ncol=2,
+                                       byrow=TRUE),
+                             f3=matrix(c(1, 3,
+                                         2, 2),
+                                       ncol=2,
+                                       byrow=TRUE)), 
+                     blke=matrix(c(2, 1,
+                                   4, 1,
+                                   6, 1),
+                                 ncol=2,
+                                 byrow=TRUE),  
+                     type='SPE',
+                     round=1)
+summary(rcbd_m_spe01)
+
+#! LSD - QL
+lsd_m01 <- gexp(mu=c(0,10),
+                fe=list(f1=matrix(c(1, 0, 
+                                    2, 1,
+                                    3, 3),
+                                  ncol=2,
+                                  byrow=TRUE)),
+                rowe=matrix(rep(1,6),ncol=2),
+                cole=matrix(rep(1,6),ncol=2),
+                err=mvtnorm::rmvnorm(n=3^2,
+                                     sigma=matrix(c(0, 0,
+                                                    0, 0),
+                                                  ncol=2)),
+                type='LSD',
+                round=0)
+summary(lsd_m01)
+ 
+#! LSD/FE - QL
+lsd_m_fe01 <- gexp(mu=c(0, 0),
+                   err=mvtnorm::rmvnorm(n=3^1 * 2^1 * 6,
+                                        sigma=matrix(c(0, 0,
+                                                       0, 0),
+                                                     ncol=2)),
+                                      #Y1 Y2
+                   fe=list(f1=matrix(c(0, 3,  #X1  X1
+                                       1, 4,  #X2  X2
+                                       2, 5), #X3  X3
+                                     ncol=2,
+                                     byrow=TRUE),
+                                      #Y1 Y2
+                           f2=matrix(c(0, 2,  #X1  X1
+                                       1, 3), #X2  X2
+                                     ncol=2,
+                                     byrow=TRUE)),
+                   rowe=matrix(rep(1,12),ncol=2),
+                   cole=matrix(rep(1,12),ncol=2), 
+                   type='FE',
+                   round=1)
+summary(lsd_m_fe01)
+
+#! LSD/SPE - QL
+# Using default error
+lsd_m_spe01 <- gexp(mu=c(0, 2),
+                    fe=list(f1=matrix(c(1, 1,
+                                        5, 1,
+                                        1, 1),
+                                      ncol=2,
+                                      byrow=TRUE),
+                            f2=matrix(c(1, 3,
+                                        2, 2),
+                                      ncol=2,
+                                      byrow=TRUE)),
+                    rowe=matrix(rep(1,6),ncol=2),
+                    cole=matrix(rep(1,6),ncol=2),  
+                    type='SPE',
+                    round=1)
+summary(lsd_m_spe01) 
 }

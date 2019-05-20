@@ -8,7 +8,6 @@ gexp.crd <- function(mu  = mu,
                      random    = random, ...)
 {
 
-
   if(is.null(fl)){
     aux_factor <- lapply(fe,
                          function(x) as.matrix(x))
@@ -29,11 +28,31 @@ gexp.crd <- function(mu  = mu,
                       SIMPLIFY=FALSE)
 
     names(factors) <- names(aux_factor)
+
+    quanti <- FALSE
+    quali <- TRUE
+
   } else {
     if(!is.list(fl)){
       stop('This argument must be a list. See examples!')
     }
-    factors <- fl
+
+    #Aqui começaremos a checar se o usurário está interessado em fatores apenas qualitativos, ou apenas quantitativos, ou ambos(híbrido)!
+ 
+    quanti <- all(lapply(fl,function(x)is.numeric(x)) == TRUE)
+    quali  <- all(lapply(fl,function(x)is.numeric(x)) != TRUE)
+
+    #Se não for nem quanti nem quali é pq é um híbrido!Neste caso, vamos encontrar as posições.              
+    posquanti <- which(unlist(lapply(fl,is.numeric)) == TRUE)#em qual posição estão os quanti
+
+    if(quanti){
+      factors <- lapply(fl,as.ordered)
+    } else if(!quanti & !quali){#híbrido
+      factors <- fl
+      factors[posquanti] <- lapply(fl[posquanti],as.ordered)
+    } else {
+      factors <- fl
+    }
   }
 
   factors$r <- 1:r
@@ -45,14 +64,33 @@ gexp.crd <- function(mu  = mu,
                   paste(names(dados)[-length(names(dados))],
                         collapse='+')) 
 
+  #Aqui é preciso automatizar de acordo com quali ou quanti!
+  #if(is.null(contrasts)){
+    auxfactors <- factors[names(factors)!='r']
+    if(quali){#Só qualitativos
+      contrast <- lapply(auxfactors,
+                          function(x)diag(length(x))) 
+    } else if(quanti){#Só quantitativos
+      contrast <- lapply(auxfactors,
+                          function(x)contr.poly(length(x)))  
+    } else {#híbrido
+      contrast <- lapply(auxfactors,
+                         function(x)diag(length(x)))
+      contrast[posquanti] <- lapply(auxfactors[posquanti],
+                                     function(x)contr.poly(length(x)))   
+    }
+    #     contrasts <- lapply(factors[1:length(fe)],
+    #                         function(x)diag(length(x)))    
+  #}
+  #names(contrast) <- names(dados)[1:length(fe)]  
 
-  if(is.null(contrasts)){
-    contrasts <- lapply(factors[1:length(fe)],
-                        function(x)diag(length(x)))
-  }
-
-  names(contrasts) <- names(dados)[1:length(fe)]
-
+    if(!is.null(contrasts)){
+     contrast[names(contrasts)] <- contrasts
+     contrasts <- contrast
+    }else{
+     contrasts <- contrast
+    }
+  
   X  <- model.matrix(eval(parse(text=aux_X1)),
                      dados,
                      contrasts.arg=contrasts)
@@ -71,31 +109,38 @@ gexp.crd <- function(mu  = mu,
 
   }
 
-  if(length(mu)!=0 & length(mu) == 1){
-
+  if(length(mu) == 1){#univariado
     betas <- as.matrix(c(mu, unlist(fe)))
-
-  } else if(length(mu)!=0 & length(mu) > 1){
-
+  } else {#multivariado
     betas <- rbind(mu,
                    do.call('rbind', fe))
-
-  } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered)) == TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
-
-    aux_betas <- lapply(fe[-1],
-                        function(x)x[-1])
-    aux_betas1 <- c(fe[1],
-                    aux_betas)
-    aux_betas2 <- lapply(aux_betas1,
-                         as.matrix)
-    betas <- do.call('rbind',
-                     aux_betas2)
-   } else {
-    aux_betas <- lapply(fe,
-                        as.matrix)
-    betas <- do.call('rbind',
-                     aux_betas)
-  }
+  } 
+  
+  #   if(length(mu)!=0 & length(mu) == 1){
+  # 
+  #     betas <- as.matrix(c(mu, unlist(fe)))
+  # 
+  #   } else if(length(mu)!=0 & length(mu) > 1){
+  # 
+  #     betas <- rbind(mu,
+  #                    do.call('rbind', fe))
+  # 
+  #   } else if(is.null(mu) & length(fe) > 1 & all(unlist(lapply(fl, is.ordered)) == TRUE)){#Todos os fatores são quantitativos e só há interesse em contrastes polinomiais
+  # 
+  #     aux_betas <- lapply(fe[-1],
+  #                         function(x)x[-1])
+  #     aux_betas1 <- c(fe[1],
+  #                     aux_betas)
+  #     aux_betas2 <- lapply(aux_betas1,
+  #                          as.matrix)
+  #     betas <- do.call('rbind',
+  #                      aux_betas2)
+  #    } else {
+  #     aux_betas <- lapply(fe,
+  #                         as.matrix)
+  #     betas <- do.call('rbind',
+  #                      aux_betas)
+  #   }
 
   yl <- X%*%betas + e
 
@@ -112,13 +157,13 @@ gexp.crd <- function(mu  = mu,
 #      if(is.ordered(factor(dados[[i]])))
 #        dados[[i]] <- as.numeric(as.character(dados[[i]]))
 #  }
-  if(is.null(mu)){
+  if(!quali){
     dados <- lapply(dados, 
                     function(x) if(is.ordered(factor(x))) as.numeric(as.character(x)) else x)
 
     dados <- as.data.frame(dados)                
   }                  
-  
+
   dados <- cbind(dados,
                  Y)
 

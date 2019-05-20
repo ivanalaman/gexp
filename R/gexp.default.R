@@ -20,7 +20,6 @@ gexp.default <- function(mu        = 26,
 {
 
   #cl <- match.call()
-
   switch(match.arg(type),
          CRD = {
            if(any(!is.null(inte) | !is.null(blke) | !is.null(rowe) | !is.null(cole)))
@@ -40,6 +39,7 @@ gexp.default <- function(mu        = 26,
            class(result) <- c('gexp.crd', 'gexp', 'list')
          },
          RCBD= {
+           if(is.null(fe))  fe <- list(f1=rep(1, 3))
            if(is.null(blke))  blke <- rep(1, 3)
 
            result <- gexp.rcbd(mu        = mu,
