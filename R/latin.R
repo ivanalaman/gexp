@@ -1,6 +1,6 @@
 ###########################################################################
 #
-# Esta função foi copiada do material disponível no seguinte link 
+# This function was copied of material avaliable in the following link (Esta função foi copiada do material disponível no seguinte link)
 # http://www.stat.wisc.edu/courses/st572-larget/Spring2007/handouts17-4.pdf
 #
 ###########################################################################
@@ -12,9 +12,12 @@ latin <- function(n,
     levelss <- LETTERS[1:n]
   }
 
-  x = matrix(levelss, n, n)
+  x = matrix(levelss, 
+             n, 
+             n)
   x = t(x)
-  for (i in 2:n) x[i, ] = x[i, c(i:n, 1:(i - 1))]
+  for (i in 2:n) x[i, ] = x[i, 
+                            c(i:n, 1:(i - 1))]
   if (nrand > 0) {
     for (i in 1:nrand) {
       x = x[sample(n), ]

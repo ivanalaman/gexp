@@ -1,3 +1,12 @@
+2019-06-07 vs. 1.0-0 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
+ * Split argument type in two arguments: type (SIMPLE, FE, SPE) and design (CRD, RCBD, LSD).
+ * Add new methods to generic gexp: simple_crd, simple_rcbd, simple_lsd, fe_crd, fe_rcbd, fe_lsd, spe_crd, spe_rcbd and spe_lsd.
+ * Remove nrand and random argument of the gexp functions. 
+ * Add random argument in the plot functions.
+ * Add new internal function: makeInteraction, makeContrasts, makeTreatments and makeXBeta.
+ * Otimization of the code of all functions.	
+ * Adequation of the Rd, vignettes, NAMESPACE and DESCRIPTION files of accordance the new modifications. 
+ 
 2019-05-02 vs. 0.1-6 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Fixed incorrect calculus to quantitative factors to RCBD and LSD design.
 

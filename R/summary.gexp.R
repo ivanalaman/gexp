@@ -1,5 +1,5 @@
 summary.gexp <- function(object,
-                         digits=3L,
+                         digits = NULL,
                          ...){
 
   cat("Database \n")
