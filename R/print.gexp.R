@@ -1,5 +1,5 @@
 print.gexp <- function(x,
-                       digits = NULL,
+                       digits = 3L,
                        ...){
   cat("Design Matrix \n")
 

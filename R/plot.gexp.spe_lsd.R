@@ -1,9 +1,9 @@
 plot.gexp.spe_lsd <- function(x,
                               main       = NULL,
                               sub        = NULL,
+                              colgrid    = 'red',  
                               coltext    = 'blue',
                               srttext    = 30,
-                              colgrid    = 'red', 
                               ltygrid    = 'dotted',
                               lwdgrid    = par('lwd'),
                               xleftimg   = par()$usr[1],
@@ -212,61 +212,62 @@ plot.gexp.spe_lsd <- function(x,
          xpd = TRUE)
     par(op) # Restoring the original par('xaxs', 'yaxs')
   } else {
-    auxin <- tcltk::tk_choose.files()
+     auxin <- tcltk::tk_choose.files()
+     auxin1 <- gsub('[\\s\\S]*?\\.', '', auxin, perl=TRUE)
+     auxin2 <- toupper(auxin1)
 
-    auxin1 <- gsub('[\\s\\S]*?\\.', 
-                   '', 
-                   auxin, 
-                   perl = TRUE)
+      switch(auxin2,
+             PNG = {
+               myimage <- png::readPNG(auxin)
+             },
+             JPEG = {
+               myimage <- jpeg::readJPEG(auxin)
+             },
+             JPG = {
+               myimage <- jpeg::readJPEG(auxin)
+             }) 
 
-    auxin2 <- toupper(auxin1)
+      plot(1,
+           type = 'n',
+           xlab = '',
+           ylab = '',
+           axes = FALSE,
+           main = main,
+           sub  = sub,
+           ...)
 
-    switch(auxin2,
-           PNG = {
-             myimage <- png::readPNG(auxin)
-           },
-           JPEG = {
-             myimage <- jpeg::readJPEG(auxin)
-           },
-           JPG = {
-             myimage <- jpeg::readJPEG(auxin)
-           }) 
+      rasterImage(myimage, 
+                  xleft = xleftimg, 
+                  ybottom = ybottomimg, 
+                  xright = xrightimg, 
+                  ytop = ytopimg) 
 
-    plot(1,
-         type = 'n',
-         xlab = '',
-         ylab = '',
-         axes = FALSE,
-         main = main,
-         sub = sub,
-         ...)
+      tcltk::tkmessageBox(message='Click with the left button on row block and end with the right button!')    
 
-    rasterImage(myimage, 
-                xleft = xleftimg, 
-                ybottom = ybottomimg, 
-                xright = xrightimg, 
-                ytop = ytopimg) 
+      text(x = locator(),
+           y = NULL,
+           levelsrow, 
+           col = coltext)
 
-    tcltk::tkmessageBox(message = 'Click with the left button on block and end with the right button!')  
+      tcltk::tkmessageBox(message='Click with the left button on column block and end with the right button!')     
 
-    text(x = locator(),
-         y = NULL,
-         paste(labelblock, 
-               1:rowsquare), 
-         col = coltext)
+      text(x = locator(),
+           y = NULL,
+           levelscol, 
+           col = coltext) 
 
-    tcltk::tkmessageBox(message = 'Click with the left button on plot and end with the right button!')   
+      tcltk::tkmessageBox(message='Click with the left button on plot and end with the right button!')     
 
-    text(x = locator(),
-         y = NULL,
-         Labelsplot, 
-         col = coltext)
+      text(x = locator(),
+           y = NULL,
+           Labelsplot, 
+           col = coltext)
 
-    tcltk::tkmessageBox(message = 'Click with the left button on sub plot and end with the right button!')    
-
-    text(x = locator(),
-         y = NULL,
-         treat, 
-         col = coltext)
-  }   
+      tcltk::tkmessageBox(message='Click with the left button on sub-plot and end with the right button!')     
+      text(x = locator(),
+           y = NULL,
+           treat,
+           srt = srttext,
+           col = colgrid)   
+    }
 } 

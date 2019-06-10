@@ -1,9 +1,9 @@
 plot.gexp.spe_crd <- function(x,
                               main       = NULL,
                               sub        = NULL,
+                              colgrid    = 'red',                               
                               coltext    = 'blue',
                               srttext    = 30,
-                              colgrid    = 'red', 
                               ltygrid    = 'dotted',
                               lwdgrid    = par('lwd'),
                               xleftimg   = par()$usr[1],
@@ -199,7 +199,7 @@ plot.gexp.spe_crd <- function(x,
 
     text(x = locator(),
          y = NULL,
-         labelsplot,
+         Labelsplot,
          col = coltext)
 
     tcltk::tkmessageBox(message = 'Now, click with the left button on sub plot and end with the right button!') 
