@@ -10,7 +10,7 @@ gexp.spe_lsd <- function(x,
 
   if(x$r != 1){
     x$r <- 1
-    warning('The own row or column is the repetition! Set r = 5 to r = 1!')
+    warning('Internaly replicates was set to one (r=1)!')
   }
 
   intee <- makeInteraction(mu = x$mu,

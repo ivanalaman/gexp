@@ -187,7 +187,7 @@
 }
 
 \examples{
-#! Completely Randomized Design (CRD)
+#! CRD
 crd <- gexp()
 plot(crd)  # Default
 
@@ -199,46 +199,46 @@ plot(crd,  # Changing some arguments
      ltygrid = 'solid',
      lwdgrid = 3)
 
-#! Factorial Experiment (FE) - CRD
+#! FE - CRD
 crd_fe <- gexp(type = 'FE')
 plot(crd_fe)
 
-#! Split-plot Experiment (SPE) - CRD
+#! SPE - CRD
 split_crd <- gexp(type = 'SPE')
 plot(split_crd)
 
-#! Randomized Complete Block Design (RCBD)
+#! RCBD
 rcbd <- gexp(design = 'RCBD')
 plot(rcbd)
 
-#! Factorial Experiment (FE) - RCBD
+#! FE - RCBD
 fe_rcbd <- gexp(r = 2,
                 type = 'FE', 
                 design = 'RCBD')
 plot(fe_rcbd)
 
 fe_rcbd1 <- gexp(r = 1,
-                 blke = c(1,2),
+                 blke = c(1, 2),
                  blkl = list(Blk = c('B1', 'B2')), 
                  type = 'FE',
                  design = 'RCBD')
 plot(fe_rcbd1)
 
-#! Split-plot Experiment (SPE) - RCBD
+#! SPE - RCBD
 split_rcbd <- gexp(r = 2,
                    type = 'SPE',
                    design = 'RCBD')
 plot(split_rcbd)
 
-#! Latin Square Design (LSD)
+#! LSD
 lsd <- gexp(r = 1,
             design = 'LSD')
 plot(lsd)
 
-#! Factorial Experiment (FE) - LSD
+#! FE - LSD
 fe_lsd <- gexp(r = 1,
-               fe = list(f1 = rep(1,2), 
-                         f2 = rep(1,2)),
+               fe = list(f1 = rep(1, 2), 
+                         f2 = rep(1, 2)),
                rowe = c(1, 3, 2, 1),
                cole = c(2, 2, 1, 1),
                rowl = list(Row = paste('r',
@@ -251,7 +251,7 @@ fe_lsd <- gexp(r = 1,
                design = 'LSD')
 plot(fe_lsd)
 
-#! Split-plot Experiment (SPE) - LSD
+#! SPE - LSD
 split_lsd <- gexp(r = 1,
                   type = 'SPE',
                   design = 'LSD')
@@ -305,4 +305,3 @@ plot(lsd,
      dynamic=TRUE)
 }
 }
-

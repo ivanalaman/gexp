@@ -6,7 +6,7 @@
 \title{gexp: Generator of Experiments}
 \description{The package \code{gexp} was created to make it possible to plan, create and to model structured experiments, that is, under a experimental design. In the modeling it is possible to simulate results of experiments with possibility of user to report effects and random error(s). The designs are: Completely Randomized Design (CRD), Randomized Complete Block Design (RCBD) and Latin Squares Design (LSD). The types of experiments are: Simple (SIMPLE), Factorial Experiment (FE) and Split-plot Experiment (SPE).
 
-  The experiments can be generated with one or more response variables, In the latter case, a strict covariance structure can be imposed. It is also possible to plan experiments using the graphic functions for use in planning from pictures or pictures of the experimental area.
+  The experiments can be generated with one or more response variables, in the latter case, a strict covariance structure can be imposed. It is also possible to plan experiments using the graphic functions for use in planning from pictures or pictures of the experimental area.
 
   The possible uses are multiple: in the planning it makes possible to distribution and randomization of treatments and experimental units; in the data analysis allows to generate experiments for application in evaluations individual and can also be used to generate experiments for validations of new computational resources in the area of structured data analysis.
 
