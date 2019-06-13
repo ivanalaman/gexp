@@ -22,12 +22,12 @@
 
 \arguments{
   \item{object}{A class \code{gexp} object.}
-  \item{digits}{Number of decimal digits in the results.The default is \code{3}.}
+  \item{digits}{Number of decimal digits in the results. The default is \code{3}.}
   \item{\dots}{Further arguments (required by generic).}
 }
 
 \examples{
-#! Completely Randomized Design (CRD)
+#! CRD
 #! 1 factor - CRD
 crd <- gexp(mu = 1,
             r = 3,
@@ -36,7 +36,7 @@ crd <- gexp(mu = 1,
             round = 2)
 summary(crd)
 
-#! Factorial Experiment (FE) - CRD
+#! FE - CRD
 # 5 factors (f1..f5, level^factor): 3^1 * 2^1 * 3^1 * 2^1 * 4^1 * 2 = 360 experimental units
 # 5 factors (f1..f5, level^factor): 3^2 * 2^2 * 5^1 = 180 * 2 = 360 experimental units
 crd_fe <- gexp(mu = 0,
@@ -65,7 +65,7 @@ crd_fe <- gexp(mu = 0,
                type = 'FE')
 summary(crd_fe)
 
-#! Split-plot Experiment (SPE) - CRD
+#! SPE - CRD
 split_crd <- gexp(mu = 30,
                   fe = list(f1 = c(1, 1),
                             f2 = c(2, 3)),
@@ -80,7 +80,7 @@ split_crd <- gexp(mu = 30,
                   type = 'SPE')
 summary(split_crd)
 
-#! Randomized Complete Block Design (RCBD)
+#! RCBD
 # 1 factor, 3 blocks
 rcbd <- gexp(mu = 0,
              fe = list(f1 = c(5, 1, 1)),
@@ -93,7 +93,7 @@ rcbd <- gexp(mu = 0,
              design = 'RCBD')
 summary(rcbd)
 
-#! Factorial Experiment (FE) - RCBD
+#! FE - RCBD
 fe_rcbd <- gexp(mu = 30,
                 fe = list(f1 = c(1, 1, 1),
                           f2 = c(2, 3)),
@@ -103,7 +103,7 @@ fe_rcbd <- gexp(mu = 30,
                 design = 'RCBD')
 summary(fe_rcbd)
 
-#! Split-plot Experiment (SPE) - RCBD
+#! SPE - RCBD
 split_rcbd <- gexp(mu = 30,
                    fe = list(f1 = c(1, 1),
                              f2 = c(2, 3),
@@ -130,7 +130,7 @@ split_rcbd <- gexp(mu = 30,
                    design = 'RCBD')
 summary(split_rcbd)
 
-#! Latin Square Design (LSD)
+#! LSD
 lsd <- gexp(mu = 30,
             r = 1,
             fe = list(f1 = c(1, 1, 10)),
@@ -146,7 +146,7 @@ lsd <- gexp(mu = 30,
             design = 'LSD')
 summary(lsd)
 
-#! Factorial Experiment (FE) - LSD
+#! FE - LSD
 fe_lsd <- gexp(mu = 30,
                r = 1,
                fe = list(f1 = c(1, 1),
@@ -165,7 +165,7 @@ fe_lsd <- gexp(mu = 30,
                design = 'LSD')
 summary(fe_lsd)
 
-#! Split-plot Experiment (SPE) - LSD
+#! SPE - LSD
 split_lsd <- gexp(mu = 30,
                   r = 1,
                   fe = list(f1 = c(1, 1, 2),
@@ -190,4 +190,3 @@ split_lsd <- gexp(mu = 30,
                   design = 'LSD')
 summary(split_lsd)
 }
-
