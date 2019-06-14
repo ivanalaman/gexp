@@ -1,9 +1,11 @@
-###########################################################################
+#############################################################################
 #
-# This function was copied of material avaliable in the following link (Esta função foi copiada do material disponível no seguinte link)
+# This function was copied of material avaliable in the following link 
+# (Esta função foi copiada do material disponível no seguinte link)
 # http://www.stat.wisc.edu/courses/st572-larget/Spring2007/handouts17-4.pdf
 #
-###########################################################################
+#############################################################################
+
 latin <- function(n, 
                   levelss = NULL, 
                   nrand = 20) {

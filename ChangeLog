@@ -1,3 +1,6 @@
+2019-06-13 vs. 1.0-1 - J.C.Faria <ivanalaman@gmail.com>
+ * Minor corrections (documentation and code).
+
 2019-06-13 vs. 1.0-0 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Split argument type in two arguments: type (SIMPLE, FE, SPE) and design (CRD, RCBD, LSD).
  * Add new methods to generic gexp: simple_crd, simple_rcbd, simple_lsd, fe_crd, fe_rcbd, fe_lsd, spe_crd, spe_rcbd and spe_lsd.
