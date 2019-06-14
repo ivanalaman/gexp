@@ -477,7 +477,7 @@ reg <- lm(Y1 ~ Dose + I(Dose^2) + I(Dose^3) + I(Dose^4),
 summary(reg)
 
 # Linear and quadratic
-level1 <- seq(0,30,by = 10)
+level1 <- seq(0, 30, by = 10)
 cont_crd1 <- matrix(c(level1,
                       level1^2,
                       level1^3),
@@ -597,7 +597,7 @@ crd_hb <- gexp(mu = 1, #in this case, mu=beta0 (intercept)
                r = r,
                fe = list(f1 = c(2,  0,  0), #b1 #b2 #b3
                          f2 = c(1,  1,  3)),
-               fl = list(Dose = seq(0,30,
+               fl = list(Dose = seq(0, 30,
                                     by = 10),
                          Trat = LETTERS[1:3]),
                err = matrix(0,
@@ -730,7 +730,7 @@ plot(spe_lsd)
 r <- 2  # (repet. number)
 fln <- 3  # (factor levels number)
 
-crd_m01 <- gexp(mu = c(0,10),
+crd_m01 <- gexp(mu = c(0, 10),
                 r = r,
                 fe = list(f1 = matrix(c(1, 0, #Y1 Y2
                                         2, 1,
@@ -805,7 +805,7 @@ r <- 2  # (repet. number)
 fln <- 3  # (factor levels number)
 bln <- 3  # (block levels number)
 
-rcbd_m01 <- gexp(mu = c(0,10),
+rcbd_m01 <- gexp(mu = c(0, 10),
                  r = r,
                  fe = list(f1 = matrix(c(1, 0, #Y1 Y2
                                          2, 1,
@@ -878,7 +878,7 @@ rcbd_m_spe01 <- gexp(mu = c(0, 2),
 summary(rcbd_m_spe01)
 
 #! LSD - QL
-lsd_m01 <- gexp(mu = c(0,10),
+lsd_m01 <- gexp(mu = c(0, 10),
                 r = 1,
                 fe = list(f1 = matrix(c(1, 0, 
                                         2, 1,
