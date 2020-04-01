@@ -1,3 +1,7 @@
+2020-04-01 vs. 1.0-1 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
+ * Fixed bug in the gexp.spe_lsd function. Include the argument
+ stringsAsFactors=TRUE in the line 110, according with the new version of R for the data.frame function, whose default for strings is stringsAsFactors = FALSE.
+
 2019-06-14 vs. 1.0-0 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Split argument type in two arguments: type (SIMPLE, FE, SPE) and design (CRD, RCBD, LSD).
  * Add new methods to generic gexp: simple_crd, simple_rcbd, simple_lsd, fe_crd, fe_rcbd, fe_lsd, spe_crd, spe_rcbd and spe_lsd.
@@ -16,6 +20,7 @@
  
 2019-04-13 vs. 0.1-4 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Minor corrections in the documentation.
+ * Released to CRAN.
 
 2019-04-13 vs. 0.1-3 - J.C.Faria <joseclaudio.faria@gmail.com>
  * All plot functions now are returning to the graphic device the parameters changed by the use of the par(xaxs='i', yaxs='i').

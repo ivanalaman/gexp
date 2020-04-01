@@ -107,7 +107,7 @@ gexp.spe_lsd <- function(x,
 
   colnames(trats) <- names(treatments)
 
-  trats <- as.data.frame(trats)
+  trats <- as.data.frame(trats, stringsAsFactors=TRUE)
 
   if(!x$qualiquanti$quali){
     trats[,x$qualiquanti$posquanti] <- as.ordered(trats[,x$qualiquanti$posquanti])

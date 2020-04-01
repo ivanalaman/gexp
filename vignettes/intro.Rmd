@@ -22,7 +22,7 @@ Most packages like agricolae, for example, have functions that allow the user to
 
 The experiments included in the package are: a completely randomized design (CRD), randomized complete block design (RCBD), latin square design (LSD), factorial schemes considering CRD, DBC and DQL designs and a schema in split-plots also considering the CRD, RCBD and LSD designs [@Aquino:1992].
 
-The arguments of the function are based on a linear model with the following matrix form [@Ferreira:2008, @Rencher:2007]:
+The arguments of the function are based on a linear model with the following matrix form (@Ferreira:2008, @Rencher:2007):
 
 $$Y = X\beta + E \hspace{5cm} (1)$$
 
