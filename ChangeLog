@@ -1,3 +1,6 @@
+2020-10-29 vs. 1.0-x - Ivan Bezerra Allaman <ivanalaman@gmail.com>
+ * Change character to factors in gexp.fe_lsd and gexp.simple_lsd function.
+
 2020-04-01 vs. 1.0-1 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Fixed bug in the gexp.spe_lsd function. Include the argument
  stringsAsFactors=TRUE in the line 110, according with the new version of R for the data.frame function, whose default for strings is stringsAsFactors = FALSE.

@@ -1,7 +1,7 @@
 Package: gexp
 Title: Generator of Experiments
-Version: 1.0-1
-Date: 2020-04-01
+Version: 1.0-x
+Date: 2020-10-29
 Author: Ivan Bezerra Allaman <ivanalaman@gmail.com>  and
         José Cláudio Faria <joseclaudio.faria@gmail.com>
 Maintainer: Ivan Bezerra Allaman <ivanalaman@gmail.com>

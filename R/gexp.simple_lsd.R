@@ -84,7 +84,8 @@ gexp.simple_lsd <- function(x,
                                KEEP.OUT.ATTRS = FALSE)
 
   dados <- data.frame(combrowcolumn,
-                      T1 = sorttreatment)
+                      T1 = sorttreatment,
+                      stringsAsFactors = TRUE)
 
   names(dados) <- gsub("T1",
                        names(treatments),

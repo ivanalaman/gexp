@@ -88,11 +88,11 @@ gexp.fe_lsd <- function(x,
   splittreatments <- strsplit(as.character(mtreatments[, 1]), 
                               '[.]')
   trats <- do.call('rbind',
-                   splittreatments)
+   splittreatments)
 
   colnames(trats) <- names(treatments) 
 
-  trats <- as.data.frame(trats)
+  trats <- as.data.frame(trats,stringsAsFactors = TRUE)
 
   if(!x$qualiquanti$quali){
     trats[,x$qualiquanti$posquanti] <- as.ordered(trats[,x$qualiquanti$posquanti])
@@ -102,7 +102,7 @@ gexp.fe_lsd <- function(x,
                                KEEP.OUT.ATTRS = FALSE)
 
   dados <- data.frame(combrowcolumn,
-                      trats)
+   trats)
 
   XB <- makeXBeta(cformula, 
                   dados, 
