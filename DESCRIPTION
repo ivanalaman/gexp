@@ -1,9 +1,9 @@
 Package: gexp
 Title: Generator of Experiments
-Version: 1.0-x
+Version: 1.0-2
 Date: 2020-10-29
 Author: Ivan Bezerra Allaman <ivanalaman@gmail.com>  and
-        JosÈ Cl·udio Faria <joseclaudio.faria@gmail.com>
+        Jos√© Cl√°udio Faria <joseclaudio.faria@gmail.com>
 Maintainer: Ivan Bezerra Allaman <ivanalaman@gmail.com>
 Depends: R (>= 3.5.0)
 Imports: mvtnorm, tcltk, jpeg, png
