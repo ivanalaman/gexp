@@ -17,8 +17,7 @@
 }
 
 \author{
-Ivan Bezerra Allaman <ivanalaman@gmail.com> and José Cláudio Faria <joseclaudio.faria@gmail.com>.
+Ivan Bezerra Allaman <ivanalaman@gmail.com> and Jose Claudio Faria <joseclaudio.faria@gmail.com>.
 
 Maintainer: Ivan Bezerra Allaman <ivanalaman@gmail.com>
 }
-

@@ -60,10 +60,10 @@ checkQualiQuanti <- function(fl){
                          function(x) is.numeric(x)) == TRUE)
     quali <- all(lapply(fl, 
                         function(x) is.numeric(x)) != TRUE)
-    # Se não for nem quanti nem quali é pq é um híbrido! Neste caso,
-    # vamos encontrar as posições.
+    # if is not a quanti and quali then it is a hybrid! Then,
+    # to get the positions
     posquanti <- which(unlist(lapply(fl, 
-                                     is.numeric)) == TRUE)  #em qual posição estão os quanti
+                                     is.numeric)) == TRUE)  #are wich the position quanti
   }
   res <- list(quali = quali,
               quanti = quanti,

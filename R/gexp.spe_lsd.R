@@ -15,7 +15,7 @@ gexp.spe_lsd <- function(x,
 
   intee <- makeInteraction(mu = x$mu,
                            fe = fe,
-                           inte = x$inte)#Preparando o argumento inte dos efeitos da interação 
+                           inte = x$inte)#Preparando o argumento inte dos efeitos da interacao
 
   treatments <- makeTreatments(fl = x$fl,
                                fe = fe,

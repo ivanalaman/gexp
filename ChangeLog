@@ -1,3 +1,6 @@
+2023-06-14 vs. 1.0-21 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
+ * Adjustment of files as required by the cran 
+
 2020-10-29 vs. 1.0-2 - Ivan Bezerra Allaman <ivanalaman@gmail.com>
  * Change character to factors in gexp.fe_lsd and gexp.simple_lsd function.
 

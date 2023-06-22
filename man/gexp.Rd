@@ -112,15 +112,15 @@ gexp(x, ...)
 }
 
 \references{
-  Ferreira, Daniel Furtado. 2008. \emph{Estatística Multivariada}. 1 ed.
+  Ferreira, Daniel Furtado. 2008. \emph{Estatistica Multivariada}. 1 ed.
   Lavras: Ed. UFLA.
 
-  Aquino, Luiz Henrique. \emph{Técnica Experimental com Animais I}. Apostila da
-  disciplina ``Técnica Experimental com Animais'' da Universidade Federal de
+  Aquino, Luiz Henrique. \emph{Tecnica Experimental com Animais I}. Apostila da
+  disciplina ``Tecnica Experimental com Animais'' da Universidade Federal de
   Lavras, 1992.
 
   Rencher, Alvin C. and Schaalje, Bruce G. 2007. \emph{Linear Models in
-    Statistics, second edition}. Hoboken: John Wiley \& Sons.
+    Statistics, second edition}. Hoboken: John Wiley and Sons.
 
   Naes, T.; Aastveit, A.H.; Sahni, N.S. 2007. "Analysis of split-plot designs:
   An Overview and Comparison of Methods". \emph{Qual. Reliab. Engng. Int.} 23,

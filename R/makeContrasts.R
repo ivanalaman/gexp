@@ -3,13 +3,13 @@ makeContrasts <- function(factors,
                           quanti, 
                           posquanti)
 {
-  if(quali){#Só qualitativos
+  if(quali){#only quantitatives
     contrast <- lapply(factors,
                        function(x)diag(length(x))) 
-  } else if(quanti){#Só quantitativos
+  } else if(quanti){#only quantitatives
     contrast <- lapply(factors,
                        function(x)contr.poly(length(x)))                            
-  } else {#híbrido
+  } else {#hybrido
     contrast <- lapply(factors,
                        function(x)diag(length(x)))
     contrast[posquanti] <- lapply(factors[posquanti],

@@ -4,7 +4,7 @@ makeTreatments <- function(fl,
                            quanti,
                            posquanti)
 {
-  if (is.null(fl)) {#A função faz os fatores automaticamente!
+  if (is.null(fl)) {#the function to do the factors automaticaly!
     lfactors <- lapply(fe, 
                        function(x) as.matrix(x))
 
@@ -35,7 +35,7 @@ makeTreatments <- function(fl,
       factors <- lapply(fl, 
                         as.ordered)
     } else if (!quanti & !quali) {
-      # híbrido
+      # hybrido
       factors <- fl
       factors[posquanti] <- lapply(fl[posquanti], 
                                    as.ordered)
